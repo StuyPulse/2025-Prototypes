@@ -6,8 +6,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.math.SLMath;
 import com.stuypulse.stuylib.network.SmartNumber;
+import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
+import com.stuypulse.stuylib.control.feedforward.ElevatorFeedforward;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.proto.Controller;
@@ -23,7 +25,9 @@ public class Elevator {
     private final double minHeight, maxHeight;
     private final SmartNumber maxAccel, maxVel;
     private Optional<Double> voltageOverride;
-    private final Controller controller;
+    private SimpleMotorFeedforward FF;
+    private PIDController PID;
+    
     
     Elevator() {
         targetHeight = new SmartNumber("Elevator/Target Height", 0);
@@ -42,7 +46,13 @@ public class Elevator {
             0, 
             null);
 
-        controller = new Controller(Settings.Feedforward.kS, Settings.Feedforward.kV, Settings.Feedforward.kA);
+        FF = new SimpleMotorFeedforward(Settings.Feedforward.kS, Settings.Feedforward.kV, Settings.Feedforward.kA);
+        PID = new PIDController(Settings.PID.kP, Settings.PID.kI, Settings.PID.kD);
+
+        
+        
+       
+
 
 
         voltageOverride = Optional.empty();
