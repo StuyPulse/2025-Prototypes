@@ -42,8 +42,7 @@ public class Elevator {
             0, 
             null);
 
-        controller = new SimpleMotorFeedforward(Settings.Feedforward.kS, Settings.Feedforward.kV, Settings.Feedforward.kA);
-            
+        controller = new Controller(Settings.Feedforward.kS, Settings.Feedforward.kV, Settings.Feedforward.kA);
 
 
         voltageOverride = Optional.empty();
@@ -82,7 +81,10 @@ public class Elevator {
     }
 
     public void calculateVoltage() {
-        
+        leftMotor.setVoltage(feedforward.calculate(leftVelocitySetpoint)
+      + leftPID.calculate(leftEncoder.getRate(), leftVelocitySetpoint));
+        rightMotor.setVoltage(feedForward.calculate(rightVelocitySetpoint)
+      + rightPID.calculate(rightEncoder.getRate(), rightVelocitySetpoint));
     }
     
     public void periodic() {
