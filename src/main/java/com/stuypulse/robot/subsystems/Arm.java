@@ -56,21 +56,21 @@ public class VFourBar extends SubsystemBase{
         targetAngle.set(MathUtil.clamp(angle, Settings.VFourBar.LOWER_ANGLE_LIMIT, Settings.VFourBar.UPPER_ANGLE_LIMIT));
     }
 
-    public void setL1() {
-        setAngle(Settings.VFourBar.L1_ANGLE);
-    }
+    // public void setL1() {
+    //     setAngle(Settings.VFourBar.L1_ANGLE);
+    // }
 
-    public void setL2() {
-        setAngle(Settings.VFourBar.L2_ANGLE);
-    }
+    // public void setL2() {
+    //     setAngle(Settings.VFourBar.L2_ANGLE);
+    // }
 
-    public void setL3() {
-        setAngle(Settings.VFourBar.L3_ANGLE);
-    }
+    // public void setL3() {
+    //     setAngle(Settings.VFourBar.L3_ANGLE);
+    // }
 
-    public void setL4() {
-        setAngle(Settings.VFourBar.L4_ANGLE);
-    }
+    // public void setL4() {
+    //     setAngle(Settings.VFourBar.L4_ANGLE);
+    // }
 
     public void reset(double angle) { // NOT FINISHED
         relativeEncoder.setPosition(angle);
