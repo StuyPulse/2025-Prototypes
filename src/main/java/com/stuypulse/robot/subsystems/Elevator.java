@@ -2,21 +2,24 @@ package com.stuypulse.robot.subsystems;
 
 import java.util.Optional;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.math.SLMath;
 import com.stuypulse.stuylib.network.SmartNumber;
-import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
-import com.stuypulse.stuylib.control.feedforward.ElevatorFeedforward;
 
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.proto.Controller;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class Elevator {
 
@@ -28,8 +31,8 @@ public class Elevator {
     private SimpleMotorFeedforward FF;
     private PIDController PID;
     
-    
     Elevator() {
+
         targetHeight = new SmartNumber("Elevator/Target Height", 0);
         minHeight = Settings.Elevator.MIN_HEIGHT;
         maxHeight = Settings.Elevator.MAX_HEIGHT;
@@ -49,16 +52,10 @@ public class Elevator {
         FF = new SimpleMotorFeedforward(Settings.Feedforward.kS, Settings.Feedforward.kV, Settings.Feedforward.kA);
         PID = new PIDController(Settings.PID.kP, Settings.PID.kI, Settings.PID.kD);
 
-        
-        
-       
-
-
-
         voltageOverride = Optional.empty();
     }
 
-    public void setStartHeight(double height) {
+    public void setTargetHeight(double height) {
         targetHeight.set(SLMath.clamp(height, minHeight, maxHeight));
         voltageOverride = Optional.empty();
     }
@@ -90,15 +87,19 @@ public class Elevator {
         this.maxAccel.set(maxAcceleration);
     }
 
-    public void calculateVoltage() {
-        leftMotor.setVoltage(feedforward.calculate(leftVelocitySetpoint)
-      + leftPID.calculate(leftEncoder.getRate(), leftVelocitySetpoint));
-        rightMotor.setVoltage(feedForward.calculate(rightVelocitySetpoint)
-      + rightPID.calculate(rightEncoder.getRate(), rightVelocitySetpoint));
+    public double calculateVoltage() {
+        final double FFOutput = FF.calculate(Units.metersToInches(sim.getVelocityMetersPerSecond()));
+        final double PIDOutput = PID.calculate(getHeight(), targetHeight.doubleValue());
+
+        // Combine outputs and set motor voltage
+        double combinedOutput = FFOutput + PIDOutput;
+        return combinedOutput;
     }
     
     public void periodic() {
-        double voltage = voltageOverride.orElse();
+
+
+        double voltage = voltageOverride.orElse(calculateVoltage());
 
         if (elevatorBottom() && voltage < 0 || elevatorTop() && voltage > 0) {
             stopElevator();
