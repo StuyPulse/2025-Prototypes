@@ -2,7 +2,6 @@ package com.stuypulse.robot.subsystems.Elevator;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.stuypulse.robot.constants.Ports;
@@ -44,6 +43,9 @@ class Elevator extends SubsystemBase {
     private final RelativeEncoder leftEncoder;
     private final RelativeEncoder rightEncoder;
 
+    private final SparkMaxConfig leftConfig;
+    private final SparkMaxConfig rightConfig;
+
     private final ElevatorVisualizer visualizer;
 
     public Elevator() {
@@ -52,9 +54,20 @@ class Elevator extends SubsystemBase {
         leftMotor = new SparkMax(Ports.Elevator.LEFT, MotorType.kBrushless);
         rightMotor = new SparkMax(Ports.Elevator.RIGHT, MotorType.kBrushless);
 
+        rightConfig = new SparkMaxConfig();
+        leftConfig = new SparkMaxConfig();
+
+        rightConfig.encoder.positionConversionFactor(Settings.Elevator.POSITION_CONVERSION_FACTOR);
+        leftConfig.encoder.positionConversionFactor(Settings.Elevator.POSITION_CONVERSION_FACTOR);
+        rightConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
+        leftConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
+
         leftEncoder = leftMotor.getEncoder();
         rightEncoder = rightMotor.getEncoder();
 
+        rightMotor.configure(leftConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        leftMotor.configure(rightConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        
         visualizer = new ElevatorVisualizer(this);
 
         FF = new SimpleMotorFeedforward(
@@ -73,12 +86,6 @@ class Elevator extends SubsystemBase {
             )
         );
 
-        leftMotor.configure(
-            new SparkMaxConfig()
-                .idleMode(SparkMaxConfig.IdleMode.kBrake),
-            SparkBase.ResetMode.kResetSafeParameters,
-            SparkBase.PersistMode.kPersistParameters);
-
     }
 
     public void setTargetHeight(double height) {
@@ -96,7 +103,7 @@ class Elevator extends SubsystemBase {
     }
 
     public double getHeight() {
-        return 0; //Encoders
+        return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2.0;
     }
 
     public void stopElevator() {
