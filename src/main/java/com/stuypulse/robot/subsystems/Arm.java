@@ -4,30 +4,55 @@ import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.RobotType;
-import com.stuypulse.stuylib.network.SmartNumber;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
-public class VFourBar extends SubsystemBase{
+public class Arm extends SubsystemBase{
+    
 
-    private static final VFourBar instance;
+    private static final Arm instance;
+    
+    public static enum State {
+        REST(0.0),
+        L1(Settings.Arm.L1_ANGLE),
+        L2(Settings.Arm.L2_ANGLE),
+        L3(Settings.Arm.L3_ANGLE),
+        L4(Settings.Arm.L4_ANGLE);
 
-    static {
-        if (Robot.ROBOT == RobotType.AUNT_MARY) {
-            instance = new VFourBar();
-        } else {
-            instance = new SimVFourBar();
+        private double angle;
+        private State(double angle) {
+            this.angle = angle;
+        }
+
+        private double getStateAngle() {
+            return angle;
+        }
+
+        private double getStateAngleRadians() {
+            return Units.degreesToRadians(angle);
         }
     }
 
-    public static VFourBar getInstance() {
+    private State state;
+
+    static {
+        instance = new Arm();
+
+    }
+
+    public static Arm getInstance() {
         return instance;
     }
 
@@ -35,51 +60,47 @@ public class VFourBar extends SubsystemBase{
 
     private static RelativeEncoder relativeEncoder;
 
-    private final PIDController controller;
+    private final ProfiledPIDController controller;
 
-    private SmartNumber targetAngle;
+    private final ArmFeedforward ffController;
 
 
-    public VFourBar() {
-        motor = new SparkMax(Ports.VFourBar.MOTOR, MotorType.kBrushless);
+    public Arm() {
+        state = State.REST;
+        motor = new SparkMax(Ports.Arm.MOTOR, MotorType.kBrushless);
         relativeEncoder = motor.getAlternateEncoder();
-        controller = new PIDController(Settings.VFourBar.PID.KP, Settings.VFourBar.PID.KI, Settings.VFourBar.PID.KD);
-        targetAngle = new SmartNumber("VFourBar/Target Angle", 0.0);
-        reset(Settings.VFourBar.LOWER_ANGLE_LIMIT);
+        controller = new ProfiledPIDController(Settings.Arm.PID.kP, Settings.Arm.PID.kI, Settings.Arm.PID.kD, new Constraints(Settings.Arm.MAX_VEL, Settings.Arm.MAX_ACCEL));
+        ffController = new ArmFeedforward(Settings.Arm.FF.kS, Settings.Arm.FF.kG, Settings.Arm.FF.kV, Settings.Arm.FF.kA);
+        
+        controller.enableContinuousInput(-180, 180);
+
     }
 
     public double getAngle() {
-        return Rotation2d.fromRotations(relativeEncoder.getPosition()).getRadians();
+        return Units.rotationsToDegrees(relativeEncoder.getPosition());
     }
 
-    public void setAngle(double angle) {
-        targetAngle.set(MathUtil.clamp(angle, Settings.VFourBar.LOWER_ANGLE_LIMIT, Settings.VFourBar.UPPER_ANGLE_LIMIT));
+    public void setState(State state) {
+        this.state = state;
     }
 
-    // public void setL1() {
-    //     setAngle(Settings.VFourBar.L1_ANGLE);
-    // }
+    public State getState() {
+        return state;
+    }
 
-    // public void setL2() {
-    //     setAngle(Settings.VFourBar.L2_ANGLE);
-    // }
+    public final boolean isAtTargetState(double epsilonDegrees) {
+        return Math.abs(getState().getStateAngle() - getAngle()) < epsilonDegrees;
+    }
 
-    // public void setL3() {
-    //     setAngle(Settings.VFourBar.L3_ANGLE);
-    // }
-
-    // public void setL4() {
-    //     setAngle(Settings.VFourBar.L4_ANGLE);
-    // }
-
-    public void reset(double angle) { // NOT FINISHED
+    public void reset(double angle) {  // NOT FINISHED
         relativeEncoder.setPosition(angle);
-        targetAngle.set(angle);
+        setState(State.REST);
     }
-
     @Override
     public void periodic() {
-        motor.setVoltage(controller.calculate(getAngle(), targetAngle.doubleValue()*Settings.VFourBar.DEG_TO_RAD));
+        motor.setVoltage(controller.calculate(
+            getAngle(), getState().getStateAngle()) 
+        + ffController.calculate(getState().getStateAngleRadians(), 0)
+        );
     }
-
 }

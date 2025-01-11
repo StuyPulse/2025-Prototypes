@@ -13,7 +13,7 @@ public interface Ports {
         int DEBUGGER = 2;
     }
 
-    public interface VFourBar {
+    public interface Arm {
         int MOTOR = 0;
     }
 }

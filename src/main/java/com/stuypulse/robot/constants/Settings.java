@@ -39,28 +39,36 @@ public interface Settings {
         }
     }
 
-    public interface VFourBar {
+    public interface Arm {
         public interface PID {
-            double KP = 0.0;
-            double KI = 0.0;
-            double KD = 0.0;
+            double kP = 0.0;
+            double kI = 0.0;
+            double kD = 0.0;
         }
+        public interface FF{
+            double kS = 0.0;
+            double kV = 0.0;
+            double kA = 0.0;
+            double kG = 0.0;
+        }
+        
+        double MAX_VEL = 5.0;
+        double MAX_ACCEL = 5.0;
 
         double L1_ANGLE = 0;
         double L2_ANGLE = 0;
         double L3_ANGLE = 0;
         double L4_ANGLE = 0;
         
-        double LOWER_ANGLE_LIMIT = 0;
-        double UPPER_ANGLE_LIMIT = 90;
-
-        double DEG_TO_RAD = 2*Math.PI/360;
+        double LOWER_ANGLE_LIMIT = -180;
+        double UPPER_ANGLE_LIMIT = 180;
 
         double GEAR_RATIO = 0.83333333333;
         double AREA = 3; // meters squared
         double MOMENT_OF_INERTIA = Units.lbsToKilograms(20) * AREA;
         double ARM_LENGTH = Units.inchesToMeters(3);
 
-
+        double MAX_ANGLE_ERROR = 1;
     }
 }
+
