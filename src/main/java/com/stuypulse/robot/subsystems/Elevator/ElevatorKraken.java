@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems.elevator;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,15 +25,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 4 rollers
 */
 
-public class ElevatorImpl extends SubsystemBase {
+public class ElevatorKraken extends SubsystemBase {
 
-    private static final ElevatorImpl instance;
+    private static final ElevatorKraken instance;
 
     static {
-        instance = new ElevatorImpl();
+        instance = new ElevatorKraken();
     }
 
-    public static ElevatorImpl getInstance() {
+    public static ElevatorKraken getInstance() {
         return instance;
     }
 
@@ -39,39 +41,17 @@ public class ElevatorImpl extends SubsystemBase {
     private ElevatorFeedforward FF;
     private ProfiledPIDController PID;
 
-    private final SparkMax leftMotor;
-    private final SparkMax rightMotor;
+    private final TalonFX leftMotor;
+    private final TalonFX rightMotor;
 
-    private final RelativeEncoder leftEncoder;
-    private final RelativeEncoder rightEncoder;
 
-    private final SparkMaxConfig leftConfig;
-    private final SparkMaxConfig rightConfig;
-
-    private final ElevatorVisualizer visualizer;
-
-    public ElevatorImpl() {
+    public ElevatorKraken() {
         targetHeight = new SmartNumber("Elevator/Target Height", 0);
 
-        leftMotor = new SparkMax(Ports.Elevator.LEFT, MotorType.kBrushless);
-        rightMotor = new SparkMax(Ports.Elevator.RIGHT, MotorType.kBrushless);
+        leftMotor = new TalonFX(Ports.Elevator.LEFT);
+        rightMotor = new TalonFX(Ports.Elevator.RIGHT);
 
-        rightConfig = new SparkMaxConfig();
-        leftConfig = new SparkMaxConfig();
-
-        rightConfig.encoder.positionConversionFactor(Settings.Elevator.POSITION_CONVERSION_FACTOR);
-        leftConfig.encoder.positionConversionFactor(Settings.Elevator.POSITION_CONVERSION_FACTOR);
-        rightConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
-        leftConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
-
-        leftEncoder = leftMotor.getEncoder();
-        rightEncoder = rightMotor.getEncoder();
-
-        rightMotor.configure(leftConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
-        leftMotor.configure(rightConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
         
-        visualizer = new ElevatorVisualizer(this);
-
         FF = new ElevatorFeedforward(
             Feedforward.kS, 
             Feedforward.kG, 
@@ -104,8 +84,11 @@ public class ElevatorImpl extends SubsystemBase {
         return targetHeight.getAsDouble();
     }
 
+
     public double getHeight() {
-        return (leftEncoder.getPosition() + rightEncoder.getPosition()) / 2.0;
+        return 
+            ((leftMotor.getPosition().getValueAsDouble() * Settings.Elevator.POSITION_CONVERSION_FACTOR) + 
+            (rightMotor.getPosition().getValueAsDouble() * Settings.Elevator.POSITION_CONVERSION_FACTOR)) / 2.0;
     }
 
     public void stopElevator() {
@@ -124,8 +107,7 @@ public class ElevatorImpl extends SubsystemBase {
         SmartDashboard.putNumber("Elevator/Target Height", targetHeight.getAsDouble());
         SmartDashboard.putNumber("Elevator/Height", getHeight());
 
-        visualizer.update();
     }
 
-}
+}   
     
