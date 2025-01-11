@@ -1,0 +1,122 @@
+package com.stuypulse.robot.subsystems.Elevator;
+
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.constants.Settings.Elevator.*;
+import com.stuypulse.stuylib.math.SLMath;
+import com.stuypulse.stuylib.network.SmartNumber;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+/*
+2 motors
+4 rollers
+*/
+
+class Elevator extends SubsystemBase {
+
+    private static final Elevator instance;
+
+    static {
+        instance = new Elevator();
+    }
+
+    public static Elevator getInstance() {
+        return instance;
+    }
+
+    private final SmartNumber targetHeight;
+    private SimpleMotorFeedforward FF;
+    private ProfiledPIDController PID;
+
+    private final SparkMax leftMotor;
+    private final SparkMax rightMotor;
+
+    private final RelativeEncoder leftEncoder;
+    private final RelativeEncoder rightEncoder;
+
+    private final ElevatorVisualizer visualizer;
+
+    public Elevator() {
+        targetHeight = new SmartNumber("Elevator/Target Height", 0);
+
+        leftMotor = new SparkMax(Ports.Elevator.LEFT, MotorType.kBrushless);
+        rightMotor = new SparkMax(Ports.Elevator.RIGHT, MotorType.kBrushless);
+
+        leftEncoder = leftMotor.getEncoder();
+        rightEncoder = rightMotor.getEncoder();
+
+        visualizer = new ElevatorVisualizer(this);
+
+        FF = new SimpleMotorFeedforward(
+            Feedforward.kS, 
+            Feedforward.kV, 
+            Feedforward.kA
+        );
+
+        PID = new ProfiledPIDController(
+            Settings.Elevator.PID.kP, 
+            Settings.Elevator.PID.kI, 
+            Settings.Elevator.PID.kD, 
+            new TrapezoidProfile.Constraints(
+                Settings.Elevator.MAX_ACCELERATION, 
+                Settings.Elevator.MAX_VELOCITY
+            )
+        );
+
+        leftMotor.configure(
+            new SparkMaxConfig()
+                .idleMode(SparkMaxConfig.IdleMode.kBrake),
+            SparkBase.ResetMode.kResetSafeParameters,
+            SparkBase.PersistMode.kPersistParameters);
+
+    }
+
+    public void setTargetHeight(double height) {
+        targetHeight.set(
+            SLMath.clamp(
+                height, 
+                Settings.Elevator.MIN_HEIGHT, 
+                Settings.Elevator.MAX_HEIGHT
+            )
+        );
+    }
+
+    public double getTargetHeight() {
+        return targetHeight.getAsDouble();
+    }
+
+    public double getHeight() {
+        return 0; //Encoders
+    }
+
+    public void stopElevator() {
+        leftMotor.setVoltage(0.0);
+        rightMotor.stopMotor();
+    }
+    
+    public void periodic() {
+
+        final double PIDOutput = PID.calculate(getHeight(), targetHeight.doubleValue());
+        final double FFOutput = FF.calculate(PID.getSetpoint().velocity);
+
+        leftMotor.setVoltage(PIDOutput + FFOutput);
+        rightMotor.setVoltage(PIDOutput + FFOutput);
+        
+        SmartDashboard.putNumber("Elevator/Target Height", targetHeight.getAsDouble());
+        SmartDashboard.putNumber("Elevator/Height", getHeight());
+
+        visualizer.update();
+    }
+
+}
+    

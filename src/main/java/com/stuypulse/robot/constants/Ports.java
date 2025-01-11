@@ -12,4 +12,9 @@ public interface Ports {
         int OPERATOR = 1;
         int DEBUGGER = 2;
     }
+
+    public interface Elevator {
+        int RIGHT = 1;
+        int LEFT = 2;
+    }
 }
