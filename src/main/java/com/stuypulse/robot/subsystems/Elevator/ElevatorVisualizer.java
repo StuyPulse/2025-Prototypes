@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.Elevator;
+package com.stuypulse.robot.subsystems.elevator;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;

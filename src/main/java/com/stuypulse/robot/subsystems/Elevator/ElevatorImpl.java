@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.Elevator;
+package com.stuypulse.robot.subsystems.elevator;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -21,15 +21,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 4 rollers
 */
 
-class Elevator extends SubsystemBase {
+public class ElevatorImpl extends SubsystemBase {
 
-    private static final Elevator instance;
+    private static final ElevatorImpl instance;
 
     static {
-        instance = new Elevator();
+        instance = new ElevatorImpl();
     }
 
-    public static Elevator getInstance() {
+    public static ElevatorImpl getInstance() {
         return instance;
     }
 
@@ -48,7 +48,7 @@ class Elevator extends SubsystemBase {
 
     private final ElevatorVisualizer visualizer;
 
-    public Elevator() {
+    public ElevatorImpl() {
         targetHeight = new SmartNumber("Elevator/Target Height", 0);
 
         leftMotor = new SparkMax(Ports.Elevator.LEFT, MotorType.kBrushless);
