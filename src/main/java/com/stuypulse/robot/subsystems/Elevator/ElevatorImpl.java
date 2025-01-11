@@ -1,12 +1,13 @@
 package com.stuypulse.robot.subsystems.elevator;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Elevator.*;
+import com.stuypulse.robot.constants.Settings.Elevator.Feedforward;
 import com.stuypulse.stuylib.math.SLMath;
 import com.stuypulse.stuylib.network.SmartNumber;
 
@@ -107,8 +108,8 @@ public class ElevatorImpl extends SubsystemBase {
     }
 
     public void stopElevator() {
-        leftMotor.setVoltage(0.0);
         rightMotor.stopMotor();
+        leftMotor.stopMotor(); 
     }
     
     public void periodic() {
