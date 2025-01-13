@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.elevator;
+package com.stuypulse.robot.subsystems.Elevator;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 public class ElevatorVisualizer {
 
     private final Mechanism2d elevator2d;
-    private final Elevator elevator;
+    private final ElevatorKraken elevator;
 
-    public ElevatorVisualizer(Elevator elevator) {
+    public ElevatorVisualizer(ElevatorKraken elevator) {
         this.elevator = elevator;
          
         elevator2d = new Mechanism2d(6, 15);
@@ -107,6 +107,6 @@ public class ElevatorVisualizer {
     }
 
     public void update() {
-        double targetHeight;
+
     }
 }
