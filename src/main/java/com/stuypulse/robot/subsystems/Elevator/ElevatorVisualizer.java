@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 public class ElevatorVisualizer {
 
     private final Mechanism2d elevator2d;
-    private final ElevatorKraken elevator;
+    private final ElevatorImpl elevator;
 
-    public ElevatorVisualizer(ElevatorKraken elevator) {
+    public ElevatorVisualizer(ElevatorImpl elevator) {
         this.elevator = elevator;
          
         elevator2d = new Mechanism2d(6, 15);
