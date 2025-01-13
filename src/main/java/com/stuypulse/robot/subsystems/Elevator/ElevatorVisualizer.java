@@ -11,6 +11,9 @@ public class ElevatorVisualizer {
 
     private final Mechanism2d elevator2d;
     private final ElevatorImpl elevator;
+    private final MechanismRoot2d m_outer;
+    private final MechanismRoot2d m_inner;
+
 
     private final MechanismRoot2d elevatorBL;
     private final MechanismRoot2d elevatorTR;
@@ -20,17 +23,13 @@ public class ElevatorVisualizer {
 
     private final MechanismRoot2d innerBL;
     private final MechanismRoot2d innerTR;
-    private final MechanismRoot2d innerTR;
-
-
 
     public ElevatorVisualizer(ElevatorImpl elevator) {
 
         this.elevator = elevator;
 
         // Mechanism2d
-        elevator2d = new Mechani sm2d(6, 15);
-        
+        elevator2d = new Mechanism2d(6, 15);
         
         // Elevator Frame
 
@@ -40,7 +39,7 @@ public class ElevatorVisualizer {
         elevatorBL.append(new MechanismLigament2d(
             "Left Tower",
             14, 
-            0,
+            90,
             10, 
             new Color8Bit(Color.kOrange)
         ));
@@ -48,13 +47,13 @@ public class ElevatorVisualizer {
         elevatorBL.append(new MechanismLigament2d(
             "Bottom Tower",
             6, 
-            -90,
+            0,
             10, 
             new Color8Bit(Color.kOrange)
         ));
 
         // top right node
-        elevatorTR = elevator2d.getRoot("Elevator TR", 6, 0);
+        elevatorTR = elevator2d.getRoot("Elevator TR", 0, 14);
 
         elevatorTR.append(new MechanismLigament2d(
             "Right Tower", 
@@ -67,7 +66,7 @@ public class ElevatorVisualizer {
         elevatorTR.append(new MechanismLigament2d(
             "Top Side",
             6,
-            90, 
+            -90, 
             10, 
             new Color8Bit(Color.kOrange)));
 
@@ -78,14 +77,14 @@ public class ElevatorVisualizer {
         outerBL.append(new MechanismLigament2d(
             "Left Side",
             14,
-            0, 
+            90, 
             10,
             new Color8Bit(Color.kYellow)));
     
         outerBL.append(new MechanismLigament2d(
             "Bottom Side",
             4,
-            -90,
+            0,
             10,
             new Color8Bit(Color.kYellow)));
         
@@ -94,14 +93,14 @@ public class ElevatorVisualizer {
         outerTR.append(new MechanismLigament2d(
             "Top Side",
             4,
-            90,
+            180,
             10,
             new Color8Bit(Color.kYellow)));
 
         outerTR.append(new MechanismLigament2d(
             "Right Side",
             14,
-            180,
+            -90,
             10,
             new Color8Bit(Color.kYellow)));
         
@@ -113,14 +112,14 @@ public class ElevatorVisualizer {
         innerBL.append(new MechanismLigament2d(
             "Bottom Side",
             2,
-            -90,
+            0,
             10,
             new Color8Bit(Color.kPink)));
 
         innerBL.append(new MechanismLigament2d(
             "Left Side",
             2,
-            0, 
+            90, 
             10,
             new Color8Bit(Color.kPink)));
         
@@ -139,12 +138,14 @@ public class ElevatorVisualizer {
             180, 
             10,
             new Color8Bit(Color.kPink)));
+
+
+        m_outer = outerBL.append(outerTR);
+        m_inner = innerBL.append(innerTR);
     }
 ;
     public void update() {
         SmartDashboard.putData("Elevator", elevator2d);
-        
-        elevator2d.setLength(elevator.getTargetHeight());
-           
+        m_inner.setPosition(2, elevator.getHeight());
     }
 }

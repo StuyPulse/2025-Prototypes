@@ -6,6 +6,7 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.constants.Settings.RobotType;
+import com.stuypulse.robot.subsystems.Elevator.ElevatorImpl;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
