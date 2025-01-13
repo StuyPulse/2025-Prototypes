@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorVisualizer {
 
@@ -18,7 +19,7 @@ public class ElevatorVisualizer {
     private final MechanismRoot2d outerTR;
 
     private final MechanismRoot2d innerBL;
-    private final MechanismRoot2d  innerTR;
+    private final MechanismRoot2d innerTR;
 
 
 
@@ -26,8 +27,8 @@ public class ElevatorVisualizer {
 
         // Mechanism 
         this.elevator = elevator;
-        
-        elevator2d = new Mechanism2d(6, 15);
+
+        elevator2d = new Mechani sm2d(6, 15);
         
         // Elevator Frame
 
@@ -134,8 +135,11 @@ public class ElevatorVisualizer {
             10,
             new Color8Bit(Color.kPink)));
     }
-
+;
     public void update() {
-        elevator2d.getRoot("Outer Bottom Left")
+        SmartDashboard.putData("Elevator", elevator2d);
+        
+        elevator2d.setLength(elevator.getTargetHeight());
+           
     }
 }
