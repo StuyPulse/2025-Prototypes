@@ -14,6 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import com.stuypulse.robot.commands.arm.ArmMoveToL1;
+import com.stuypulse.robot.commands.arm.ArmMoveToL2;
+import com.stuypulse.robot.commands.arm.ArmMoveToL3;
+import com.stuypulse.robot.commands.arm.ArmMoveToL4;
+
 public class RobotContainer {
 
     // Gamepads
@@ -43,7 +48,13 @@ public class RobotContainer {
     /*** BUTTONS ***/
     /***************/
 
-    private void configureButtonBindings() {}
+    private void configureButtonBindings() {
+        Gamepad controller = new Gamepad();
+        controller.getBottomButton().toggleOnTrue(new ArmMoveToL1());
+        controller.getRightButton().toggleOnTrue(new ArmMoveToL2());
+        controller.getLeftButton().toggleOnTrue(new ArmMoveToL3());
+        controller.getTopButton().toggleOnTrue(new ArmMoveToL4());
+    }
 
     /**************/
     /*** AUTONS ***/

@@ -6,13 +6,15 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.constants.Settings.RobotType;
+import com.stuypulse.robot.subsystems.arm.Arm;
+import com.stuypulse.robot.subsystems.arm.ArmVisualizer;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
-
+    
     public static final RobotType ROBOT;
 
     static {
@@ -47,7 +49,10 @@ public class Robot extends TimedRobot {
     public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+        Arm arm = Arm.getInstance();
+        arm.periodic();
+    }
 
     /***********************/
     /*** AUTONOMOUS MODE ***/

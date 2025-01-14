@@ -14,6 +14,6 @@ public interface Ports {
     }
 
     public interface Arm {
-        int MOTOR = 0;
+        int MOTOR = 3;
     }
 }

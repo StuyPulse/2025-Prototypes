@@ -49,7 +49,7 @@ public class Arm extends SubsystemBase{
 
     /*** Visualization ***/
     
-    private final ArmVisualizer visualizer;
+    // private final ArmVisualizer visualizer;
 
     /*** Constructor ***/
 
@@ -83,7 +83,7 @@ public class Arm extends SubsystemBase{
         
 
         // Visualization
-        visualizer = new ArmVisualizer();
+        // visualizer = new ArmVisualizer();
     }
 
     /// State
@@ -104,6 +104,7 @@ public class Arm extends SubsystemBase{
     
     @Override
     public void periodic() {
+        
         armMotor.setVoltage(
             pidController.calculate(
                 getArmAngle(), 
@@ -115,6 +116,6 @@ public class Arm extends SubsystemBase{
             )
         );
 
-        visualizer.update();
+        ArmVisualizer.getInstance().update();
     }
 }

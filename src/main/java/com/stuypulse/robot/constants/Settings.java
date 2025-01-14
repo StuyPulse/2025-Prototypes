@@ -55,10 +55,10 @@ public interface Settings {
         double MAX_VEL = 5.0;
         double MAX_ACCEL = 5.0;
 
-        double L1_ANGLE = 0;
-        double L2_ANGLE = 0;
-        double L3_ANGLE = 0;
-        double L4_ANGLE = 0;
+        double L1_ANGLE = 30;
+        double L2_ANGLE = 60;
+        double L3_ANGLE = 90;
+        double L4_ANGLE = 180;
         
         double LOWER_ANGLE_LIMIT = -180;
         double UPPER_ANGLE_LIMIT = 180;
