@@ -13,6 +13,7 @@ public class ArmVisualizer{
     
     private final Mechanism2d stick;
     private final MechanismRoot2d link;
+    private final MechanismRoot2d LINK;
     private final MechanismLigament2d stickStick;
     private final MechanismLigament2d slowStick;
 
@@ -43,8 +44,9 @@ public class ArmVisualizer{
         );
 
         link = stick.getRoot("Root Origin", 30, 0);
+        LINK = stick.getRoot("2nd Root Origin", 30, 0);
         link.append(stickStick);
-        link.append(slowStick);
+        LINK.append(slowStick);
 
     }
 
@@ -54,4 +56,5 @@ public class ArmVisualizer{
         slowStick.setAngle(Arm.getInstance().getArmAngle());
     }
 }
+
 

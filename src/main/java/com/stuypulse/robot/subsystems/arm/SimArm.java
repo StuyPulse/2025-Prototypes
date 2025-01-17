@@ -41,7 +41,7 @@ public class SimArm extends SubsystemBase{
                 Settings.Arm.ARM_LENGTH,
                 Settings.Arm.LOWER_ANGLE_LIMIT,
                 Settings.Arm.UPPER_ANGLE_LIMIT,
-                true,
+                false,
                 Settings.Arm.LOWER_ANGLE_LIMIT,
                 0,0);
 
@@ -114,15 +114,14 @@ public class SimArm extends SubsystemBase{
             ) +
             ffController.calculate(
                 getTargetAngle(), 
-                .01
+                0
             )
         );
-        sim.update(100);
+        sim.update(0.020);
 
 
         SmartDashboard.putData("SimArm", stick);
         stickStick.setAngle(getTargetAngle());
-        slowStick.setAngle(getTargetAngle());
         slowStick.setAngle(getArmAngle());
     }
 

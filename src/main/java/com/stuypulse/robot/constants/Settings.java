@@ -41,15 +41,15 @@ public interface Settings {
 
     public interface Arm {
         public interface PID {
-            SmartNumber kP = new SmartNumber("Arm/kP", 0);
+            SmartNumber kP = new SmartNumber("Arm/kP", 1.0);
             SmartNumber kI = new SmartNumber("Arm/kI", 0.0);
-            SmartNumber kD = new SmartNumber("Arm/kD", 0.0);
+            SmartNumber kD = new SmartNumber("Arm/kD", 0.1);
         }
         public interface FF{
             SmartNumber kS = new SmartNumber("Arm/kS", 0.0);
             SmartNumber kV = new SmartNumber("Arm/kV", 0.0);
             SmartNumber kA = new SmartNumber("Arm/kA", 0.0);
-            double kG = 0.7;
+            double kG = 0.0;
         }
         
         double MAX_VEL = 5.0;
@@ -60,13 +60,14 @@ public interface Settings {
         double L3_ANGLE = 90;
         double L4_ANGLE = 180;
         
-        double LOWER_ANGLE_LIMIT = -180;
-        double UPPER_ANGLE_LIMIT = 180;
+        double LOWER_ANGLE_LIMIT = 0;
+        double UPPER_ANGLE_LIMIT = 360
+        ;
 
-        double GEAR_RATIO = 0.83333333333;
+        double GEAR_RATIO = 0.833333330333;
         double AREA = 3; // meters squared
-        double MOMENT_OF_INERTIA = Units.lbsToKilograms(20) * AREA;
         double ARM_LENGTH = Units.inchesToMeters(3);
+        double MOMENT_OF_INERTIA = Units.lbsToKilograms(20) * ARM_LENGTH * ARM_LENGTH / 3;
 
         double MAX_ANGLE_ERROR = 1;
     }
