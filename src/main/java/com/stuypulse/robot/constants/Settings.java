@@ -41,15 +41,15 @@ public interface Settings {
 
     public interface Arm {
         public interface PID {
-            double kP = 0.0;
-            double kI = 0.0;
-            double kD = 0.0;
+            SmartNumber kP = new SmartNumber("Arm/kP", 0);
+            SmartNumber kI = new SmartNumber("Arm/kI", 0.0);
+            SmartNumber kD = new SmartNumber("Arm/kD", 0.0);
         }
         public interface FF{
-            double kS = 0.0;
-            double kV = 0.0;
-            double kA = 0.0;
-            double kG = 0.0;
+            SmartNumber kS = new SmartNumber("Arm/kS", 0.0);
+            SmartNumber kV = new SmartNumber("Arm/kV", 0.0);
+            SmartNumber kA = new SmartNumber("Arm/kA", 0.0);
+            double kG = 0.7;
         }
         
         double MAX_VEL = 5.0;

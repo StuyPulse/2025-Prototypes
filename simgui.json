@@ -1,11 +1,6 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "SPARK MAX [3]": {
-        "header": {
-          "open": true
-        }
-      },
       "SPARK MAX [3] ALTERNATE ENCODER": {
         "header": {
           "open": true
@@ -17,15 +12,16 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Arm": "Mechanism2d",
-      "/SmartDashboard/Autonomous": "String Chooser"
+      "/SmartDashboard/Autonomous": "String Chooser",
+      "/SmartDashboard/SimArm": "Mechanism2d"
     },
     "windows": {
-      "/SmartDashboard/Arm": {
+      "/SmartDashboard/Autonomous": {
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/Autonomous": {
+      "/SmartDashboard/SimArm": {
         "window": {
           "visible": true
         }
@@ -44,6 +40,12 @@
       },
       "SmartDashboard": {
         "Arm": {
+          "double[]##v_/SmartDashboard/Arm/dims": {
+            "open": true
+          },
+          "open": true
+        },
+        "SimArm": {
           "open": true
         },
         "open": true
@@ -55,6 +57,9 @@
       "open": true
     },
     "Connections": {
+      "open": true
+    },
+    "Server": {
       "open": true
     },
     "visible": true

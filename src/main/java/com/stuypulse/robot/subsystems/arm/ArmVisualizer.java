@@ -14,6 +14,10 @@ public class ArmVisualizer{
     private final Mechanism2d stick;
     private final MechanismRoot2d link;
     private final MechanismLigament2d stickStick;
+    private final MechanismLigament2d slowStick;
+
+
+    
 
     public static ArmVisualizer getInstance() {
         return instance;
@@ -24,19 +28,30 @@ public class ArmVisualizer{
 
         stickStick = new MechanismLigament2d(
         "arm",
-        20,
-        90,
+        30,
+        0,
         10,
         new Color8Bit(Color.kAqua));
 
-        link = stick.getRoot("Root Origin", 0, 0);
+        slowStick = new MechanismLigament2d(
+            "slow arm",
+            20,
+            0,
+            10,
+            new Color8Bit(Color.kDarkBlue)
+            
+        );
+
+        link = stick.getRoot("Root Origin", 30, 0);
         link.append(stickStick);
+        link.append(slowStick);
 
     }
 
     public void update() {
         SmartDashboard.putData("Arm", stick);
-        stickStick.setAngle(Arm.getInstance().getTargetAngle()); 
+        stickStick.setAngle(Arm.getInstance().getTargetAngle());
+        slowStick.setAngle(Arm.getInstance().getArmAngle());
     }
 }
 

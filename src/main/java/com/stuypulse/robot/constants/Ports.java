@@ -15,5 +15,6 @@ public interface Ports {
 
     public interface Arm {
         int MOTOR = 3;
+        int SIM_MOTOR = 4;
     }
 }

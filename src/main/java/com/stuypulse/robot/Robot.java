@@ -8,6 +8,7 @@ package com.stuypulse.robot;
 import com.stuypulse.robot.constants.Settings.RobotType;
 import com.stuypulse.robot.subsystems.arm.Arm;
 import com.stuypulse.robot.subsystems.arm.ArmVisualizer;
+import com.stuypulse.robot.subsystems.arm.SimArm;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,8 +51,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        Arm arm = Arm.getInstance();
-        arm.periodic();
+        // Arm arm = Arm.getInstance();
+        SimArm armSim = SimArm.getInstance();
+        // arm.periodic();
+        armSim.periodic();
     }
 
     /***********************/
