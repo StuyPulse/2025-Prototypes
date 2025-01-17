@@ -7,12 +7,14 @@ package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.subsystems.Flywheel;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
 
@@ -21,6 +23,7 @@ public class RobotContainer {
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
+    public final Flywheel flywheel = new Flywheel();
 
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -43,7 +46,10 @@ public class RobotContainer {
     /*** BUTTONS ***/
     /***************/
 
-    private void configureButtonBindings() {}
+    private void configureButtonBindings() {
+        driver.getLeftButton().onTrue(new InstantCommand(() -> flywheel.setTargetRPM(flywheel.getTargetRPM() + 50)));
+        driver.getRightButton().onTrue(new InstantCommand(() -> flywheel.setTargetRPM(flywheel.getTargetRPM() - 50)));
+    }
 
     /**************/
     /*** AUTONS ***/
