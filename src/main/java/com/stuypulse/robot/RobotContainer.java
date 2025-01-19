@@ -47,8 +47,8 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-        driver.getLeftButton().onTrue(new InstantCommand(() -> flywheel.setTargetRPM(flywheel.getTargetRPM() + 50)));
-        driver.getRightButton().onTrue(new InstantCommand(() -> flywheel.setTargetRPM(flywheel.getTargetRPM() - 50)));
+        driver.getLeftButton().onTrue(new InstantCommand(() -> flywheel.setTargetRadPerS(flywheel.getTargetRadPerS() + 100)));
+        driver.getRightButton().onTrue(new InstantCommand(() -> flywheel.setTargetRadPerS(flywheel.getTargetRadPerS() - 100)));
     }
 
     /**************/
