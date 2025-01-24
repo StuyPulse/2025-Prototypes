@@ -3,7 +3,8 @@ package com.stuypulse.robot.subsystems.arm;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.network.SmartNumber;
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.AbsoluteEncoder;
+
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -33,12 +34,13 @@ public class Arm extends SubsystemBase{
     /*** Hardware ***/
 
     private final SparkMax armMotor;
-    private final RelativeEncoder armEncoder;
+    private final AbsoluteEncoder armEncoder;
 
     /*** Controllers ***/
 
     private final ProfiledPIDController pidController;
     private final ArmFeedforward ffController;
+
 
     /*** Visualization ***/
     
@@ -53,7 +55,7 @@ public class Arm extends SubsystemBase{
 
         // Hardware
         armMotor = new SparkMax(Ports.Arm.MOTOR, MotorType.kBrushless);
-        armEncoder = armMotor.getAlternateEncoder();
+        armEncoder = armMotor.getAbsoluteEncoder();
 
         // Controllers
         pidController = new ProfiledPIDController(

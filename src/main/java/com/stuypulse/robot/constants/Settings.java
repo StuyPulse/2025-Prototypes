@@ -47,13 +47,13 @@ public interface Settings {
         }
         public interface FF{
             SmartNumber kS = new SmartNumber("Arm/kS", 0.0);
-            SmartNumber kV = new SmartNumber("Arm/kV", 0.0);
+            SmartNumber kV = new SmartNumber("Arm/kV", 100);
             SmartNumber kA = new SmartNumber("Arm/kA", 0.0);
-            double kG = 0.0;
+            double kG = 0.7;
         }
         
-        double MAX_VEL = 5.0;
-        double MAX_ACCEL = 5.0;
+        double MAX_VEL = 100000000000000.0;
+        double MAX_ACCEL = 10000000000000.0;
 
         double L1_ANGLE = 30;
         double L2_ANGLE = 60;

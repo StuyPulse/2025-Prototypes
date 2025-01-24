@@ -41,7 +41,7 @@ public class SimArm extends SubsystemBase{
                 Settings.Arm.ARM_LENGTH,
                 Settings.Arm.LOWER_ANGLE_LIMIT,
                 Settings.Arm.UPPER_ANGLE_LIMIT,
-                false,
+                true,
                 Settings.Arm.LOWER_ANGLE_LIMIT,
                 0,0);
 
