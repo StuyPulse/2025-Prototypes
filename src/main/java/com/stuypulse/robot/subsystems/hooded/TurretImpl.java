@@ -12,12 +12,13 @@ public class TurretImpl extends Turret {
     private CANcoder encoder;
 
     public TurretImpl() {
-        motor = new TalonFX(0);
+        motor = new TalonFX(Ports.Turret.MOTOR);
+        encoder = new CANcoder(Ports.Turret.ENCODER, Ports.Turret.CANBUS);
     }
 
     @Override
     public double getAngle() {
-        return motor.getPosition().getValueAsDouble();
+        return encoder.getAbsolutePosition().getValueAsDouble();
     }
 
     @Override

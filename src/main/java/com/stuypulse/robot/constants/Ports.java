@@ -14,6 +14,8 @@ public interface Ports {
     }
 
     public interface Turret {
+        String CANBUS = "";
         int MOTOR = 0;
+        int ENCODER = 1;
     }
 }
