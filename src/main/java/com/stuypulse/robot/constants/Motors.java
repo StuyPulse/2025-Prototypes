@@ -34,6 +34,43 @@ public interface Motors {
 
     /** Classes to store all of the values a motor needs */
 
+    public interface DifferentialWrist {
+        TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
+            .withCurrentLimitAmps(0)
+                    .withRampRate(0)
+                    .withNeutralMode(NeutralModeValue.Brake)
+                    .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+                    .withSupplyCurrentLimitAmps(0)
+                    .withMotionProfile(0, 0)
+                    .withSensorToMechanismRatio(0);
+        
+        TalonFXConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new TalonFXConfig()
+            .withCurrentLimitAmps(0)
+            .withRampRate(0)
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+            .withGravityType(GravityTypeValue.Arm_Cosine)
+            .withSupplyCurrentLimitAmps(0)
+            .withMotionProfile(0, 0)
+            .withRemoteSensor(0, null, 0)
+            .withSensorToMechanismRatio(0)
+            .withFFConstants(0, 0, 0, 0,0)
+            .withPIDConstants(0, 0, 0, 0);
+
+        TalonFXConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new TalonFXConfig()
+            .withCurrentLimitAmps(0)
+            .withRampRate(0)
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+            .withGravityType(GravityTypeValue.Arm_Cosine)
+            .withSupplyCurrentLimitAmps(0)
+            .withMotionProfile(0, 0)
+            .withRemoteSensor(0, null, 0)
+            .withSensorToMechanismRatio(0)
+            .withFFConstants(0, 0, 0, 0,0)
+            .withPIDConstants(0, 0, 0, 0);
+    }
+
     public static class TalonFXConfig {
         private final TalonFXConfiguration configuration = new TalonFXConfiguration();
         private final Slot0Configs slot0Configs = new Slot0Configs();
