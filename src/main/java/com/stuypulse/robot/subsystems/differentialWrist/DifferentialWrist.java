@@ -8,6 +8,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public abstract class DifferentialWrist extends SubsystemBase {
     public static final DifferentialWrist instance;
 
+    
+    public enum WristStates{
+
+    }
+
+    public enum RollerStates{
+        
+    }
+
+    public DifferentialWrist(){
+        
+    } 
+
+
     static {
         if(Robot.isReal()) {
             instance = new DifferentialWristImpl();
@@ -18,18 +32,6 @@ public abstract class DifferentialWrist extends SubsystemBase {
 
     public static DifferentialWrist getInstance() {
         return instance;
-    }
-
-    public enum PivotPitchState {
-
-    }
-
-    public enum PivotRollState {
-
-    }
-
-    public enum RollerState {
-
     }
 
     public abstract Rotation2d getCurrentPitchAngle();
