@@ -12,4 +12,10 @@ public interface Ports {
         int OPERATOR = 1;
         int DEBUGGER = 2;
     }
+
+    public interface DifferentialWrist {
+        int LEFT_DIFFERENTIAL = 0;
+        int RIGHT_DIFFERENTIAL = 0;
+        int ROLLER = 0;
+    }
 }
