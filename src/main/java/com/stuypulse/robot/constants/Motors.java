@@ -21,6 +21,15 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 public interface Motors {
 
     /** Classes to store all of the values a motor needs */
+    public interface Hood{
+        public interface Encoders {
+            double GEAR_RATIO = 52.0 / 12.0;
+    
+            double NUM_ROTATIONS_TO_REACH_TOP = 0; // Number of rotations that the motor has to spin, NOT the gear
+            double POSITION_CONVERSION_FACTOR = 0 / NUM_ROTATIONS_TO_REACH_TOP;
+            double VELOCITY_CONVERSION_FACTOR = 0 / NUM_ROTATIONS_TO_REACH_TOP / 60;
+        }
+    }
 
     public static class TalonSRXConfig {
         public final boolean INVERTED;
