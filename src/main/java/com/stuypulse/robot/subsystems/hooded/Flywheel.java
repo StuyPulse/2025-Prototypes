@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems;
+package com.stuypulse.robot.subsystems.hooded;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
