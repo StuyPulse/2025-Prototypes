@@ -24,11 +24,12 @@ public class DifferentialWristImpl extends DifferentialWrist {
 
     @Override
     public Rotation2d getCurrentRollAngle() {
-        return Rotation2d.fromRotations(leftDifferentialMotor.getPosition().getValueAsDouble() - rightDifferentialMotor.getPosition().getValueAsDouble());
+        return Rotation2d.fromRotations((leftDifferentialMotor.getPosition().getValueAsDouble() - rightDifferentialMotor.getPosition().getValueAsDouble()) / 2);
     }
 
     @Override
     public Rotation2d getCurrentPitchAngle() {
-        return Rotation2d.fromRotations(leftDifferentialMotor.getPosition().getValueAsDouble() - rightDifferentialMotor.getPosition().getValueAsDouble());
+        return Rotation2d.fromRotations((leftDifferentialMotor.getPosition().getValueAsDouble() + rightDifferentialMotor.getPosition().getValueAsDouble()) / 2);
     }
+
 }
