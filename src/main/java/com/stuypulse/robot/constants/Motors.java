@@ -34,6 +34,12 @@ public interface Motors {
 
     /** Classes to store all of the values a motor needs */
 
+    // public interface Arm{
+    //     // TalonFXConfig MOTOR_CONFIG = new TalonFXConfig() {
+    //     //     .withInvertedValue(InvertedValue.)
+    //     // }
+    // }
+
     public static class TalonFXConfig {
         private final TalonFXConfiguration configuration = new TalonFXConfiguration();
         private final Slot0Configs slot0Configs = new Slot0Configs();

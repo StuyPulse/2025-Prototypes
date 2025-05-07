@@ -12,4 +12,10 @@ public interface Ports {
         int OPERATOR = 1;
         int DEBUGGER = 2;
     }
+    public interface Arm {
+        int LEFT_SHOULDER = 0;
+        int RIGHT_SHOULDER = 1;
+        int ELBOW_MOTOR = 2;
+    }
+
 }
