@@ -14,8 +14,10 @@ public interface Ports {
     }
     public interface Arm {
         int LEFT_SHOULDER = 0;
-        int RIGHT_SHOULDER = 1;
-        int ELBOW_MOTOR = 2;
+        int RIGHT_SHOULDER = 0;
+        int ELBOW_MOTOR = 0;
+        int PIGEON = 0;
+        int ABSOLUTE_ENCODER = 0;
     }
 
 }
