@@ -1,7 +1,5 @@
 package com.stuypulse.robot.subsystems.hooded;
 
-import com.stuypulse.robot.constants.Ports;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,11 +20,13 @@ public abstract class Turret extends SubsystemBase {
     public void setTargetAngle(double angle){
         targetAngle = angle;
     }
+    
     public double getTargetAngle(){
         return targetAngle;
     }
 
     public abstract double getAngle();
+    public abstract boolean atTargetAngle();
 
     @Override
     public void periodic(){

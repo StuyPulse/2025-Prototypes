@@ -13,6 +13,12 @@ public interface Ports {
         int DEBUGGER = 2;
     }
 
+    public interface HoodedShooter {
+        String CANBUS = "";
+        int MOTOR = 2;
+        int ENCODER = 3;
+    }
+    
     public interface Turret {
         String CANBUS = "";
         int MOTOR = 0;
