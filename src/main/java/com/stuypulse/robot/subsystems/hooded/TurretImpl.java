@@ -37,11 +37,12 @@ public class TurretImpl extends Turret {
 
     @Override
     public boolean atTargetAngle() {
-        return Math.abs(getAngle() - getTargetAngle()) < Settings.Turret.tolerance;
+        return Math.abs(getAngle() - getTargetAngle()) < Settings.Turret.TOLERANCE;
     }
 
     @Override
     public void periodic() {
+        super.periodic();
         motor.setControl(new MotionMagicDutyCycle(getTargetAngle()));
     }
 }

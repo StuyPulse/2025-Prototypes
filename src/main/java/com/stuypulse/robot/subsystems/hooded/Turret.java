@@ -31,5 +31,6 @@ public abstract class Turret extends SubsystemBase {
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Turret/Target Angle", getTargetAngle());
+        SmartDashboard.putNumber("Turret/Turret Angle", getAngle());
     }
 }

@@ -17,11 +17,17 @@ import com.stuypulse.stuylib.network.SmartNumber;
 public interface Settings {
 
     public interface Turret {
-        double tolerance = 0.01;
+        double TOLERANCE = 0.01;
     }
 
     public interface HoodedShooter {
-        double tolerance = 0.01;
+        double TOLERANCE = 0.01;
+
+        public interface States {
+            double CLOSE_ANGLE = 0;
+            double FAR_ANGLE = 0;
+            double FERRY_ANGLE = 0;
+        }
     }
 
 }

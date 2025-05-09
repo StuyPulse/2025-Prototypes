@@ -16,4 +16,15 @@ public interface Constants {
         double MAX_VEL = 0.0;
     }
 
+    public interface HoodedShooter {
+        double kP = 0.0;
+        double kI = 0.0;
+        double kD = 0.0;
+
+        double DEFAULT_MAX_ANGULAR_VELOCITY = 0.0;
+        double DEFAULT_MAX_ANGULAR_ACCELERATION = 0.0;
+
+        int SMART_CURRENT_LIMIT = 60;
+    }
+
 }
