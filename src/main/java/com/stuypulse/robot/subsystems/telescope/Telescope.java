@@ -14,15 +14,14 @@ public abstract class Telescope extends SubsystemBase {
         return instance;
     }
 
-    public enum TelescopeState{
-        L1(),
-        L2(),
-        L3(),
-        L4();
-    }
+    public enum targetHeights{
+        L1(Settings.Telescope.L1),
+        L2(Settings.Telescope.L2),
 
-    public abstract void setTargetHeight(double height)
-    public abstract void getTargetHeight()
+    public abstract void setTargetHeight(double height);
+    public abstract double getTargetHeight();
+
+    
     
 
 }
