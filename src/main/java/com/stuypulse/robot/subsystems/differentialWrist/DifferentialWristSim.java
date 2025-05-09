@@ -12,4 +12,14 @@ public class DifferentialWristSim extends DifferentialWrist {
     public Rotation2d getCurrentPitchAngle() {
         return null;
     }
+
+    @Override
+    public boolean isAtTargetPitchAngle() {
+        return false;
+    }
+
+    @Override
+    public boolean isAtTargetRollAngle() {
+        return false;
+    }
 }

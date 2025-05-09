@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems.differentialWrist;
 
 import com.stuypulse.robot.Robot;
+import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,22 +24,30 @@ public abstract class DifferentialWrist extends SubsystemBase {
 
     public enum WristState {
         STOW(new Rotation2d(),new Rotation2d()),
-        CORAL_GROUND_INTAKE(new Rotation2d(),new Rotation2d()),
-        ALGAE_GROUND_INTAKE(new Rotation2d(),new Rotation2d());
+        CORAL_SCORE_L1(new Rotation2d(),new Rotation2d()),
+        CORAL_SCORE_L2(new Rotation2d(),new Rotation2d()),
+        CORAL_SCORE_L3(new Rotation2d(),new Rotation2d()),
+        CORAL_SCORE_L4(new Rotation2d(),new Rotation2d()),
+        ALGAE_SCORE_BARGE(new Rotation2d(),new Rotation2d()),
+        ALGAE_SCORE_PROCESSOR(new Rotation2d(),new Rotation2d());
 
         private Rotation2d pitch, roll;
 
         private WristState(Rotation2d pitch, Rotation2d roll) {
-            this.pitch = pitch;
-            this.roll = roll;
+            this.pitch = Rotation2d.fromDegrees(
+                SLMath.clamp(pitch.getDegrees(), 0, 0)
+            );
+            this.roll = Rotation2d.fromDegrees(
+                SLMath.clamp(roll.getDegrees(),0,0)
+            );
         }
 
         public Rotation2d getPitch() {
-            return pitch;
+            return this.pitch;
         }
 
         public Rotation2d getRoll() {
-            return roll;
+            return this.roll;
         }
     }
 
@@ -90,9 +99,9 @@ public abstract class DifferentialWrist extends SubsystemBase {
 
     public abstract Rotation2d getCurrentRollAngle();
 
-    // public abstract boolean isAtTargetPitchAngle();
+    public abstract boolean isAtTargetPitchAngle();
 
-    // public abstract boolean isAtTargetRollAngle();
+    public abstract boolean isAtTargetRollAngle();
 
     @Override
     public void periodic() {

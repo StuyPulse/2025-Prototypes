@@ -14,8 +14,11 @@ public interface Ports {
     }
 
     public interface DifferentialWrist {
-        int LEFT_DIFFERENTIAL = 0;
-        int RIGHT_DIFFERENTIAL = 0;
-        int ROLLER = 0;
+        int LEFT_DIFFERENTIAL_MOTOR = 0;
+        int RIGHT_DIFFERENTIAL_MOTOR = 0;
+        int ROLLER_MOTOR = 0;
+
+        int LEFT_ENCODER = 0;
+        int RIGHT_ENCODER = 0;
     }
 }
