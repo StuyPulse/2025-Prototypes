@@ -35,6 +35,7 @@ public interface Motors {
     /** Classes to store all of the values a motor needs */
 
     public interface DifferentialWrist {
+        // TO-DO: FF or PID for roller motor?
         TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
             .withCurrentLimitAmps(0)
                     .withRampRate(0)
