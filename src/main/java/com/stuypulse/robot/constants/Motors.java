@@ -38,12 +38,14 @@ public interface Motors {
         // TO-DO: FF or PID for roller motor?
         TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
             .withCurrentLimitAmps(0)
-                    .withRampRate(0)
-                    .withNeutralMode(NeutralModeValue.Brake)
-                    .withInvertedValue(InvertedValue.CounterClockwise_Positive)
-                    .withSupplyCurrentLimitAmps(0)
-                    .withMotionProfile(0, 0)
-                    .withSensorToMechanismRatio(0);
+            .withRampRate(0)
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+            .withSupplyCurrentLimitAmps(0)
+            .withMotionProfile(0, 0)
+            .withSensorToMechanismRatio(0)
+            .withFFConstants(0, 0, 0, 0,0)
+            .withPIDConstants(0, 0, 0, 0);
         
         TalonFXConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new TalonFXConfig()
             .withCurrentLimitAmps(0)
