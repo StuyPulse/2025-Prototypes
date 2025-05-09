@@ -23,7 +23,7 @@ private static final Arm instance;
     }
 
     public enum ArmState{
-        L1(Settings.Arm.L1_ANGLE_FRONT),
+        L1(Settings.Arm.L1_ANGLE),
         L2_FRONT(Settings.Arm.L2_ANGLE_FRONT),
         L3_FRONT(Settings.Arm.L3_ANGLE_FRONT),
         L4_FRONT(Settings.Arm.L4_ANGLE_FRONT),

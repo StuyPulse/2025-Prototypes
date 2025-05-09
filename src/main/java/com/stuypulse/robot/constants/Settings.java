@@ -7,6 +7,9 @@ package com.stuypulse.robot.constants;
 
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
+import edu.wpi.first.math.geometry.Rotation2d;
+
+
 
 /*-
  * File containing tunable settings for every subsystem on the robot.
@@ -30,13 +33,13 @@ public interface Settings {
     }
 
     public interface Arm {
-        Rotation2d L1_ANGLE = 0;
-        Rotation2D L2_ANGLE_FRONT = 0;
-        Rotation2d L3_ANGLE_FRONT = 0;
-        Rotation2d L4_ANGLE_FRONT = 0;
-        Rotation2d L2_ANGLE_BACK = 0;
-        Rotation2d L3_ANGLE_BACK = 0;
-        Rotation2d L4_ANGLE_BACK = 0;
+        Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0);
+        Rotation2d L2_ANGLE_FRONT = Rotation2d.fromDegrees(0);
+        Rotation2d L3_ANGLE_FRONT = Rotation2d.fromDegrees(0);
+        Rotation2d L4_ANGLE_FRONT = Rotation2d.fromDegrees(0);
+        Rotation2d L2_ANGLE_BACK = Rotation2d.fromDegrees(0);
+        Rotation2d L3_ANGLE_BACK = Rotation2d.fromDegrees(0);
+        Rotation2d L4_ANGLE_BACK = Rotation2d.fromDegrees(0);
         
     }
 
