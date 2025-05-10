@@ -1,126 +1,178 @@
 package com.stuypulse.robot.subsystems.arm;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmImpl extends Arm {
     // Hardware
-    private final Pigeon2 pigeon;
-    private final CANcoder elbowEncoder;
-    private final TalonFX shoulderMotor;
+    private final TalonFX frontShoulderMotor;
+    private final TalonFX backShoulderMotor;
     private final TalonFX elbowMotor;
     
     private final Pigeon2 shoulderEncoder;
     private final DutyCycleEncoder elbowEncoder;
 
-    // Degree-based controllers
+    /*
+     CHANGE VALUES
+     */
+
+    // Control
     private final PIDController shoulderPID = new PIDController(0.5, 0.0, 0.1);
     private final PIDController elbowPID = new PIDController(0.6, 0.0, 0.15);
-    private final ArmFeedforward shoulderFF = new ArmFeedforward(0.0, 0.15, 0.02);
-    private final ArmFeedforward elbowFF = new ArmFeedforward(0.0, 0.08, 0.01);
+    private final ArmFeedforward shoulderFF = new ArmFeedforward(0.01, 0.15, 0.02, 0.05);
+    private final ArmFeedforward elbowFF = new ArmFeedforward(0.01, 0.08, 0.01, 0.03);
 
     // Arm geometry (meters)
     private final double SHOULDER_LENGTH = 0.5;
     private final double ELBOW_LENGTH = 0.4;
     private final double BASE_HEIGHT = 0.2;
 
-    // Targets in degrees
+    // Dynamic coupling
+    private final double SHOULDER_TO_ELBOW_COUPLING = 0.3;
+    private final double ELBOW_TO_SHOULDER_COUPLING = 0.2;
+
+    // Targets
     private double targetShoulderDeg = 0;
     private double targetElbowDeg = 0;
 
+    // Elbow encoder calibration
+    private final double ELBOW_OFFSET_DEG = 0.0; // Calibrate this
+    private double prevElbowPos = 0;
+    private long prevTime = System.nanoTime();
+
     public ArmImpl() {
-        pigeon = new Pigeon2(0);
-        elbowEncoder = new CANcoder(1);
-        shoulderMotor = new TalonFX(2);
+        frontShoulderMotor = new TalonFX(1);
+        backShoulderMotor = new TalonFX(2);
         elbowMotor = new TalonFX(3);
         
-        configureCANcoder();
+        shoulderEncoder = new Pigeon2(4);
+        elbowEncoder = new DutyCycleEncoder(0);
+        
+        configureMotors();
     }
 
-    private void configureCANcoder() {
-        CANcoderConfiguration config = new CANcoderConfiguration();
+    private void configureMotors() {
+        TalonFXConfiguration config = new TalonFXConfiguration();
         
-        // Current (2024) way to configure sensor range
-        config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        // Shoulder motors
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        frontShoulderMotor.getConfigurator().apply(config);
+        backShoulderMotor.getConfigurator().apply(config);
         
-        // No explicit range setting needed - default is 0-1 (0-360° when multiplied)
-        var status = elbowEncoder.getConfigurator().apply(config);
+        // Elbow motor
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        elbowMotor.getConfigurator().apply(config);
         
-        if (!status.isOK()) {
-            DriverStation.reportWarning("CANcoder config failed!", false);
-        }
+        // Follower setup
+        backShoulderMotor.setControl(new Follower(frontShoulderMotor.getDeviceID(), false));
     }
 
     @Override
     public void periodic() {
-        // Degree-based control
-        double shoulderVolts = shoulderPID.calculate(getShoulderAngleDegrees(), targetShoulderDeg)
-                           + shoulderFF.calculate(getShoulderAngleDegrees(), getShoulderVelocityDegS());
+        // Get current states
+        double shoulderPos = getShoulderAngleDegrees();
+        double elbowPos = getElbowAngleDegrees();
+        double shoulderVel = getShoulderVelocityDegs();
+        double elbowVel = getElbowVelocityDegs();
+
+        // Calculate coupled feedforward
+        double shoulderGravity = calculateShoulderGravity(shoulderPos, elbowPos);
+        double elbowGravity = calculateElbowGravity(shoulderPos, elbowPos);
         
-        double elbowVolts = elbowPID.calculate(getElbowAngleDegrees(), targetElbowDeg)
-                         + elbowFF.calculate(getElbowAngleDegrees(), getElbowVelocityDegS());
+        // Cross-joint compensation
+        double shoulderComp = ELBOW_TO_SHOULDER_COUPLING * elbowVel;
+        double elbowComp = SHOULDER_TO_ELBOW_COUPLING * shoulderVel;
+
+        // Control signals
+        double shoulderVolts = shoulderPID.calculate(shoulderPos, targetShoulderDeg)
+                           + shoulderFF.calculate(shoulderVel + shoulderComp, shoulderGravity);
         
+        double elbowVolts = elbowPID.calculate(elbowPos, targetElbowDeg)
+                         + elbowFF.calculate(elbowVel + elbowComp, elbowGravity);
+
         setVoltages(shoulderVolts, elbowVolts);
         
         // Logging
-        SmartDashboard.putNumber("Arm/Shoulder Angle (deg)", getShoulderAngleDegrees());
-        SmartDashboard.putNumber("Arm/Elbow Angle (deg)", getElbowAngleDegrees());
-        SmartDashboard.putNumber("Arm/End Height (m)", getEndHeight());
+        SmartDashboard.putNumber("Arm/Shoulder Angle", shoulderPos);
+        SmartDashboard.putNumber("Arm/Elbow Angle", elbowPos);
+        SmartDashboard.putNumber("Arm/End Height", getEndHeight());
     }
 
-    // Degree-based measurements
+    private double calculateShoulderGravity(double shoulderDeg, double elbowDeg) {
+        double shoulderRad = Math.toRadians(shoulderDeg);
+        double elbowRad = Math.toRadians(elbowDeg);
+        return 0.15 * Math.sin(shoulderRad) + 0.05 * Math.sin(shoulderRad + elbowRad);
+    }
+
+    private double calculateElbowGravity(double shoulderDeg, double elbowDeg) {
+        double combinedRad = Math.toRadians(shoulderDeg + elbowDeg);
+        return 0.08 * Math.sin(combinedRad);
+    }
+
+    @Override
     public double getShoulderAngleDegrees() {
-        return pigeon.getPitch().getValueAsDouble();
+        return shoulderEncoder.getPitch().getValueAsDouble();
     }
 
+    @Override
     public double getElbowAngleDegrees() {
-        // Convert 0-1 to 0-360°
-        return elbowEncoder.getAbsolutePosition().getValueAsDouble() * 360.0;
+        return (elbowEncoder.get() * 360.0) - ELBOW_OFFSET_DEG;
     }
 
-    public double getShoulderVelocityDegS() {
-        return pigeon.getAngularVelocityZWorld().getValueAsDouble();
+    @Override
+    public double getShoulderVelocityDegs() {
+        return shoulderEncoder.getAngularVelocityZWorld().getValueAsDouble();
     }
 
-    public double getElbowVelocityDegS() {
-        // Convert RPM to deg/s (360°/60s = 6)
-        return elbowEncoder.getVelocity().getValueAsDouble() * 6.0;
+    @Override
+    public double getElbowVelocityDegs() {
+        long currentTime = System.nanoTime();
+        double dt = (currentTime - prevTime) * 1e-9; // Convert to seconds
+        double currentPos = getElbowAngleDegrees();
+        double velocity = (currentPos - prevElbowPos) / dt;
+        
+        prevElbowPos = currentPos;
+        prevTime = currentTime;
+        
+        return velocity;
     }
 
-    // Degree-based control
+    @Override
     public void setTargetAngles(double shoulderDeg, double elbowDeg) {
         targetShoulderDeg = shoulderDeg;
         targetElbowDeg = elbowDeg;
     }
 
-    // Kinematics (internal conversion to radians)
+    @Override
     public Translation2d getEndPosition() {
         double shoulderRad = Math.toRadians(getShoulderAngleDegrees());
         double elbowRad = Math.toRadians(getElbowAngleDegrees());
         
-        double x = SHOULDER_LENGTH * Math.cos(shoulderRad) 
-                 + ELBOW_LENGTH * Math.cos(shoulderRad + elbowRad);
-        double y = SHOULDER_LENGTH * Math.sin(shoulderRad) 
-                 + ELBOW_LENGTH * Math.sin(shoulderRad + elbowRad);
-        
-        return new Translation2d(x, y);
+        return new Translation2d(
+            SHOULDER_LENGTH * Math.cos(shoulderRad) + ELBOW_LENGTH * Math.cos(shoulderRad + elbowRad),
+            SHOULDER_LENGTH * Math.sin(shoulderRad) + ELBOW_LENGTH * Math.sin(shoulderRad + elbowRad)
+        );
     }
 
+    @Override
     public double getEndHeight() {
         return BASE_HEIGHT + getEndPosition().getY();
     }
 
     @Override
     public void setVoltages(double shoulderVolts, double elbowVolts) {
-        shoulderMotor.setVoltage(shoulderVolts);
+        frontShoulderMotor.setVoltage(shoulderVolts);
         elbowMotor.setVoltage(elbowVolts);
     }
 
@@ -131,7 +183,7 @@ public class ArmImpl extends Arm {
 
     @Override
     public void resetEncoders() {
-        elbowEncoder.setPosition(0);
-        pigeon.setYaw(0);
+        shoulderEncoder.setYaw(0);
+        //How to reset DutyCycleEncoder??!?!?
     }
 }

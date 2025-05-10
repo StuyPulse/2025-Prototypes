@@ -6,6 +6,7 @@ import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -43,6 +44,11 @@ public abstract class Arm extends SubsystemBase{
     public abstract void setVoltages(double shoulderVolts, double elbowVolts);
     public abstract void resetEncoders();
     public abstract void stop();
+    public abstract double getShoulderVelocityDegs();
+    public abstract double getElbowVelocityDegs();
+    public abstract void setTargetAngles(double shoulderDeg, double elbowDeg);
+    public abstract Translation2d getEndPosition();
+    public abstract double getEndHeight();
 
     // High-level control
     public void setState(ArmState state) {

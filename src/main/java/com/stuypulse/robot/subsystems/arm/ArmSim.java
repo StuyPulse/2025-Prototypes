@@ -11,14 +11,19 @@ public class ArmSim extends Arm {
     private final SingleJointedArmSim shoulderSim;
     private final SingleJointedArmSim elbowSim;
     
-    // Simulated motor inputs (volts)
+    // Simulated voltages
     private double shoulderVolts;
     private double elbowVolts;
     
     // Arm geometry (must match hardware impl)
     private final double SHOULDER_LENGTH = 0.5; // meters
-    private final double ELBOW_LENGTH = 0.4;    // meters
-    private final double BASE_HEIGHT = 0.2;      // meters
+    private final double ELBOW_LENGTH = 0.4;
+    private final double BASE_HEIGHT = 0.2;
+
+    // Velocity calculation
+    private double prevShoulderPos = 0;
+    private double prevElbowPos = 0;
+    private long prevTime = System.nanoTime();
 
     public ArmSim() {
         // Shoulder joint (with gravity)
@@ -27,7 +32,7 @@ public class ArmSim extends Arm {
             100,                       // Gear ratio
             3.0,                       // Moment of inertia (kg/m²)
             SHOULDER_LENGTH,           // Arm length
-            Units.degreesToRadians(-90), // Min angle (deg→rad)
+            Units.degreesToRadians(-90), // Min angle
             Units.degreesToRadians(180), // Max angle
             true,                      // Enable gravity
             Units.degreesToRadians(0)   // Start angle
@@ -48,13 +53,12 @@ public class ArmSim extends Arm {
 
     @Override
     public void periodic() {
-        // Update physics first
         simulationPeriodic();
         
-        // Log all values in degrees
-        SmartDashboard.putNumber("Arm/Shoulder Angle (deg)", getShoulderAngleDegrees());
-        SmartDashboard.putNumber("Arm/Elbow Angle (deg)", getElbowAngleDegrees());
-        SmartDashboard.putNumber("Arm/End Height (m)", getEndHeight());
+        // Logging
+        SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngleDegrees());
+        SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngleDegrees());
+        SmartDashboard.putNumber("Arm/End Height", getEndHeight());
     }
 
     @Override
@@ -65,45 +69,47 @@ public class ArmSim extends Arm {
         elbowSim.update(0.020);
     }
 
-    //// DEGREE-BASED INTERFACE ////
+    @Override
     public double getShoulderAngleDegrees() {
         return Units.radiansToDegrees(shoulderSim.getAngleRads());
     }
 
+    @Override
     public double getElbowAngleDegrees() {
         return Units.radiansToDegrees(elbowSim.getAngleRads());
     }
 
-    public double getShoulderVelocityDegS() {
+    @Override
+    public double getShoulderVelocityDegs() {
         return Units.radiansToDegrees(shoulderSim.getVelocityRadPerSec());
     }
 
-    public double getElbowVelocityDegS() {
+    @Override
+    public double getElbowVelocityDegs() {
         return Units.radiansToDegrees(elbowSim.getVelocityRadPerSec());
     }
 
-    //// CONTROL ////
     @Override
-    public void setVoltages(double shoulderVolts, double elbowVolts) {
-        this.shoulderVolts = shoulderVolts;
-        this.elbowVolts = elbowVolts;
-    }
-
-    //// KINEMATICS ////
     public Translation2d getEndPosition() {
         double shoulderRad = Units.degreesToRadians(getShoulderAngleDegrees());
         double elbowRad = Units.degreesToRadians(getElbowAngleDegrees());
         
-        double x = SHOULDER_LENGTH * Math.cos(shoulderRad) 
-                 + ELBOW_LENGTH * Math.cos(shoulderRad + elbowRad);
-        double y = SHOULDER_LENGTH * Math.sin(shoulderRad) 
-                 + ELBOW_LENGTH * Math.sin(shoulderRad + elbowRad);
-        
-        return new Translation2d(x, y);
+        return new Translation2d(
+            SHOULDER_LENGTH * Math.cos(shoulderRad) + ELBOW_LENGTH * Math.cos(shoulderRad + elbowRad),
+            SHOULDER_LENGTH * Math.sin(shoulderRad) + ELBOW_LENGTH * Math.sin(shoulderRad + elbowRad)
+        );
     }
 
+    @Override
     public double getEndHeight() {
         return BASE_HEIGHT + getEndPosition().getY();
+    }
+
+    // Control
+    @Override
+    public void setVoltages(double shoulderVolts, double elbowVolts) {
+        this.shoulderVolts = shoulderVolts;
+        this.elbowVolts = elbowVolts;
     }
 
     @Override
@@ -115,5 +121,15 @@ public class ArmSim extends Arm {
     public void resetEncoders() {
         shoulderSim.setState(0, 0);
         elbowSim.setState(0, 0);
+    }
+
+    @Override
+    public void setTargetAngles(double shoulderDeg, double elbowDeg) {
+        // Apply voltages through the control loop
+        double shoulderRad = Units.degreesToRadians(shoulderDeg);
+        double elbowRad = Units.degreesToRadians(elbowDeg);
+        
+        shoulderSim.setState(shoulderRad, 0);
+        elbowSim.setState(elbowRad, 0);
     }
 }
