@@ -1,7 +1,12 @@
 package com.stuypulse.robot.subsystems.arm;
 
 import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.constants.Constants;
+import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.stuylib.math.SLMath;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class Arm extends SubsystemBase{
@@ -45,6 +50,5 @@ public abstract class Arm extends SubsystemBase{
     }
 
     protected void setGoal(double shoulderDegrees, double elbowDegrees) {
-        // Implemented in subclasses (PID + FF control)
     }
 }

@@ -17,6 +17,9 @@ public class ArmImpl extends Arm {
     private final CANcoder elbowEncoder;
     private final TalonFX shoulderMotor;
     private final TalonFX elbowMotor;
+    
+    private final Pigeon2 shoulderEncoder;
+    private final DutyCycleEncoder elbowEncoder;
 
     // Degree-based controllers
     private final PIDController shoulderPID = new PIDController(0.5, 0.0, 0.1);
