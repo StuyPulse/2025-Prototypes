@@ -12,4 +12,12 @@ public interface Ports {
         int OPERATOR = 1;
         int DEBUGGER = 2;
     }
+
+    public interface Telescope {
+        int MOTOR = 0; //placeholder
+    }
+
+    public interface Arm {
+        int MOTOR = 0; //placeholder
+    }
 }

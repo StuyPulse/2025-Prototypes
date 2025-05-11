@@ -7,6 +7,8 @@ import edu.wpi.first.math.util.Units;
 
 public interface Constants {
     public interface Telescope{
+        double MIN_HEIGHT_METERS = Units.inchesToMeters(0);
+        double MAX_HEGIHT_METERS = Units.inchesToMeters(0); 
         
     }
 

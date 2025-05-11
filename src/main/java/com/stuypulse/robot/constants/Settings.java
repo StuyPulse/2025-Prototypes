@@ -30,6 +30,10 @@ public interface Settings {
         double L3_BACK_HEIGHT_METERS = 0;
         double L4_BACK_HEIGHT_METERS = 0;
 
+        //constraints
+        double MIN_HEIGHT_METERS = 0;
+        double HEIGHT_TOLERANCE_METERS = 0;
+
     }
 
     public interface Arm {
@@ -40,6 +44,13 @@ public interface Settings {
         Rotation2d L2_ANGLE_BACK = Rotation2d.fromDegrees(0);
         Rotation2d L3_ANGLE_BACK = Rotation2d.fromDegrees(0);
         Rotation2d L4_ANGLE_BACK = Rotation2d.fromDegrees(0);
+
+        //constraints
+        Rotation2d ANGLE_TOLERANCE = Rotation2d.fromDegrees(0);
+        Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
+        Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(0);
+
+
         
     }
 
