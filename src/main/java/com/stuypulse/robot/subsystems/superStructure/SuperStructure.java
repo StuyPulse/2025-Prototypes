@@ -15,15 +15,19 @@ public class SuperStructure extends SubsystemBase {
         instance = new SuperStructure();
     }
 
+    public static SuperStructure getInstance() {
+        return instance;
+    }
+
     public enum SuperStructureState {
         S0(TelescopeState.S0, ArmState.S0), //default position; at_min_height && at_min_angle
         L1(TelescopeState.L1, ArmState.L1),
-        L2_ANGLE_FRONT(TelescopeState.L2_FRONT, ArmState.L2_FRONT),
-        L2_ANGLE_BACK(TelescopeState.L2_BACK, ArmState.L2_BACK),
-        L3_ANGLE_FRONT(TelescopeState.L3_FRONT, ArmState.L3_FRONT),
-        L3_ANGLE_BACK(TelescopeState.L3_BACK, ArmState.L3_BACK),
-        L4_ANGLE_FRONT(TelescopeState.L4_FRONT, ArmState.L4_FRONT),
-        L4_ANGLE_BACK(TelescopeState.L3_BACK, ArmState.L4_BACK);
+        L2_FRONT(TelescopeState.L2_FRONT, ArmState.L2_FRONT),
+        L2_BACK(TelescopeState.L2_BACK, ArmState.L2_BACK),
+        L3_FRONT(TelescopeState.L3_FRONT, ArmState.L3_FRONT),
+        L3_BACK(TelescopeState.L3_BACK, ArmState.L3_BACK),
+        L4_FRONT(TelescopeState.L4_FRONT, ArmState.L4_FRONT),
+        L4_BACK(TelescopeState.L3_BACK, ArmState.L4_BACK);
 
         private TelescopeState teleState;
         private ArmState armState;
