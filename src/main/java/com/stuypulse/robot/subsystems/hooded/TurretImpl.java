@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems.hooded;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -44,6 +45,6 @@ public class TurretImpl extends Turret {
     @Override
     public void periodic() {
         super.periodic();
-        motor.setControl(new MotionMagicDutyCycle(getTargetAngle()));
+        motor.setControl(new MotionMagicVoltage(getTargetAngle()));
     }
 }
