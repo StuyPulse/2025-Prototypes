@@ -1,6 +1,8 @@
 package com.stuypulse.robot.subsystems.hooded;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -20,8 +22,10 @@ public class HoodImpl extends Hood {
     private AngleController controller;
 
     private SparkBaseConfig motorConfig;
+    private CANcoderConfiguration encoderConfig;
 
     public HoodImpl() {
+        super();
         motor = new SparkMax(HoodedShooter.MOTOR, MotorType.kBrushless);
         encoder = new CANcoder(HoodedShooter.ENCODER, HoodedShooter.CANBUS);
 
@@ -32,7 +36,10 @@ public class HoodImpl extends Hood {
                     .inverted(false);
         motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
         
-
+        encoderConfig.MagnetSensor.withMagnetOffset(Constants.HoodedShooter.Encoders.OFFSET)
+                                    .withAbsoluteSensorDiscontinuityPoint(1)
+                                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
+        encoder.getConfigurator().apply(encoderConfig);
         
         controller = new AnglePIDController(Constants.HoodedShooter.kP, Constants.HoodedShooter.kI, Constants.HoodedShooter.kD)
                     .setSetpointFilter(new AMotionProfile(Constants.HoodedShooter.DEFAULT_MAX_ANGULAR_VELOCITY, Constants.HoodedShooter.DEFAULT_MAX_ANGULAR_ACCELERATION));
@@ -47,7 +54,6 @@ public class HoodImpl extends Hood {
     public boolean atTargetAngle() {
         return Math.abs(getAngle() - getState().getTargetAngle()) < Settings.HoodedShooter.TOLERANCE;
     }
-
     
     @Override
     public void periodic() {

@@ -32,7 +32,11 @@ public abstract class Hood extends SubsystemBase{
         return instance;
     }
     
-    private HoodState state = HoodState.FERRY;
+    private HoodState state;
+
+    protected Hood() {
+        state = HoodState.FERRY;
+    }
 
     public HoodState getState(){
         return state;

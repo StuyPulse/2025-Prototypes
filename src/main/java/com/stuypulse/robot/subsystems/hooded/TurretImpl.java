@@ -28,6 +28,7 @@ public class TurretImpl extends Turret {
         encoderConfig.MagnetSensor.withMagnetOffset(Constants.Turret.Encoders.OFFSET)
                                     .withAbsoluteSensorDiscontinuityPoint(1)
                                     .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
+        encoder.getConfigurator().apply(encoderConfig);
     }
 
     @Override
