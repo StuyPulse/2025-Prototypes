@@ -18,6 +18,11 @@ public interface Settings {
 
     public interface Turret {
         double TOLERANCE = 0.01;
+        
+        public interface States {
+            double INTAKE_SIDE = 0;
+            double SHOOTER_SIDE = 0;
+        }
     }
 
     public interface HoodedShooter {
@@ -29,5 +34,4 @@ public interface Settings {
             double FERRY_ANGLE = 0;
         }
     }
-
 }

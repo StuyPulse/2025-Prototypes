@@ -4,10 +4,6 @@ public interface Constants {
     public interface Turret {
         public interface Encoders {
             double GEAR_RATIO = 112.0 / 15.0;
-    
-            double NUM_ROTATIONS_TO_REACH_TOP = 0.0; // Number of rotations that the motor has to spin, NOT the gear
-            double POSITION_CONVERSION_FACTOR = 0.0 / NUM_ROTATIONS_TO_REACH_TOP;
-            double VELOCITY_CONVERSION_FACTOR = 0.0 / NUM_ROTATIONS_TO_REACH_TOP / 60.0;
 
             double OFFSET = 0.0;
         }
@@ -25,6 +21,12 @@ public interface Constants {
         double DEFAULT_MAX_ANGULAR_ACCELERATION = 0.0;
 
         int SMART_CURRENT_LIMIT = 60;
+
+        public interface Encoders {
+            double GEAR_RATIO = 0;
+
+            double OFFSET = 0;
+        }
     }
 
 }
