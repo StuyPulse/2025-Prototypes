@@ -1,8 +1,10 @@
 package com.stuypulse.robot.subsystems.hooded;
 
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.subsystems.hooded.Hood.HoodState;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -10,36 +12,45 @@ public abstract class Turret extends SubsystemBase {
 
     public static final Turret instance;
     static {
-        // TODO: change this later
-        instance = new TurretImpl();
+        if (Robot.isReal()){
+            instance = new TurretImpl();
+        } else {
+            instance = new TurretSim();
+        }
     }
 
-    public Turret getInstance(){
+    public static Turret getInstance(){
         return instance;
     }
 
     public enum TurretState {
         INTAKE_SIDE(Settings.Turret.States.INTAKE_SIDE),
         SHOOTER_SIDE(Settings.Turret.States.SHOOTER_SIDE),
-        FREE(0);
+        FREE;
 
-        private double targetAngle;
+        private Rotation2d targetAngle;
 
-        private TurretState(double angle) {
+        private TurretState(Rotation2d angle) {
             targetAngle = angle;
         }
 
-        public double getTargetAngle() {
+        private TurretState(){
+            
+        }
+
+        public Rotation2d getTargetAngle() {
             return targetAngle;
         }
     }
 
     private TurretState state;
-    private double targetAngle;
+    private Rotation2d targetAngle;
+    private TurretVisualizer visualizer;
 
     protected Turret() {
         state = TurretState.FREE;
-        targetAngle = 0;
+        targetAngle = new Rotation2d();
+        visualizer = new TurretVisualizer();
     }
 
     public TurretState getState(){
@@ -50,11 +61,11 @@ public abstract class Turret extends SubsystemBase {
         state = turretState;
     }
     
-    public void setTargetAngle(double angle){
+    public void setTargetAngle(Rotation2d angle){
         targetAngle = angle;
     }
     
-    public double getTargetAngle(){
+    public Rotation2d getTargetAngle(){
         if (getState() == TurretState.FREE) {
             return targetAngle;
         } else {
@@ -62,12 +73,17 @@ public abstract class Turret extends SubsystemBase {
         }
     }
 
-    public abstract double getAngle();
+    public abstract Rotation2d getAngle();
     public abstract boolean atTargetAngle();
 
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Turret/Target Angle", getTargetAngle());
-        SmartDashboard.putNumber("Turret/Turret Angle", getAngle());
+        SmartDashboard.putNumber("Turret/Target Angle", getTargetAngle().getDegrees());
+        SmartDashboard.putNumber("Turret/Turret Angle", getAngle().getDegrees());
+
+        // add debug later prob
+        if (true){
+            visualizer.updateAngle(getAngle());
+        }
     }
 }

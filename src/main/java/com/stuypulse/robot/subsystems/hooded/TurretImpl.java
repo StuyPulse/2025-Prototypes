@@ -11,6 +11,8 @@ import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class TurretImpl extends Turret {
 
     private TalonFX motor;
@@ -30,21 +32,22 @@ public class TurretImpl extends Turret {
                                     .withAbsoluteSensorDiscontinuityPoint(1)
                                     .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
         encoder.getConfigurator().apply(encoderConfig);
+        
     }
 
     @Override
-    public double getAngle() {
-        return encoder.getAbsolutePosition().getValueAsDouble();
+    public Rotation2d getAngle() {
+        return Rotation2d.fromRotations(encoder.getAbsolutePosition().getValueAsDouble());
     }
 
     @Override
     public boolean atTargetAngle() {
-        return Math.abs(getAngle() - getTargetAngle()) < Settings.Turret.TOLERANCE;
+        return Math.abs(getAngle().getDegrees() - getTargetAngle().getDegrees()) < Settings.Turret.TOLERANCE;
     }
 
     @Override
     public void periodic() {
         super.periodic();
-        motor.setControl(new MotionMagicVoltage(getTargetAngle()));
+        motor.setControl(new MotionMagicVoltage(getTargetAngle().getDegrees()));
     }
 }

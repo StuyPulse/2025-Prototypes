@@ -45,7 +45,7 @@ public interface Motors {
 			.withInvertedValue(InvertedValue.Clockwise_Positive)
             .withPIDConstants(0, 0, 0, 0) // change, last arg is slot
             .withFFConstants(0, 0, 0, 0) // change
-            .withSensorToMechanismRatio(Constants.Turret.Encoders.GEAR_RATIO)
+            .withSensorToMechanismRatio(Constants.Turret.MOTOR_GEAR_RATIO)
             .withMotionProfile(Constants.Turret.MAX_VEL, Constants.Turret.MAX_ACCEL); // change
     }
 

@@ -2,8 +2,10 @@ package com.stuypulse.robot.constants;
 
 public interface Constants {
     public interface Turret {
+
+        double MOTOR_GEAR_RATIO = 112.0 / 15.0;
+
         public interface Encoders {
-            double GEAR_RATIO = 112.0 / 15.0;
 
             double OFFSET = 0.0;
         }
@@ -22,9 +24,9 @@ public interface Constants {
 
         int SMART_CURRENT_LIMIT = 60;
 
-        public interface Encoders {
-            double GEAR_RATIO = 0;
+        double MOTOR_GEAR_RATIO = 0.0;
 
+        public interface Encoders {
             double OFFSET = 0;
         }
     }

@@ -8,6 +8,8 @@ package com.stuypulse.robot.constants;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /*-
  * File containing tunable settings for every subsystem on the robot.
  *
@@ -16,12 +18,14 @@ import com.stuypulse.stuylib.network.SmartNumber;
  */
 public interface Settings {
 
+    double DT = 0.02;
+
     public interface Turret {
         double TOLERANCE = 0.01;
         
         public interface States {
-            double INTAKE_SIDE = 0;
-            double SHOOTER_SIDE = 0;
+            Rotation2d INTAKE_SIDE = Rotation2d.fromDegrees(0);
+            Rotation2d SHOOTER_SIDE = Rotation2d.fromDegrees(0);
         }
     }
 

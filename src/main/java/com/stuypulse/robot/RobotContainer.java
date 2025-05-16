@@ -8,6 +8,8 @@ package com.stuypulse.robot;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.hooded.Flywheel;
+import com.stuypulse.robot.subsystems.hooded.Hood;
+import com.stuypulse.robot.subsystems.hooded.Turret;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -24,6 +26,8 @@ public class RobotContainer {
     
     // Subsystem
     public final Flywheel flywheel = new Flywheel();
+    public final Turret turret = Turret.getInstance();
+    public final Hood hood = Hood.getInstance();
 
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();

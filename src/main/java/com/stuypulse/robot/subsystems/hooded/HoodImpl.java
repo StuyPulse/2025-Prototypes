@@ -28,6 +28,10 @@ public class HoodImpl extends Hood {
         super();
         motor = new SparkMax(HoodedShooter.MOTOR, MotorType.kBrushless);
         encoder = new CANcoder(HoodedShooter.ENCODER, HoodedShooter.CANBUS);
+        
+
+        
+        encoderConfig = new CANcoderConfiguration();
 
         // configs
         motorConfig.closedLoopRampRate(2.0)
