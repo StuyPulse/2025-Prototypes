@@ -40,7 +40,8 @@ public interface Motors {
     }
 
     public interface Arm {
-        TalonFXConfig MOTOR_CONFIG = new TalonFXConfig();
+        TalonFXConfig LEFT_MOTOR_CONFIG = new TalonFXConfig();
+        TalonFXConfig RIGHT_MOTOR_CONFIG = new TalonFXConfig();
 
     }
 

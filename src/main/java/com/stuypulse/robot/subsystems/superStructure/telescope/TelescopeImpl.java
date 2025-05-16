@@ -36,7 +36,7 @@ public class TelescopeImpl extends Telescope {
 
     @Override
     public void periodic() {
-
+        
     }
 
 

@@ -10,12 +10,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class ArmImpl extends Arm {
-    private TalonFX motor;
+    private TalonFX left_motor;
+    private TalonFX right_motor; 
 
     public ArmImpl() {
-        motor = new TalonFX(Ports.Arm.MOTOR);
-        Motors.Arm.MOTOR_CONFIG.configure(motor); 
-        motor.setPosition(Settings.Arm.MIN_ANGLE.getRotations());
+        left_motor = new TalonFX(Ports.Arm.LEFT_MOTOR);
+        Motors.Arm.LEFT_MOTOR_CONFIG.configure(left_motor); 
+        left_motor.setPosition(Settings.Arm.MIN_ANGLE.getRotations());
+
+        right_motor = new TalonFX(Ports.Arm.RIGHT_MOTOR);
+        Motors.Arm.RIGHT_MOTOR_CONFIG.configure(right_motor); 
+        left_motor.setPosition(Settings.Arm.MIN_ANGLE.getRotations());
     }
 
     private boolean isWithinTolerance(Rotation2d tolerance) {
@@ -33,7 +38,16 @@ public class ArmImpl extends Arm {
 
     @Override
     public Rotation2d getCurrentAngle() {
-        return Rotation2d.fromRotations(motor.getPosition().getValueAsDouble());
+        return Rotation2d.fromRotations((left_motor.getPosition().getValueAsDouble() + right_motor.getPosition().getValueAsDouble()) / 2);
     }
+
+
+
+    @Override
+    public void periodic() {
+        // smartdashboard
+        
+    }
+    
     
 }

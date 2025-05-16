@@ -5,6 +5,7 @@ import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class Arm extends SubsystemBase {
@@ -60,9 +61,12 @@ private static final Arm instance;
     public abstract Rotation2d getCurrentAngle();
     public abstract boolean atTargetAngle();
     
-    @Override
     public void periodic() {
-        //SmartDashboard stuff 
+        // SmartDashboard stuff 
+        SmartDashboard.putString("Arm State", getState().toString());
+        SmartDashboard.putBoolean("Arm/At Target Angle", atTargetAngle());
+        SmartDashboard.putNumber("Arm/Current Angle (deg)", getCurrentAngle().getDegrees());
+        SmartDashboard.putNumber("Arm/Target Angle (deg)", getState().getTargetAngle().getDegrees());
     }
 }
 

@@ -5,6 +5,7 @@ import com.stuypulse.robot.subsystems.superStructure.arm.Arm;
 import com.stuypulse.robot.subsystems.superStructure.arm.Arm.ArmState;
 import com.stuypulse.robot.subsystems.superStructure.telescope.Telescope;
 import com.stuypulse.robot.subsystems.superStructure.telescope.Telescope.TelescopeState;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -64,5 +65,9 @@ public class SuperStructure extends SubsystemBase {
    
     public SuperStructureState getState() {
         return this.state;
+    }
+
+    public void periodic() {
+        
     }
 }

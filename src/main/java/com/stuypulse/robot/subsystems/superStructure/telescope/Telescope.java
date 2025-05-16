@@ -74,7 +74,12 @@ public abstract class Telescope extends SubsystemBase {
     
     @Override
     public void periodic() {
-        //add SmartDashboard stuff
+        // add SmartDashboard stuff
+        SmartDashboard.putString("Telescope State", getState().toString());
+        SmartDashboard.putBoolean("Telescope/At Target Height", atTargetHeight());
+        SmartDashboard.putNumber("Telescope/Current Height", getCurrentHeight());
+        SmartDashboard.putNumber("Telescope/Target Height", getState().getTargetHeight());
+
     }
 
 }

@@ -10,7 +10,6 @@ import com.stuypulse.stuylib.network.SmartNumber;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 
-
 /*-
  * File containing tunable settings for every subsystem on the robot.
  *

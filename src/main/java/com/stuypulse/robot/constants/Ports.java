@@ -18,6 +18,7 @@ public interface Ports {
     }
 
     public interface Arm {
-        int MOTOR = 0; //placeholder
+        int LEFT_MOTOR = 0; //placeholder
+        int RIGHT_MOTOR = 1; //placeholder
     }
 }
