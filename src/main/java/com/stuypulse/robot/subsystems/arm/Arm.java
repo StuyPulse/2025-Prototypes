@@ -26,33 +26,41 @@ public abstract class Arm extends SubsystemBase{
     }
 
     public enum ArmState {
-        //Give States with degrees or smth
-        INTAKE(0,0);
+        RESTING(Rotation2d.fromDegrees(Settings.Arm.RESTING_SHOULDER), Rotation2d.fromDegrees(Settings.Arm.RESTING_ELBOW));
 
-        public final double shoulderDegrees;
-        public final double elbowDegrees;
 
-        ArmState(double shoulderDegrees, double elbowDegrees) {
-            this.shoulderDegrees = shoulderDegrees;
-            this.elbowDegrees = elbowDegrees;
+        private Rotation2d shoulderTargetAngle;
+        private Rotation2d elbowTargetAngle;
+
+        private ArmState(Rotation2d shoulderTargetAngle, Rotation2d elbowTargetAngle){
+            this.shoulderTargetAngle = Rotation2d.fromDegrees(
+                SLMath.clamp(shoulderTargetAngle.getDegrees(), 
+                Constants.Arm.MIN_ANGLE.getDegrees(), 
+                Constants.Arm.MAX_ANGLE.getDegrees()));
+            this.elbowTargetAngle = Rotation2d.fromDegrees(
+                SLMath.clamp(elbowTargetAngle.getDegrees(), 
+                Constants.Arm.MIN_ANGLE.getDegrees(), 
+                Constants.Arm.MAX_ANGLE.getDegrees())); 
+        } 
+
+        public Rotation2d getShoulderTargetAngle(){
+            return this.shoulderTargetAngle;
+        }
+
+        public Rotation2d getElbowTargetAngle(){
+            return this.elbowTargetAngle;
         }
     }
 
     // Core methods
     public abstract double getShoulderAngleDegrees();
     public abstract double getElbowAngleDegrees();
-    public abstract void setVoltages(double shoulderVolts, double elbowVolts);
-    public abstract void resetEncoders();
-    public abstract void stop();
-    public abstract double getShoulderVelocityDegs();
-    public abstract double getElbowVelocityDegs();
     public abstract void setTargetAngles(double shoulderDeg, double elbowDeg);
     public abstract Translation2d getEndPosition();
-    public abstract double getEndHeight();
-
+    protected ArmState state;
     // High-level control
     public void setState(ArmState state) {
-        setGoal(state.shoulderDegrees, state.elbowDegrees);
+        setGoal(state.getShoulderTargetAngle().getDegrees(), state.getShoulderTargetAngle().getDegrees());
     }
 
     protected void setGoal(double shoulderDegrees, double elbowDegrees) {

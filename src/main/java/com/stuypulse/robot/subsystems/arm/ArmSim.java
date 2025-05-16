@@ -58,7 +58,7 @@ public class ArmSim extends Arm {
         // Logging
         SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngleDegrees());
         SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngleDegrees());
-        SmartDashboard.putNumber("Arm/End Height", getEndHeight());
+        SmartDashboard.putNumber("Arm/End Height", getEndPosition().getY());
     }
 
     @Override
@@ -80,16 +80,6 @@ public class ArmSim extends Arm {
     }
 
     @Override
-    public double getShoulderVelocityDegs() {
-        return Units.radiansToDegrees(shoulderSim.getVelocityRadPerSec());
-    }
-
-    @Override
-    public double getElbowVelocityDegs() {
-        return Units.radiansToDegrees(elbowSim.getVelocityRadPerSec());
-    }
-
-    @Override
     public Translation2d getEndPosition() {
         double shoulderRad = Units.degreesToRadians(getShoulderAngleDegrees());
         double elbowRad = Units.degreesToRadians(getElbowAngleDegrees());
@@ -100,28 +90,6 @@ public class ArmSim extends Arm {
         );
     }
 
-    @Override
-    public double getEndHeight() {
-        return BASE_HEIGHT + getEndPosition().getY();
-    }
-
-    // Control
-    @Override
-    public void setVoltages(double shoulderVolts, double elbowVolts) {
-        this.shoulderVolts = shoulderVolts;
-        this.elbowVolts = elbowVolts;
-    }
-
-    @Override
-    public void stop() {
-        setVoltages(0, 0);
-    }
-
-    @Override
-    public void resetEncoders() {
-        shoulderSim.setState(0, 0);
-        elbowSim.setState(0, 0);
-    }
 
     @Override
     public void setTargetAngles(double shoulderDeg, double elbowDeg) {

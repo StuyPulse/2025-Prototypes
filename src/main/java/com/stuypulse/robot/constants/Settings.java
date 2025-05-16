@@ -18,8 +18,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
  */
 public interface Settings {
     public interface Arm {
-        double L1_SHOULDER = 0.0;
-        double L1_ELBOW = 0.0;
+        double RESTING_SHOULDER = 0.0;
+        double RESTING_ELBOW = 0.0;
 
         double L2_SHOULDER = 0.0;
         double L2_ELBOW = 0.0;
@@ -32,6 +32,33 @@ public interface Settings {
 
         Rotation2d SHOULDER_ANGLE_OFFSET = Rotation2d.fromDegrees(0.0);
         Rotation2d ELBOW_ANGLE_OFFSET = Rotation2d.fromDegrees(0.0);
+
+        public interface Shoulder{
+            public interface PID{
+                double kP = 0.0;
+                double kI = 0.0;
+                double kD = 0.0;
+            }
+            public interface FF{
+                double kS = 0.0;
+                double kG = 0.0;
+                double kV = 0.0;
+                double kA = 0.0;
+            }
+        }
+        public interface Elbow{
+            public interface PID{
+                double kP = 0.0;
+                double kI = 0.0;
+                double kD = 0.0;
+            }
+            public interface FF{
+                double kS = 0.0;
+                double kG = 0.0;
+                double kV = 0.0;
+                double kA = 0.0;
+            }
+        }
     }
 }
 

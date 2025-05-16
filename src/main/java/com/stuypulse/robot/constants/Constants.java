@@ -10,6 +10,11 @@ public interface Constants{
 
         Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
         Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(360);
+
+        double SHOULDER_LENGTH = 0.5;
+        double ELBOW_LENGTH = 0.4;
+        double BASE_HEIGHT = 0.2;
+
     }
 
 }
