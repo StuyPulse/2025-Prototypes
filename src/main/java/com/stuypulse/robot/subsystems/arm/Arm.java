@@ -1,5 +1,7 @@
 package com.stuypulse.robot.subsystems.arm;
 
+import org.dyn4j.geometry.Rotation;
+
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Constants;
 import com.stuypulse.robot.constants.Settings;
@@ -53,12 +55,11 @@ public abstract class Arm extends SubsystemBase{
     }
 
     // Core methods
-    public abstract double getShoulderAngleDegrees();
-    public abstract double getElbowAngleDegrees();
-    public abstract void setTargetAngles(double shoulderDeg, double elbowDeg);
-    public abstract Translation2d getEndPosition();
-    protected ArmState state;
-    // High-level control
+    public abstract Rotation2d getShoulderAngle();
+    public abstract Rotation2d getElbowAngle();
+    public abstract double getEndHeight();
+    public abstract void setTargetAngles(Rotation2d shoulderAngle, Rotation2d elbowAngle);
+
     public void setState(ArmState state) {
         setGoal(state.getShoulderTargetAngle().getDegrees(), state.getShoulderTargetAngle().getDegrees());
     }
