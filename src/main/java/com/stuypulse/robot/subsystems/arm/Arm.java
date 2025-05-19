@@ -57,7 +57,7 @@ public abstract class Arm extends SubsystemBase{
     // Core methods
     public abstract Rotation2d getShoulderAngle();
     public abstract Rotation2d getElbowAngle();
-    public abstract double getEndHeight();
+    public abstract Translation2d getEndPosition();
     public abstract void setTargetAngles(Rotation2d shoulderAngle, Rotation2d elbowAngle);
 
     public void setState(ArmState state) {

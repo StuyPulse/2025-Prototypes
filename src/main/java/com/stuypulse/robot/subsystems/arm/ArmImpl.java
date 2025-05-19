@@ -12,6 +12,7 @@ import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -133,21 +134,23 @@ public class ArmImpl extends Arm {
     }
 
     @Override
-    public double getEndHeight() {
+    public Translation2d getEndPosition() {
         Rotation2d shoulder = getShoulderAngle();
         Rotation2d elbow = getElbowAngle();
-        
-        return SHOULDER_LENGTH * Math.sin(shoulder.getRadians()) 
-             + ELBOW_LENGTH * Math.sin(shoulder.plus(elbow).getRadians());
-    } //FIX TS LATER
+
+        Transform2d startPoint = new Transform2d(0.0, Constants.Arm.BASE_HEIGHT, new Rotation2d(0.0));
+        Translation2d endPoint = startPoint.plus(new Transform2d(Constants.Arm.SHOULDER_LENGTH, 0.0, shoulder))
+                                .plus(new Transform2d(Constants.Arm.ELBOW_LENGTH, 0.0, elbow))
+                                .getTranslation();
+        return endPoint;
+    }
 
     @Override
     public void periodic() {
         // Logging
         SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle().getDegrees());
         SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngle().getDegrees());
-        SmartDashboard.putNumber("Arm/End Height", getEndHeight());
-        
+        SmartDashboard.putNumber("Arm/End Height", getEndPosition().getY());
         
         Rotation2d shoulder = getShoulderAngle();
         Rotation2d elbow = getElbowAngle();
