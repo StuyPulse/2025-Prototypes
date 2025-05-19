@@ -35,13 +35,20 @@ public interface Motors {
     /** Classes to store all of the values a motor needs */
 
     public interface Telescope {
-        TalonFXConfig MOTOR_CONFIG = new TalonFXConfig();
-            //need config values
+        TalonFXConfig MOTOR_CONFIG = new TalonFXConfig()
+            .withFFConstants(Gains.superStructure.telescope.FF.kS, Gains.superStructure.telescope.FF.kV, Gains.superStructure.telescope.FF.kA, Gains.superStructure.telescope.FF.kG, 0)
+            .withPIDConstants(Gains.superStructure.telescope.PID.kP, Gains.superStructure.telescope.PID.kI, Gains.superStructure.telescope.PID.kD, 0);
     }
 
     public interface Arm {
-        TalonFXConfig LEFT_MOTOR_CONFIG = new TalonFXConfig();
-        TalonFXConfig RIGHT_MOTOR_CONFIG = new TalonFXConfig();
+        TalonFXConfig LEFT_MOTOR_CONFIG = new TalonFXConfig()
+            .withFFConstants(Gains.superStructure.arm.FF.kS, Gains.superStructure.arm.FF.kV, Gains.superStructure.arm.FF.kA, Gains.superStructure.arm.FF.kG, 0)
+            .withPIDConstants(Gains.superStructure.arm.PID.kP, Gains.superStructure.arm.PID.kI, Gains.superStructure.arm.PID.kD, 0)
+            .withGravityType(GravityTypeValue.Arm_Cosine);
+        TalonFXConfig RIGHT_MOTOR_CONFIG = new TalonFXConfig()
+            .withFFConstants(Gains.superStructure.arm.FF.kS, Gains.superStructure.arm.FF.kV, Gains.superStructure.arm.FF.kA, Gains.superStructure.arm.FF.kG, 0)
+            .withPIDConstants(Gains.superStructure.arm.PID.kP, Gains.superStructure.arm.PID.kI, Gains.superStructure.arm.PID.kD, 0)
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
     }
 

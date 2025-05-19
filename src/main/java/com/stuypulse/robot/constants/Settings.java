@@ -28,11 +28,27 @@ public interface Settings {
         double L2_BACK_HEIGHT_METERS = 0;
         double L3_BACK_HEIGHT_METERS = 0;
         double L4_BACK_HEIGHT_METERS = 0;
+        double kG_min = 0;
+        double kG_max = 0;
 
         //constraints
         double MIN_HEIGHT_METERS = 0;
         double HEIGHT_TOLERANCE_METERS = 0;
+        double MAX_ACCELERATION = 0;
+        double MAX_VELOCITY = 0;
 
+        public interface PID{
+            double kP = 1.0;
+            double kI = 1.0;
+            double kD = 1.0;
+            }
+
+        public interface FeedForward{
+            double kS = 0.1;
+            double kV = 0.1;
+            double kA = 0.1;
+            double kG = 0.1;
+        }
     }
 
     public interface Arm {
@@ -49,8 +65,21 @@ public interface Settings {
         Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
         Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(0);
 
+        double MAX_ACCELERATION = 0;
+        double MAX_VELOCITY = 0;
 
-        
+        public interface FeedForward {
+            double kS = 0.1;
+            double kV = 0.1;
+            double kA = 0.1;
+            double kG = 0.1;
+        }
+
+        public interface PID {
+            double kP = 1.0;
+            double kI = 1.0;
+            double kD = 1.0;
+        }
     }
 
 }

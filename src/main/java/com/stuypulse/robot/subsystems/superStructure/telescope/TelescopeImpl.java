@@ -1,6 +1,9 @@
 package com.stuypulse.robot.subsystems.superStructure.telescope;
 
 import com.stuypulse.robot.constants.Settings;
+
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Constants;
@@ -9,11 +12,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class TelescopeImpl extends Telescope {
     private final TalonFX motor;
-    
+
     protected TelescopeImpl() {
         motor = new TalonFX(Ports.Telescope.MOTOR);
         Motors.Telescope.MOTOR_CONFIG.configure(motor);
         motor.setPosition(Constants.Telescope.MIN_HEIGHT_METERS);
+
+        
     }
 
     @Override
@@ -36,7 +41,7 @@ public class TelescopeImpl extends Telescope {
 
     @Override
     public void periodic() {
-        
+        motor.setControl(new MotionMagicVoltage(getState().getTargetHeight()));
     }
 
 

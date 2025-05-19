@@ -14,6 +14,8 @@ public interface Constants {
         double ARM_LENGTH = 0;
         double LIG_ONE_MAX = 0;
         double LIG_TWO_MAX = 0;
+
+        
     }
 
 }

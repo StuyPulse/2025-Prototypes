@@ -1,11 +1,16 @@
 package com.stuypulse.robot.subsystems.superStructure;
 
 import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.constants.Constants;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.superStructure.arm.Arm;
 import com.stuypulse.robot.subsystems.superStructure.arm.Arm.ArmState;
+import com.stuypulse.robot.subsystems.superStructure.arm.ArmImpl;
+import com.stuypulse.robot.subsystems.superStructure.telescope.TelescopeImpl;
 import com.stuypulse.robot.subsystems.superStructure.telescope.Telescope;
 import com.stuypulse.robot.subsystems.superStructure.telescope.Telescope.TelescopeState;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -65,6 +70,10 @@ public class SuperStructure extends SubsystemBase {
    
     public SuperStructureState getState() {
         return this.state;
+    }
+
+    private double getCurrentKg() {
+        return Settings.Telescope.kG_min * Math.cos(ArmImpl.getInstance().getCurrentAngle().getDegrees());
     }
 
     public void periodic() {
