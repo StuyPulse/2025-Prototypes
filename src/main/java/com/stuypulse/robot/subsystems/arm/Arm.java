@@ -60,10 +60,6 @@ public abstract class Arm extends SubsystemBase{
         return this.state;
     }
 
-    public void setState(ArmState state) {
-        this.state = state;
-    }
-
     // Core methods
     public abstract Rotation2d getShoulderAngle();
     public abstract Rotation2d getElbowAngle();

@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -40,6 +41,9 @@ public class ArmImpl extends Arm {
     private final double SHOULDER_GEAR_RATIO = Constants.Arm.SHOULDER_GEAR_RATIO;
     private final double ELBOW_GEAR_RATIO = Constants.Arm.ELBOW_GEAR_RATIO;
     private final double TORQUE_TO_VOLTAGE = 1.0 / 12.0; // Convert Nm to volts
+
+    private final PositionVoltage shoulderPositionReq = new PositionVoltage(0).withSlot(0);
+    private final PositionVoltage elbowPositionReq = new PositionVoltage(0).withSlot(1);
 
     public ArmImpl() {
         frontShoulderMotor = new TalonFX(Ports.Arm.LEFT_SHOULDER);
