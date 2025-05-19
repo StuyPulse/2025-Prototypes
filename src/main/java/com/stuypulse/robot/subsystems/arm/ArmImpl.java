@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -28,11 +28,6 @@ public class ArmImpl extends Arm {
     private final Pigeon2 pigeon;
     private final DutyCycleEncoder elbowEncoder;
 
-    // Control Requests
-    private final PositionVoltage shoulderPositionReq = new PositionVoltage(0)
-        .withSlot(0);
-    private final PositionVoltage elbowPositionReq = new PositionVoltage(0)
-        .withSlot(1);
 
     // Physical Constants
     private final double SHOULDER_MASS = Constants.Arm.SHOULDER_MASS; // kg
