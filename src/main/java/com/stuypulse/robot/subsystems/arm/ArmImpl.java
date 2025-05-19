@@ -2,7 +2,7 @@ package com.stuypulse.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,15 +25,7 @@ public class ArmImpl extends Arm {
     private final Pigeon2 pigeon;
     private final DutyCycleEncoder elbowEncoder;
 
-    // Control Requests
-    private final PositionVoltage shoulderPositionReq = new PositionVoltage(0)
-        .withSlot(0);
-    private final PositionVoltage elbowPositionReq = new PositionVoltage(0)
-        .withSlot(1);
 
-    // Targets
-    private Rotation2d targetShoulderAngle = Rotation2d.fromDegrees(0);
-    private Rotation2d targetElbowAngle = Rotation2d.fromDegrees(0);
 
     // Physical Constants
     private final double SHOULDER_MASS = Constants.Arm.SHOULDER_MASS; // kg
@@ -64,11 +56,19 @@ public class ArmImpl extends Arm {
         config.Slot0.kP = Settings.Arm.Shoulder.PID.kP;
         config.Slot0.kI = Settings.Arm.Shoulder.PID.kI;
         config.Slot0.kD = Settings.Arm.Shoulder.PID.kD;
+        config.Slot0.kA = Settings.Arm.Shoulder.FF.kA;
+        config.Slot0.kS = Settings.Arm.Shoulder.FF.kS;
+        config.Slot0.kV = Settings.Arm.Shoulder.FF.kV;
+
+
 
         // Elbow PID Config
         config.Slot1.kP = Settings.Arm.Elbow.PID.kP;
         config.Slot1.kI = Settings.Arm.Elbow.PID.kI;
         config.Slot1.kD = Settings.Arm.Elbow.PID.kD;
+        config.Slot0.kA = Settings.Arm.Elbow.FF.kA;
+        config.Slot0.kS = Settings.Arm.Elbow.FF.kS;
+        config.Slot0.kV = Settings.Arm.Elbow.FF.kV;
 
         // Motor Inversion
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -106,52 +106,56 @@ public class ArmImpl extends Arm {
     }
 
     @Override
-    public void setTargetAngles(Rotation2d shoulder, Rotation2d elbow) {
-        targetShoulderAngle = shoulder;
-        targetElbowAngle = elbow;
-        
-        Rotation2d currentShoulder = getShoulderAngle();
-        Rotation2d currentElbow = getElbowAngle();
-        
-        // Calculate dynamic gravity compensation
-        double shoulderFF = calculateShoulderTorque(currentShoulder, currentElbow) 
-                          / (SHOULDER_GEAR_RATIO * 12.0);
-        double elbowFF = calculateElbowTorque(currentShoulder, currentElbow) 
-                       / (ELBOW_GEAR_RATIO * 12.0);
-        
-        frontShoulderMotor.setControl(
-            shoulderPositionReq
-                .withPosition(shoulder.getRotations())
-                .withFeedForward(shoulderFF)
-        );
-        
-        elbowMotor.setControl(
-            elbowPositionReq
-                .withPosition(elbow.getRotations())
-                .withFeedForward(elbowFF)
-        );
+    public Translation2d getEndPosition(){
+        Translation2d endPosition = new Translation2d(Constants.Arm.BASE_HEIGHT, 0);
+        Translation2d shoulderJoint = new Translation2d(SHOULDER_LENGTH, getShoulderAngle());
+        Translation2d elbowJoint = new Translation2d(ELBOW_LENGTH, getShoulderAngle());
+
+        endPosition.plus(shoulderJoint).plus(elbowJoint);
+
+        return endPosition;
+    }
+
+    @Override 
+    public boolean atShoulderTargetAngle(){
+        return Math.abs(getState().getShoulderTargetAngle().getDegrees() - getShoulderAngle().getDegrees()) < Settings.Arm.Shoulder.TOLERANCE;
+    }
+
+    @Override 
+    public boolean atElbowTargetAngle(){
+        return Math.abs(getState().getElbowTargetAngle().getDegrees() - getElbowAngle().getDegrees()) < Settings.Arm.Shoulder.TOLERANCE;
     }
 
     @Override
-    public double getEndHeight() {
-        Rotation2d shoulder = getShoulderAngle();
-        Rotation2d elbow = getElbowAngle();
-        
-        return SHOULDER_LENGTH * Math.sin(shoulder.getRadians()) 
-             + ELBOW_LENGTH * Math.sin(shoulder.plus(elbow).getRadians());
-    } //FIX TS LATER
-
-    @Override
     public void periodic() {
+        // Calculate dynamic gravity compensation
+        double shoulderFF = calculateShoulderTorque(getShoulderAngle(), getElbowAngle()) 
+                          / (SHOULDER_GEAR_RATIO * 12.0);
+        double elbowFF = calculateElbowTorque(getShoulderAngle(), getElbowAngle()) 
+                       / (ELBOW_GEAR_RATIO * 12.0);
+        
+        frontShoulderMotor.setControl(new MotionMagicVoltage(
+                getState().getShoulderTargetAngle().getRotations())
+                .withFeedForward(shoulderFF)
+        );
+        
+        elbowMotor.setControl(new MotionMagicVoltage(
+                getState().getElbowTargetAngle().getRotations())
+                .withFeedForward(elbowFF)
+        );
+
+
         // Logging
         SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle().getDegrees());
         SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngle().getDegrees());
-        SmartDashboard.putNumber("Arm/End Height", getEndHeight());
-        
-        
-        Rotation2d shoulder = getShoulderAngle();
-        Rotation2d elbow = getElbowAngle();
-        SmartDashboard.putNumber("Arm/Shoulder Torque", calculateShoulderTorque(shoulder, elbow));
-        SmartDashboard.putNumber("Arm/Elbow Torque", calculateElbowTorque(shoulder, elbow));
+
+        SmartDashboard.putNumber("Arm/End Length?", getEndPosition().getX());
+        SmartDashboard.putNumber("Arm/End Height", getEndPosition().getY());
+
+        SmartDashboard.putNumber("Arm/Shoulder Torque", calculateShoulderTorque(getShoulderAngle(), getElbowAngle()));
+        SmartDashboard.putNumber("Arm/Elbow Torque", calculateElbowTorque(getShoulderAngle(), getElbowAngle()));
+
+        SmartDashboard.putBoolean("Arm/At Shoulder Target Angle", atShoulderTargetAngle());
+        SmartDashboard.putBoolean("Arm/At Elbow Target Angle", atElbowTargetAngle());
     }
 }

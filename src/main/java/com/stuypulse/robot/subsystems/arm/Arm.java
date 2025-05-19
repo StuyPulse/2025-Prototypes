@@ -54,16 +54,28 @@ public abstract class Arm extends SubsystemBase{
         }
     }
 
+    private ArmState state;
+
+    public ArmState getState(){
+        return this.state;
+    }
+
+    public void setState(ArmState state) {
+        this.state = state;
+    }
+
     // Core methods
     public abstract Rotation2d getShoulderAngle();
     public abstract Rotation2d getElbowAngle();
-    public abstract double getEndHeight();
-    public abstract void setTargetAngles(Rotation2d shoulderAngle, Rotation2d elbowAngle);
+    public abstract Translation2d getEndPosition();
+    public abstract boolean atShoulderTargetAngle();
+    public abstract boolean atElbowTargetAngle();
 
-    public void setState(ArmState state) {
-        setGoal(state.getShoulderTargetAngle().getDegrees(), state.getShoulderTargetAngle().getDegrees());
+    @Override
+    public void periodic(){
+        SmartDashboard.putString("Arm/State", getState().toString());
+        SmartDashboard.putNumber("Arm/Shoulder Target Angle (degrees)", getState().getShoulderTargetAngle().getDegrees());
+        SmartDashboard.putNumber("Arm/Shoulder Target Angle (degrees)", getState().getShoulderTargetAngle().getDegrees());
     }
 
-    protected void setGoal(double shoulderDegrees, double elbowDegrees) {
-    }
 }

@@ -45,7 +45,9 @@ public interface Settings {
                 double kV = 0.0;
                 double kA = 0.0;
             }
+            double TOLERANCE = 0.1;
         }
+        
         public interface Elbow{
             public interface PID{
                 double kP = 0.0;
@@ -58,6 +60,7 @@ public interface Settings {
                 double kV = 0.0;
                 double kA = 0.0;
             }
+            double TOLERANCE = 0.1;
         }
     }
 }
