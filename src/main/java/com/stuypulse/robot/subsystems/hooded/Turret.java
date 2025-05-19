@@ -2,9 +2,9 @@ package com.stuypulse.robot.subsystems.hooded;
 
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -44,12 +44,12 @@ public abstract class Turret extends SubsystemBase {
     }
 
     private TurretState state;
-    private Rotation2d targetAngle;
+    private SmartNumber targetAngle;
     private TurretVisualizer visualizer;
 
     protected Turret() {
         state = TurretState.FREE;
-        targetAngle = new Rotation2d();
+        targetAngle = new SmartNumber("Turret/Target Angle", 0.0f);
         visualizer = new TurretVisualizer();
     }
 
@@ -59,26 +59,29 @@ public abstract class Turret extends SubsystemBase {
 
     public void setState(TurretState turretState){
         state = turretState;
+        targetAngle.set(state.getTargetAngle().getDegrees());
     }
     
     public void setTargetAngle(Rotation2d angle){
-        targetAngle = angle;
+        targetAngle.set(angle.getDegrees());
     }
     
     public Rotation2d getTargetAngle(){
         if (getState() == TurretState.FREE) {
-            return targetAngle;
+            return Rotation2d.fromDegrees(targetAngle.get());
         } else {
             return getState().getTargetAngle();
         }
     }
+    
+    public boolean atTargetAngle() {
+        return Math.abs(getAngle().getDegrees() - getTargetAngle().getDegrees()) < Settings.Turret.TOLERANCE;
+    }
 
     public abstract Rotation2d getAngle();
-    public abstract boolean atTargetAngle();
 
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Turret/Target Angle", getTargetAngle().getDegrees());
         SmartDashboard.putNumber("Turret/Turret Angle", getAngle().getDegrees());
 
         // add debug later prob

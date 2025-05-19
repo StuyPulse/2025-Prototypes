@@ -39,11 +39,7 @@ public class TurretImpl extends Turret {
     public Rotation2d getAngle() {
         return Rotation2d.fromRotations(encoder.getAbsolutePosition().getValueAsDouble());
     }
-
-    @Override
-    public boolean atTargetAngle() {
-        return Math.abs(getAngle().getDegrees() - getTargetAngle().getDegrees()) < Settings.Turret.TOLERANCE;
-    }
+    
 
     @Override
     public void periodic() {

@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.stuypulse.robot.constants.Constants;
 import com.stuypulse.robot.constants.Ports.HoodedShooter;
 import com.stuypulse.robot.constants.Settings;
@@ -30,7 +31,7 @@ public class HoodImpl extends Hood {
         encoder = new CANcoder(HoodedShooter.ENCODER, HoodedShooter.CANBUS);
         
 
-        
+        motorConfig = new SparkMaxConfig();
         encoderConfig = new CANcoderConfiguration();
 
         // configs

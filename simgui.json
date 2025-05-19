@@ -1,7 +1,29 @@
 {
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Autonomous": "String Chooser",
+      "/SmartDashboard/turret": "Mechanism2d"
+    },
+    "windows": {
+      "/SmartDashboard/turret": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "Turret": {
+          "open": true
+        },
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {
