@@ -1,5 +1,7 @@
 package com.stuypulse.robot.subsystems.arm;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -32,10 +34,6 @@ public class ArmImpl extends Arm {
     private final PositionVoltage elbowPositionReq = new PositionVoltage(0)
         .withSlot(1);
 
-    // Targets
-    private Rotation2d targetShoulderAngle = Rotation2d.fromDegrees(0);
-    private Rotation2d targetElbowAngle = Rotation2d.fromDegrees(0);
-
     // Physical Constants
     private final double SHOULDER_MASS = Constants.Arm.SHOULDER_MASS; // kg
     private final double ELBOW_MASS = Constants.Arm.ELBOW_MASS;       // kg
@@ -59,29 +57,43 @@ public class ArmImpl extends Arm {
     }
 
     private void configureMotors() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-
-        // Shoulder PID Config
-        config.Slot0.kP = Settings.Arm.Shoulder.PID.kP;
-        config.Slot0.kI = Settings.Arm.Shoulder.PID.kI;
-        config.Slot0.kD = Settings.Arm.Shoulder.PID.kD;
-
-        // Elbow PID Config
-        config.Slot1.kP = Settings.Arm.Elbow.PID.kP;
-        config.Slot1.kI = Settings.Arm.Elbow.PID.kI;
-        config.Slot1.kD = Settings.Arm.Elbow.PID.kD;
-
-        // Motor Inversion
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        frontShoulderMotor.getConfigurator().apply(config);
-        backShoulderMotor.getConfigurator().apply(config);
+        TalonFXConfiguration masterShoulderConfig = new TalonFXConfiguration();
+        TalonFXConfiguration followerShoulderConfig = new TalonFXConfiguration();
+        TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
         
-        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        elbowMotor.getConfigurator().apply(config);
+        // Shoulder Configuration
+        Slot0Configs shoulderSlot0 = masterShoulderConfig.Slot0;
+        shoulderSlot0.withKP(Settings.Arm.Shoulder.PID.kP)
+                    .withKI(Settings.Arm.Shoulder.PID.kI)
+                    .withKD(Settings.Arm.Shoulder.PID.kD)
+                    .withKS(Settings.Arm.Shoulder.FF.kS)  
+                    .withKV(Settings.Arm.Shoulder.FF.kV)  
+                    .withKA(Settings.Arm.Shoulder.FF.kA); 
+
+        // Elbow Configuration
+        Slot1Configs elbowSlot1 = elbowConfig.Slot1;
+        elbowSlot1.withKP(Settings.Arm.Elbow.PID.kP)
+                    .withKI(Settings.Arm.Elbow.PID.kI)
+                    .withKD(Settings.Arm.Elbow.PID.kD)
+                    .withKS(Settings.Arm.Elbow.FF.kS)
+                    .withKV(Settings.Arm.Elbow.FF.kV)
+                    .withKA(Settings.Arm.Elbow.FF.kA);
         
-        // Follower Setup
+        // Master Motor Configuration
+        masterShoulderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        masterShoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        frontShoulderMotor.getConfigurator().apply(masterShoulderConfig);
+
+        // Follower Motor Configuration
+        followerShoulderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        followerShoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        backShoulderMotor.getConfigurator().apply(followerShoulderConfig);
+
         backShoulderMotor.setControl(new Follower(frontShoulderMotor.getDeviceID(), false));
+
+        elbowConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        elbowConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        elbowMotor.getConfigurator().apply(elbowConfig);
     }
 
     @Override
@@ -108,28 +120,25 @@ public class ArmImpl extends Arm {
 
     @Override
     public void setTargetAngles(Rotation2d shoulder, Rotation2d elbow) {
-        targetShoulderAngle = shoulder;
-        targetElbowAngle = elbow;
-        
         Rotation2d currentShoulder = getShoulderAngle();
         Rotation2d currentElbow = getElbowAngle();
         
-        // Calculate dynamic gravity compensation
-        double shoulderFF = calculateShoulderTorque(currentShoulder, currentElbow) 
-                          / (SHOULDER_GEAR_RATIO * 12.0);
-        double elbowFF = calculateElbowTorque(currentShoulder, currentElbow) 
-                       / (ELBOW_GEAR_RATIO * 12.0);
+        // Convert torque to volts + compensate for gear ratios
+        double shoulderVolts = calculateShoulderTorque(currentShoulder, currentElbow) 
+                            / (SHOULDER_GEAR_RATIO * 12.0);
+        double elbowVolts = calculateElbowTorque(currentShoulder, currentElbow) 
+                         / (ELBOW_GEAR_RATIO * 12.0);
         
         frontShoulderMotor.setControl(
             shoulderPositionReq
                 .withPosition(shoulder.getRotations())
-                .withFeedForward(shoulderFF)
+                .withFeedForward(shoulderVolts)
         );
         
         elbowMotor.setControl(
             elbowPositionReq
                 .withPosition(elbow.getRotations())
-                .withFeedForward(elbowFF)
+                .withFeedForward(elbowVolts)
         );
     }
 
@@ -140,7 +149,7 @@ public class ArmImpl extends Arm {
 
         Transform2d startPoint = new Transform2d(0.0, Constants.Arm.BASE_HEIGHT, new Rotation2d(0.0));
         Translation2d endPoint = startPoint.plus(new Transform2d(Constants.Arm.SHOULDER_LENGTH, 0.0, shoulder))
-                                .plus(new Transform2d(Constants.Arm.ELBOW_LENGTH, 0.0, elbow))
+                                .plus(new Transform2d(Constants.Arm.ELBOW_LENGTH, 0.0, elbow.minus(new Rotation2d(180.0 - shoulder.getDegrees()))))
                                 .getTranslation();
         return endPoint;
     }
