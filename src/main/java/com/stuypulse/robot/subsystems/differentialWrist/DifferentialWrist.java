@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems.differentialWrist;
 
 import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -74,9 +75,14 @@ public abstract class DifferentialWrist extends SubsystemBase {
     private WristState wristState;
     private RollerState rollerState;
 
+    private DifferentialWristVisualizer visualizer;
+
+
     public DifferentialWrist(){
         this.wristState = WristState.STOW;
         this.rollerState = RollerState.STOP;
+
+        visualizer = DifferentialWristVisualizer.getInstance();
     }
 
     public WristState getWristState() {
@@ -95,6 +101,40 @@ public abstract class DifferentialWrist extends SubsystemBase {
         this.rollerState = state;
     }
 
+    public Rotation2d getTargetPitchAngle() {
+        return Rotation2d.fromDegrees(
+            SLMath.clamp(
+                getWristState().getPitch().getDegrees(),
+                Settings.DifferentialWrist.MIN_PITCH_ANGLE,
+                Settings.DifferentialWrist.MAX_PITCH_ANGLE));
+    }
+
+    public Rotation2d getTargetRollAngle() {
+        return Rotation2d.fromDegrees(
+            SLMath.clamp(
+                getWristState().getRoll().getDegrees(),
+                Settings.DifferentialWrist.MIN_ROLL_ANGLE,
+                Settings.DifferentialWrist.MAX_ROLL_ANGLE));
+    }
+
+    public Rotation2d getLeftTargetAngle() {
+        return Rotation2d.fromRotations(
+            getLeftCurrentAngle().getRotations() +
+            (getTargetPitchAngle().getRotations() - getCurrentPitchAngle().getRotations()) +
+            (getTargetRollAngle().getRotations() - getCurrentRollAngle().getRotations()));
+    }
+
+    public Rotation2d getRightTargetAngle() {
+        return Rotation2d.fromRotations(
+            getRightCurrentAngle().getRotations() +
+            (getTargetPitchAngle().getRotations() - getCurrentPitchAngle().getRotations()) -
+            (getTargetRollAngle().getRotations() - getCurrentRollAngle().getRotations()));
+    }
+
+    public abstract Rotation2d getLeftCurrentAngle();
+
+    public abstract Rotation2d getRightCurrentAngle();
+
     public abstract Rotation2d getCurrentPitchAngle();
 
     public abstract Rotation2d getCurrentRollAngle();
@@ -105,7 +145,10 @@ public abstract class DifferentialWrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Differntial Wrist/Wrist State", getWristState().toString());
+        visualizer.visualizerPeriodic();
+        SmartDashboard.putNumber("Differential Wrist/Left Target Angle", getLeftTargetAngle().getDegrees());
+        SmartDashboard.putNumber("Differential Wrist/Right Target Angle", getRightTargetAngle().getDegrees());
+        SmartDashboard.putString("Differential Wrist/Wrist State", getWristState().toString());
         SmartDashboard.putString("Differential Wrist/Roller State", getRollerState().toString());
     }
 }

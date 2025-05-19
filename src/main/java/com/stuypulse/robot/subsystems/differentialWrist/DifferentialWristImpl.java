@@ -49,10 +49,11 @@ public class DifferentialWristImpl extends DifferentialWrist {
 
     /**
      * Explanation of how differential motors work with 2 degrees of freedom:
-     * The pitch (up and down) is given by the midpoint of the current angles of the left and right motors.
+     * The pitch (up and down) is given by the angle bisector of the current angles of the left and right motors.
      * The roll (left and right) is given by the distance / 2 between the current angles of the left and right motors.
      */
-
+     
+    @Override
     public Rotation2d getLeftCurrentAngle() {
         return Rotation2d.fromRotations(leftDifferentialMotor.getPosition().getValueAsDouble());
     }
@@ -81,21 +82,7 @@ public class DifferentialWristImpl extends DifferentialWrist {
         return Math.abs(getTargetRollAngle().getDegrees() - getCurrentRollAngle().getDegrees()) < Settings.DifferentialWrist.ROLL_ANGLE_TOLERANCE;
     }
 
-    private Rotation2d getTargetPitchAngle() {
-        return Rotation2d.fromDegrees(
-            SLMath.clamp(
-                getWristState().getPitch().getDegrees(),
-                Settings.DifferentialWrist.MIN_PITCH_ANGLE,
-                Settings.DifferentialWrist.MAX_PITCH_ANGLE));
-    }
-
-    private Rotation2d getTargetRollAngle() {
-        return Rotation2d.fromDegrees(
-            SLMath.clamp(
-                getWristState().getRoll().getDegrees(),
-                Settings.DifferentialWrist.MIN_ROLL_ANGLE,
-                Settings.DifferentialWrist.MAX_ROLL_ANGLE));
-    }
+    
 
     @Override
     public void periodic() {
@@ -104,15 +91,13 @@ public class DifferentialWristImpl extends DifferentialWrist {
         rollerMotor.set(getRollerState().getTargetSpeed());
         
         leftDifferentialMotor.setControl(new MotionMagicVoltage(
-            getLeftCurrentAngle().getRotations() +
-            (getTargetPitchAngle().getRotations() - getCurrentPitchAngle().getRotations()) +
-            (getTargetRollAngle().getRotations() - getCurrentRollAngle().getRotations())
+            getLeftTargetAngle().getRotations()
         ));
         rightDifferentialMotor.setControl(new MotionMagicVoltage(
-            getRightCurrentAngle().getRotations() +
-            (getTargetPitchAngle().getRotations() - getCurrentPitchAngle().getRotations()) -
-            (getTargetRollAngle().getRotations() - getCurrentRollAngle().getRotations())
+            getRightTargetAngle().getRotations()
         ));
+
+       
 
         SmartDashboard.putNumber("Differential Wrist/Wrist/Left Motor Angle (deg)", getLeftCurrentAngle().getDegrees());
         SmartDashboard.putNumber("Differential Wrist/Wrist/Right Motor Angle (deg)", getRightCurrentAngle().getDegrees());
