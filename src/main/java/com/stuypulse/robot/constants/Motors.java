@@ -34,11 +34,19 @@ public interface Motors {
 
     /** Classes to store all of the values a motor needs */
 
-    // public interface Arm{
-    //     // TalonFXConfig MOTOR_CONFIG = new TalonFXConfig() {
-    //     //     .withInvertedValue(InvertedValue.)
-    //     // }
-    // }
+    public interface Arm{
+        TalonFXConfig SHOULDER_MOTOR_CONFIG = new TalonFXConfig()
+            .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withPIDConstants(Settings.Arm.Shoulder.PID.kP, Settings.Arm.Shoulder.PID.kI, Settings.Arm.Shoulder.PID.kD, 0)
+            .withFFConstants(Settings.Arm.Shoulder.FF.kS, Settings.Arm.Shoulder.FF.kV, Settings.Arm.Shoulder.FF.kA, Settings.Arm.Shoulder.FF.kG, 0);
+
+        TalonFXConfig ELBOW_MOTOR_CONFIG = new TalonFXConfig()
+            .withInvertedValue(InvertedValue.Clockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withPIDConstants(Settings.Arm.Elbow.PID.kP, Settings.Arm.Elbow.PID.kI, Settings.Arm.Elbow.PID.kD, 0)
+            .withFFConstants(Settings.Arm.Elbow.FF.kS, Settings.Arm.Elbow.FF.kV, Settings.Arm.Elbow.FF.kA, Settings.Arm.Elbow.FF.kG, 0);
+    }
 
     public static class TalonFXConfig {
         private final TalonFXConfiguration configuration = new TalonFXConfiguration();
