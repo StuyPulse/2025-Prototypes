@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.stuypulse.robot.constants.Constants;
+import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 
@@ -46,38 +47,9 @@ public class ArmImpl extends Arm {
         pigeon = new Pigeon2(Ports.Arm.PIGEON);
         elbowEncoder = new DutyCycleEncoder(Ports.Arm.ABSOLUTE_ENCODER);
         
-        configureMotors();
-    }
-
-    private void configureMotors() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-
-        // Shoulder PID Config
-        config.Slot0.kP = Settings.Arm.Shoulder.PID.kP;
-        config.Slot0.kI = Settings.Arm.Shoulder.PID.kI;
-        config.Slot0.kD = Settings.Arm.Shoulder.PID.kD;
-        config.Slot0.kA = Settings.Arm.Shoulder.FF.kA;
-        config.Slot0.kS = Settings.Arm.Shoulder.FF.kS;
-        config.Slot0.kV = Settings.Arm.Shoulder.FF.kV;
-
-
-
-        // Elbow PID Config
-        config.Slot1.kP = Settings.Arm.Elbow.PID.kP;
-        config.Slot1.kI = Settings.Arm.Elbow.PID.kI;
-        config.Slot1.kD = Settings.Arm.Elbow.PID.kD;
-        config.Slot0.kA = Settings.Arm.Elbow.FF.kA;
-        config.Slot0.kS = Settings.Arm.Elbow.FF.kS;
-        config.Slot0.kV = Settings.Arm.Elbow.FF.kV;
-
-        // Motor Inversion
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        frontShoulderMotor.getConfigurator().apply(config);
-        backShoulderMotor.getConfigurator().apply(config);
-        
-        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        elbowMotor.getConfigurator().apply(config);
+        Motors.Arm.SHOULDER_MOTOR_CONFIG.configure(frontShoulderMotor);
+        Motors.Arm.SHOULDER_MOTOR_CONFIG.configure(backShoulderMotor);
+        Motors.Arm.ELBOW_MOTOR_CONFIG.configure(elbowMotor);
         
         // Follower Setup
         backShoulderMotor.setControl(new Follower(frontShoulderMotor.getDeviceID(), false));
