@@ -4,6 +4,29 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Autonomous": "String Chooser",
       "/SmartDashboard/Visualizers/Differential Wrist": "Mechanism2d"
+    },
+    "windows": {
+      "/SmartDashboard/Visualizers/Differential Wrist": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Differential Wrist": {
+          "open": true
+        },
+        "Visualizers": {
+          "Differential Wrist": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {

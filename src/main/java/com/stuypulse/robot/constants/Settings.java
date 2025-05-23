@@ -5,11 +5,6 @@
 
 package com.stuypulse.robot.constants;
 
-import com.stuypulse.stuylib.network.SmartBoolean;
-import com.stuypulse.stuylib.network.SmartNumber;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-
 /*-
  * File containing tunable settings for every subsystem on the robot.
  *
@@ -18,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
  */
 public interface Settings {
 
+    double DT = 0.02;
 
     public interface DifferentialWrist{
 
@@ -29,7 +25,10 @@ public interface Settings {
         double MIN_ROLL_ANGLE = 0;
         double MAX_ROLL_ANGLE = 0;
 
+
         double LEFT_ANGLE_OFFSET = 0;
         double RIGHT_ANGLE_OFFSET = 0;
+        
     }
+
 }

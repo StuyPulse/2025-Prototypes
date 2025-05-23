@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -61,29 +62,7 @@ public class DifferentialWristImpl extends DifferentialWrist {
     public Rotation2d getRightCurrentAngle() {
         return Rotation2d.fromRotations(rightDifferentialMotor.getPosition().getValueAsDouble());
     }
-
-    @Override
-    public Rotation2d getCurrentRollAngle() {
-        return Rotation2d.fromRotations((getLeftCurrentAngle().getRotations() - getRightCurrentAngle().getRotations()) / 2);
-    }
-
-    @Override
-    public Rotation2d getCurrentPitchAngle() {
-        return Rotation2d.fromRotations((getLeftCurrentAngle().getRotations() + getRightCurrentAngle().getRotations()) / 2);
-    }
-
-    @Override
-    public boolean isAtTargetPitchAngle() {
-        return Math.abs(getTargetPitchAngle().getDegrees() - getCurrentPitchAngle().getDegrees()) < Settings.DifferentialWrist.PITCH_ANGLE_TOLERANCE;
-    }
-
-    @Override
-    public boolean isAtTargetRollAngle() {
-        return Math.abs(getTargetRollAngle().getDegrees() - getCurrentRollAngle().getDegrees()) < Settings.DifferentialWrist.ROLL_ANGLE_TOLERANCE;
-    }
-
     
-
     @Override
     public void periodic() {
         super.periodic();
@@ -91,24 +70,13 @@ public class DifferentialWristImpl extends DifferentialWrist {
         rollerMotor.set(getRollerState().getTargetSpeed());
         
         leftDifferentialMotor.setControl(new MotionMagicVoltage(
-            getLeftTargetAngle().getRotations()
+           getLeftTargetAngle().getRotations()
         ));
         rightDifferentialMotor.setControl(new MotionMagicVoltage(
             getRightTargetAngle().getRotations()
         ));
 
        
-
-        SmartDashboard.putNumber("Differential Wrist/Wrist/Left Motor Angle (deg)", getLeftCurrentAngle().getDegrees());
-        SmartDashboard.putNumber("Differential Wrist/Wrist/Right Motor Angle (deg)", getRightCurrentAngle().getDegrees());
-
-        SmartDashboard.putBoolean("Differential Wrist/Wrist/At Target Pitch Angle", isAtTargetPitchAngle());
-        SmartDashboard.putBoolean("Differential Wrist/Wrist/At Target Roll Angle", isAtTargetRollAngle());
-
-        SmartDashboard.putNumber("Differential Wrist/Wrist/Current Pitch Angle (deg)", getCurrentPitchAngle().getDegrees());
-        SmartDashboard.putNumber("Differential Wrist/Wrist/Current Roll Angle (deg)", getCurrentRollAngle().getDegrees());
-        SmartDashboard.putNumber("Differential Wrist/Wrist/Target Pitch Angle (deg)", getTargetPitchAngle().getDegrees());
-        SmartDashboard.putNumber("Differential Wrist/Wrist/Target Roll Angle (deg)", getTargetRollAngle().getDegrees());
     }
 
 }

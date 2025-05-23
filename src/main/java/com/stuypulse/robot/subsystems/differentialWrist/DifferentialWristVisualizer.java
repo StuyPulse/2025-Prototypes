@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems.differentialWrist;
 
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -20,37 +21,59 @@ public class DifferentialWristVisualizer {
         return instance;
     }
 
-
     private final Mechanism2d canvas;
 
     private final MechanismRoot2d pitchRoot;
     private final MechanismLigament2d pitch;
+    private final MechanismLigament2d pitchLeft;
+    private final MechanismLigament2d pitchRight;
+    private final MechanismLigament2d base1;
+
 
     private final MechanismRoot2d rollRoot;
     private final MechanismLigament2d roll;
+    private final MechanismLigament2d base2;
 
     public DifferentialWristVisualizer() {
-        int width = 10;
+        int width = 30;
         int height = 10;
         canvas = new Mechanism2d(width, height);
 
         pitchRoot = canvas.getRoot("Pitch Movement", width/3, height/3);
-        pitch = new MechanismLigament2d("Pitch", 5, 0, 1, new Color8Bit(Color.kBlue));
+        pitch = new MechanismLigament2d("Pitch", 5, 0, 3, new Color8Bit(Color.kBlue));
+        
+        pitchLeft = new MechanismLigament2d("Pitch Left", 2, 0, 5, new Color8Bit(Color.kRed));
+        pitchRight = new MechanismLigament2d("Pitch Right", 2, 0, 5, new Color8Bit(Color.kRed));
+
+        base1 = new MechanismLigament2d("base", 2, 0, 5, new Color8Bit(Color.kPurple));
+
         pitchRoot.append(pitch);
+        pitchRoot.append(pitchLeft);
+        pitchRoot.append(pitchRight);
+        pitchRoot.append(base1);
 
         rollRoot = canvas.getRoot("Roll Movement", 2*width/3, height/3);
-        roll = new MechanismLigament2d("Roll", 5, 0, 1, new Color8Bit(Color.kYellow));
+        roll = new MechanismLigament2d("Roll", 5, 0, 3, new Color8Bit(Color.kOrange));
+        
+        base2 = new MechanismLigament2d("base", 5, 0, 3, new Color8Bit(Color.kOrange));
+        
         rollRoot.append(roll);
+        rollRoot.append(base2);
+        
     }
 
-
-    public void visualizerPeriodic() {
-        DifferentialWrist diffWrist = DifferentialWrist.getInstance();
-
+    public void updateVisualizer(Rotation2d pitchAngle, Rotation2d rollAngle, Rotation2d leftAngle, Rotation2d rightAngle){
+        
         SmartDashboard.putData("Visualizers/Differential Wrist", canvas);
 
-        pitch.setAngle(diffWrist.getCurrentPitchAngle());
-        roll.setAngle(diffWrist.getCurrentRollAngle()); 
         
+        pitch.setAngle(pitchAngle);
+        roll.setAngle(rollAngle); 
+
+        roll.setLength(5*Math.sqrt(Math.pow(Math.cos(rollAngle.getRadians()), 2) + Math.pow(Math.sin(rollAngle.getRadians()), 2) / 5.0));
+
+        pitchRight.setAngle(rightAngle);
+        pitchLeft.setAngle(leftAngle); 
+
     }
 }
