@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.stuypulse.robot.Robot;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.Nat;
@@ -24,6 +25,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Flywheel extends SubsystemBase{
+
+    public static final Flywheel instance;
+    
+    static {
+        instance = new Flywheel();
+    }
+
+    public static Flywheel getInstance(){
+        return instance;
+    }
 
     // Reduction between motors and encoder, as output over input. If the flywheel spins slower than
     // the motors, this number should be greater than one.

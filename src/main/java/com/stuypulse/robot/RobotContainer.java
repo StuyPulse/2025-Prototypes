@@ -25,7 +25,7 @@ public class RobotContainer {
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
-    public final Flywheel flywheel = new Flywheel();
+    public final Flywheel flywheel = Flywheel.getInstance();
     public final Turret turret = Turret.getInstance();
     public final Hood hood = Hood.getInstance();
 

@@ -1,4 +1,4 @@
-package com.stuypulse.robot.commands.hood;
+package com.stuypulse.robot.commands.hooded.hood;
 import com.stuypulse.robot.subsystems.hooded.Hood;
 import com.stuypulse.robot.subsystems.hooded.Hood.HoodState;
 

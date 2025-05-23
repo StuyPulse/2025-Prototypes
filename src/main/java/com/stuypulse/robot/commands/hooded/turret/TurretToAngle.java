@@ -1,25 +1,27 @@
-package com.stuypulse.robot.commands.turret;
+package com.stuypulse.robot.commands.hooded.turret;
 
 import com.stuypulse.robot.subsystems.hooded.Turret;
 import com.stuypulse.robot.subsystems.hooded.Turret.TurretState;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
-public class TurretToState extends Command {
+public class TurretToAngle extends Command {
     
     private final Turret turret;
-    private final TurretState state;
+    private final Rotation2d angle;
 
-    public TurretToState(TurretState state) {
+    public TurretToAngle(Rotation2d angle) {
         turret = Turret.getInstance();
-        this.state = state;
+        this.angle = angle;
         addRequirements(turret);
     }
 
     @Override
     public void initialize() {
-        turret.setState(state);
+        turret.setState(TurretState.FREE);
+        turret.setTargetAngle(angle);
     }
 
 }
