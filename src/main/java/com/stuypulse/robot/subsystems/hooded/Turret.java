@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public abstract class Turret extends SubsystemBase {
 
     public static final Turret instance;
+    
     static {
         if (Robot.isReal()){
             instance = new TurretImpl();
@@ -34,9 +35,7 @@ public abstract class Turret extends SubsystemBase {
             targetAngle = angle;
         }
 
-        private TurretState(){
-            
-        }
+        private TurretState(){}
 
         public Rotation2d getTargetAngle() {
             return targetAngle;
@@ -57,16 +56,16 @@ public abstract class Turret extends SubsystemBase {
         return state;
     }
 
-    public void setState(TurretState turretState){
+    public void setState(TurretState turretState) {
         state = turretState;
         targetAngle.set(state.getTargetAngle().getDegrees());
     }
     
-    public void setTargetAngle(Rotation2d angle){
+    public void setTargetAngle(Rotation2d angle) {
         targetAngle.set(angle.getDegrees());
     }
     
-    public Rotation2d getTargetAngle(){
+    public Rotation2d getTargetAngle() {
         if (getState() == TurretState.FREE) {
             return Rotation2d.fromDegrees(targetAngle.get());
         } else {
@@ -81,7 +80,7 @@ public abstract class Turret extends SubsystemBase {
     public abstract Rotation2d getAngle();
 
     @Override
-    public void periodic(){
+    public void periodic() {
         SmartDashboard.putNumber("Turret/Turret Angle", getAngle().getDegrees());
 
         // add debug later prob

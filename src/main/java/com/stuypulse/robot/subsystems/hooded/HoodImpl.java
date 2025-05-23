@@ -16,6 +16,8 @@ import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.streams.angles.filters.AMotionProfile;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class HoodImpl extends Hood {
     private SparkMax motor;
     private CANcoder encoder;
@@ -51,22 +53,22 @@ public class HoodImpl extends Hood {
     }
 
     @Override
-    public double getAngle() {
-        return encoder.getAbsolutePosition().getValueAsDouble();
+    public Rotation2d getAngle() {
+        return Rotation2d.fromRotations(encoder.getAbsolutePosition().getValueAsDouble());
     }
 
     @Override
     public boolean atTargetAngle() {
-        return Math.abs(getAngle() - getState().getTargetAngle()) < Settings.HoodedShooter.TOLERANCE;
+        return Math.abs(getAngle().getDegrees() - getState().getTargetAngle().getDegrees()) < Settings.HoodedShooter.TOLERANCE;
     }
     
     @Override
     public void periodic() {
         super.periodic();
-        controller.update(Angle.fromRotations(getState().getTargetAngle()), Angle.fromRotations(getAngle()));
+        controller.update(Angle.fromRotations(getState().getTargetAngle().getRotations()), Angle.fromRotations(getAngle().getRotations()));
         double voltage = controller.getOutput();
         
-        if (voltage < 0.05) {
+        if (Math.abs(voltage) < 0.05) {
             motor.setVoltage(0);
         } else {
             motor.setVoltage(voltage);

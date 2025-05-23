@@ -3,9 +3,15 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Autonomous": "String Chooser",
+      "/SmartDashboard/hood": "Mechanism2d",
       "/SmartDashboard/turret": "Mechanism2d"
     },
     "windows": {
+      "/SmartDashboard/hood": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/turret": {
         "window": {
           "visible": true
@@ -19,6 +25,9 @@
     },
     "transitory": {
       "SmartDashboard": {
+        "Hooded Shooter": {
+          "open": true
+        },
         "Turret": {
           "open": true
         },

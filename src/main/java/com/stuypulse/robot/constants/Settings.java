@@ -25,7 +25,7 @@ public interface Settings {
         
         public interface States {
             Rotation2d INTAKE_SIDE = Rotation2d.fromDegrees(0);
-            Rotation2d SHOOTER_SIDE = Rotation2d.fromDegrees(0);
+            Rotation2d SHOOTER_SIDE = Rotation2d.fromDegrees(180);
         }
     }
 
@@ -33,9 +33,9 @@ public interface Settings {
         double TOLERANCE = 0.01;
 
         public interface States {
-            double CLOSE_ANGLE = 0;
-            double FAR_ANGLE = 0;
-            double FERRY_ANGLE = 0;
+            Rotation2d CLOSE_ANGLE = Rotation2d.fromDegrees(0);
+            Rotation2d FAR_ANGLE = Rotation2d.fromDegrees(10);
+            Rotation2d FERRY_ANGLE = Rotation2d.fromDegrees(30);
         }
     }
 }
