@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.hooded;
+package com.stuypulse.robot.subsystems.hooded.hood;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -32,7 +32,6 @@ public class HoodImpl extends Hood {
         motor = new SparkMax(HoodedShooter.MOTOR, MotorType.kBrushless);
         encoder = new CANcoder(HoodedShooter.ENCODER, HoodedShooter.CANBUS);
         
-
         motorConfig = new SparkMaxConfig();
         encoderConfig = new CANcoderConfiguration();
 

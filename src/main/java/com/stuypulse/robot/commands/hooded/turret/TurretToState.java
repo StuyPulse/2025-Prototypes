@@ -1,7 +1,7 @@
 package com.stuypulse.robot.commands.hooded.turret;
 
-import com.stuypulse.robot.subsystems.hooded.Turret;
-import com.stuypulse.robot.subsystems.hooded.Turret.TurretState;
+import com.stuypulse.robot.subsystems.hooded.turret.Turret;
+import com.stuypulse.robot.subsystems.hooded.turret.Turret.TurretState;
 
 import edu.wpi.first.wpilibj2.command.Command;
 

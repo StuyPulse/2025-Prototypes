@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.hooded;
+package com.stuypulse.robot.subsystems.hooded.turret;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
@@ -40,7 +40,6 @@ public class TurretImpl extends Turret {
         return Rotation2d.fromRotations(encoder.getAbsolutePosition().getValueAsDouble());
     }
     
-
     @Override
     public void periodic() {
         super.periodic();

@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.hooded;
+package com.stuypulse.robot.subsystems.hooded.turret;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -7,27 +7,27 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
-public class HoodVisualizer {
+public class TurretVisualizer {
     private MechanismObject2d root;
-    private MechanismLigament2d hood;
+    private MechanismLigament2d turret;
     private Mechanism2d plane;
 
-    public HoodVisualizer(){
+    public TurretVisualizer(){
         plane = new Mechanism2d(40, 40); //TODO update later
-        root = plane.getRoot("hood", 20, 20);
-        hood = new MechanismLigament2d(
-            "hoodAngle",
+        root = plane.getRoot("turret", 20, 20);
+        turret = new MechanismLigament2d(
+            "turretAngle",
             8, 
             0,
             2,
             new Color8Bit("#ffff00"));
 
-        root.append(hood);
+        root.append(turret);
 
-        SmartDashboard.putData("hood", plane);
+        SmartDashboard.putData("turret", plane);
     }
 
     public void updateAngle(Rotation2d angle){
-        hood.setAngle(angle);
+        turret.setAngle(angle);
     }
 }

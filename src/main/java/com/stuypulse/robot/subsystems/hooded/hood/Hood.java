@@ -1,8 +1,8 @@
-package com.stuypulse.robot.subsystems.hooded;
+package com.stuypulse.robot.subsystems.hooded.hood;
 
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.robot.subsystems.hooded.Turret.TurretState;
+import com.stuypulse.robot.subsystems.hooded.turret.Turret.TurretState;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.geometry.Rotation2d;

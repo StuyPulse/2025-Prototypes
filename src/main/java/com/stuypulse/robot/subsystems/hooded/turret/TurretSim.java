@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.hooded;
+package com.stuypulse.robot.subsystems.hooded.turret;
 
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.control.angle.AngleController;

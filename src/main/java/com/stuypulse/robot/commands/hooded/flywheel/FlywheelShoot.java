@@ -1,6 +1,6 @@
 package com.stuypulse.robot.commands.hooded.flywheel;
 
-import com.stuypulse.robot.subsystems.hooded.Flywheel;
+import com.stuypulse.robot.subsystems.hooded.flywheel.Flywheel;
 
 import edu.wpi.first.wpilibj2.command.Command;
 

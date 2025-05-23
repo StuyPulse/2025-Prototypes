@@ -1,6 +1,6 @@
 package com.stuypulse.robot.commands.hooded.hood;
-import com.stuypulse.robot.subsystems.hooded.Hood;
-import com.stuypulse.robot.subsystems.hooded.Hood.HoodState;
+import com.stuypulse.robot.subsystems.hooded.hood.Hood;
+import com.stuypulse.robot.subsystems.hooded.hood.Hood.HoodState;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
