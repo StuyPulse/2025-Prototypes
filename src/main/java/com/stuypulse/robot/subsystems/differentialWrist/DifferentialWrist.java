@@ -162,7 +162,7 @@ public abstract class DifferentialWrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-        visualizer.updateVisualizer(getCurrentPitchAngle(), getCurrentRollAngle(), getLeftCurrentAngle(), getRightCurrentAngle());
+        visualizer.updateVisualizer();
 
         leftTargetAngle = Rotation2d.fromRotations(getLeftCurrentAngle().getRotations() +
         (getTargetPitchAngle().getRotations() - getCurrentPitchAngle().getRotations()) +

@@ -27,7 +27,7 @@ public class DifferentialWristVisualizer {
     private final MechanismLigament2d pitch;
     private final MechanismLigament2d pitchLeft;
     private final MechanismLigament2d pitchRight;
-    private final MechanismLigament2d base1;
+    // private final MechanismLigament2d base1;
 
 
     private final MechanismRoot2d rollRoot;
@@ -40,17 +40,17 @@ public class DifferentialWristVisualizer {
         canvas = new Mechanism2d(width, height);
 
         pitchRoot = canvas.getRoot("Pitch Movement", width/3, height/3);
-        pitch = new MechanismLigament2d("Pitch", 5, 0, 3, new Color8Bit(Color.kBlue));
+        pitch = new MechanismLigament2d("Pitch", 5, 0, 3, new Color8Bit(Color.kPurple));
         
-        pitchLeft = new MechanismLigament2d("Pitch Left", 2, 0, 5, new Color8Bit(Color.kRed));
-        pitchRight = new MechanismLigament2d("Pitch Right", 2, 0, 5, new Color8Bit(Color.kRed));
+        pitchLeft = new MechanismLigament2d("Pitch Left", 2.1, 0, 5, new Color8Bit(Color.kRed));
+        pitchRight = new MechanismLigament2d("Pitch Right", 2, 0, 5, new Color8Bit(Color.kBlue));
 
-        base1 = new MechanismLigament2d("base", 2, 0, 5, new Color8Bit(Color.kPurple));
+        // base1 = new MechanismLigament2d("base", 2, 0, 5, new Color8Bit(Color.kRed));
 
         pitchRoot.append(pitch);
         pitchRoot.append(pitchLeft);
         pitchRoot.append(pitchRight);
-        pitchRoot.append(base1);
+        // pitchRoot.append(base1);
 
         rollRoot = canvas.getRoot("Roll Movement", 2*width/3, height/3);
         roll = new MechanismLigament2d("Roll", 5, 0, 3, new Color8Bit(Color.kOrange));
@@ -62,18 +62,18 @@ public class DifferentialWristVisualizer {
         
     }
 
-    public void updateVisualizer(Rotation2d pitchAngle, Rotation2d rollAngle, Rotation2d leftAngle, Rotation2d rightAngle){
-        
+    public void updateVisualizer(){
+        DifferentialWrist wrist = DifferentialWrist.getInstance();
+
         SmartDashboard.putData("Visualizers/Differential Wrist", canvas);
 
         
-        pitch.setAngle(pitchAngle);
-        roll.setAngle(rollAngle); 
+        pitch.setAngle(wrist.getCurrentPitchAngle());
+        roll.setAngle(wrist.getCurrentRollAngle()); 
 
-        roll.setLength(5*Math.sqrt(Math.pow(Math.cos(rollAngle.getRadians()), 2) + Math.pow(Math.sin(rollAngle.getRadians()), 2) / 5.0));
-
-        pitchRight.setAngle(rightAngle);
-        pitchLeft.setAngle(leftAngle); 
+        
+        pitchRight.setAngle(wrist.getRightCurrentAngle());
+        pitchLeft.setAngle(wrist.getLeftCurrentAngle());
 
     }
 }
