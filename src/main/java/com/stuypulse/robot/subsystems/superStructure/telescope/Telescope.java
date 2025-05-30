@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public abstract class Telescope extends SubsystemBase {
 
-    public static final Telescope instance;
+    private static final Telescope instance;
 
     static {
         if (Robot.isReal()) {

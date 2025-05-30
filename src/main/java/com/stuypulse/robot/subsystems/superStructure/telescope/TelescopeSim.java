@@ -23,6 +23,11 @@ public class TelescopeSim extends Telescope {
     }
 
     @Override
+    public double getCurrentHeight(){
+        return 1.0; //Temporary fix, change when the sim is complete
+    }
+
+    @Override
     public boolean atTargetHeight() {
         return isWithinTolerance(Settings.Telescope.HEIGHT_TOLERANCE_METERS);
     }

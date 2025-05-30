@@ -16,9 +16,9 @@ private static final Arm instance;
         if (Robot.isReal()) {
             instance = new ArmImpl();
         }
-        // else {
-        //     instance = new ArmSim();
-        // }
+        else {
+            instance = new ArmSim();
+        }
     }
 
     public static Arm getInstance() {

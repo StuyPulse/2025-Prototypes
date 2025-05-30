@@ -14,6 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import com.stuypulse.robot.subsystems.superStructure.SuperStructure;
+import com.stuypulse.robot.subsystems.superStructure.arm.Arm;
+import com.stuypulse.robot.subsystems.superStructure.telescope.Telescope;
+
 public class RobotContainer {
 
     // Gamepads
@@ -21,6 +25,11 @@ public class RobotContainer {
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
+    private final SuperStructure superStructure = SuperStructure.getInstance();
+    private final Arm arm = Arm.getInstance();
+    private final Telescope telescope = Telescope.getInstance();
+
+    
 
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();
