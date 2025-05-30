@@ -4,14 +4,12 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.stuypulse.robot.constants.Constants;
-import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 
@@ -107,15 +105,12 @@ public class ArmImpl extends Arm {
     }
 
     private double calculateShoulderTorque(Rotation2d shoulder, Rotation2d elbow) {
-        return (0.5 * SHOULDER_MASS * SHOULDER_LENGTH + ELBOW_MASS * SHOULDER_LENGTH) 
-               * GRAVITY * Math.cos(shoulder.getRadians())
-               + 0.5 * ELBOW_MASS * ELBOW_LENGTH * GRAVITY 
-               * Math.cos(shoulder.plus(elbow).getRadians());
+        return GRAVITY * (SHOULDER_MASS * (SHOULDER_LENGTH * 0.5) * Math.cos(shoulder.getDegrees()) + ELBOW_MASS * 
+                (SHOULDER_LENGTH * Math.cos(shoulder.getDegrees())  + (ELBOW_LENGTH * 0.5) * Math.cos(shoulder.getDegrees() * elbow.getDegrees())));
     }
 
     private double calculateElbowTorque(Rotation2d shoulder, Rotation2d elbow) {
-        return 0.5 * ELBOW_MASS * ELBOW_LENGTH * GRAVITY 
-               * Math.cos(shoulder.plus(elbow).getRadians());
+        return GRAVITY * ELBOW_MASS * (ELBOW_LENGTH * 0.5) * Math.cos(shoulder.getDegrees() + elbow.getDegrees());
     }
 
     @Override

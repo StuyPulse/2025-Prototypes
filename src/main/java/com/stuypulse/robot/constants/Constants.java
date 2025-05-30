@@ -7,6 +7,7 @@ public interface Constants{
 
     public interface Arm {
         double GEAR_RATIO = 86.0;
+        
 
         Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(0);
         Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(360); // Need to change
