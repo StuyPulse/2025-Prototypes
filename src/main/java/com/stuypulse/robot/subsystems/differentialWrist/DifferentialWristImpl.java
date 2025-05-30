@@ -6,11 +6,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
-import com.stuypulse.stuylib.math.Angle;
-import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DifferentialWristImpl extends DifferentialWrist {
     private final TalonFX leftDifferentialMotor;
@@ -23,17 +20,17 @@ public class DifferentialWristImpl extends DifferentialWrist {
     public DifferentialWristImpl() {
         super();
 
-        leftDifferentialMotor = new TalonFX(Ports.DifferentialWrist.LEFT_DIFFERENTIAL_MOTOR, "*");
+        leftDifferentialMotor = new TalonFX(Ports.DifferentialWrist.LEFT_DIFFERENTIAL_MOTOR, "");
         Motors.DifferentialWrist.LEFT_DIFFERENTIAL_MOTOR_CONFIG.configure(leftDifferentialMotor);
 
-        rightDifferentialMotor = new TalonFX(Ports.DifferentialWrist.RIGHT_DIFFERENTIAL_MOTOR, "*");           
+        rightDifferentialMotor = new TalonFX(Ports.DifferentialWrist.RIGHT_DIFFERENTIAL_MOTOR, "");           
         Motors.DifferentialWrist.RIGHT_DIFFERENTIAL_MOTOR_CONFIG.configure(rightDifferentialMotor);
 
-        rollerMotor = new TalonFX(Ports.DifferentialWrist.ROLLER_MOTOR, "*");
+        rollerMotor = new TalonFX(Ports.DifferentialWrist.ROLLER_MOTOR, "");
         Motors.DifferentialWrist.ROLLER_MOTOR_CONFIG.configure(rollerMotor);
 
-        leftEncoder = new CANcoder(Ports.DifferentialWrist.LEFT_ENCODER, "*");
-        rightEncoder = new CANcoder(Ports.DifferentialWrist.RIGHT_ENCODER, "*");
+        leftEncoder = new CANcoder(Ports.DifferentialWrist.LEFT_ENCODER, "");
+        rightEncoder = new CANcoder(Ports.DifferentialWrist.RIGHT_ENCODER, "");
 
         leftDifferentialMotor.setPosition(
             Rotation2d.fromRotations(leftEncoder.getPosition().getValueAsDouble())

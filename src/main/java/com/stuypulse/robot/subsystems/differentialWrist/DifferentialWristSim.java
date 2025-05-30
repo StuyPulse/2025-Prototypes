@@ -1,21 +1,15 @@
 package com.stuypulse.robot.subsystems.differentialWrist;
 
-import java.util.Optional;
 
-import com.stuypulse.stuylib.control.angle.AngleController;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.math.Angle;
-import com.stuypulse.stuylib.streams.numbers.filters.MotionProfile;
 import com.stuypulse.robot.constants.Settings;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 
 
 public class DifferentialWristSim extends DifferentialWrist {

@@ -30,13 +30,13 @@ public abstract class DifferentialWrist extends SubsystemBase {
     }
 
     public enum WristState {
-        STOW(new Rotation2d(),new Rotation2d()),
-        CORAL_SCORE_L1(new Rotation2d(),new Rotation2d()),
-        CORAL_SCORE_L2(new Rotation2d(),new Rotation2d()),
-        CORAL_SCORE_L3(new Rotation2d(),new Rotation2d()),
-        CORAL_SCORE_L4(new Rotation2d(),new Rotation2d()),
-        ALGAE_SCORE_BARGE(new Rotation2d(),new Rotation2d()),
-        ALGAE_SCORE_PROCESSOR(new Rotation2d(),new Rotation2d());
+        STOW(Rotation2d.fromDegrees(Settings.DifferentialWrist.STOW_PITCH_ANGLE), Rotation2d.fromDegrees(Settings.DifferentialWrist.STOW_ROLL_ANGLE)),
+        CORAL_SCORE_L1(Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L1_PITCH_ANGLE), Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L1_ROLL_ANGLE)),
+        CORAL_SCORE_L2(Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L2_PITCH_ANGLE), Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L2_ROLL_ANGLE)),
+        CORAL_SCORE_L3(Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L3_PITCH_ANGLE), Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L3_ROLL_ANGLE)),
+        CORAL_SCORE_L4(Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L4_PITCH_ANGLE), Rotation2d.fromDegrees(Settings.DifferentialWrist.CORAL_SCORE_L4_ROLL_ANGLE)),
+        ALGAE_SCORE_BARGE(Rotation2d.fromDegrees(Settings.DifferentialWrist.ALGAE_SCORE_BARGE_PITCH_ANGLE), Rotation2d.fromDegrees(Settings.DifferentialWrist.ALGAE_SCORE_BARGE_ROLL_ANGLE)),
+        ALGAE_SCORE_PROCESSOR(Rotation2d.fromDegrees(Settings.DifferentialWrist.ALGAE_SCORE_PROCESSOR_PITCH_ANGLE), Rotation2d.fromDegrees(Settings.DifferentialWrist.ALGAE_SCORE_PROCESSOR_ROLL_ANGLE));
 
         private Rotation2d pitch, roll;
 

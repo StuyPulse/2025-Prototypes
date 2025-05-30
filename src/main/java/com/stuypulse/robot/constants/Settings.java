@@ -28,6 +28,29 @@ public interface Settings {
 
         double LEFT_ANGLE_OFFSET = 0;
         double RIGHT_ANGLE_OFFSET = 0;
+
+
+        double STOW_PITCH_ANGLE = 0;
+        double STOW_ROLL_ANGLE = 0;
+
+        double CORAL_SCORE_L1_PITCH_ANGLE = 0;
+        double CORAL_SCORE_L1_ROLL_ANGLE = 0;
+
+        double CORAL_SCORE_L2_PITCH_ANGLE = 0;
+        double CORAL_SCORE_L2_ROLL_ANGLE = 0;
+
+        double CORAL_SCORE_L3_PITCH_ANGLE = 0;
+        double CORAL_SCORE_L3_ROLL_ANGLE = 0;
+
+        double CORAL_SCORE_L4_PITCH_ANGLE = 0;
+        double CORAL_SCORE_L4_ROLL_ANGLE = 0;
+
+        double ALGAE_SCORE_BARGE_PITCH_ANGLE = 0;
+        double ALGAE_SCORE_BARGE_ROLL_ANGLE = 0;
+        
+        double ALGAE_SCORE_PROCESSOR_PITCH_ANGLE = 0;
+        double ALGAE_SCORE_PROCESSOR_ROLL_ANGLE = 0;
+        
         
     }
 
