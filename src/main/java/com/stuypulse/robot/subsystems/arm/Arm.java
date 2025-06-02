@@ -7,8 +7,12 @@ import com.stuypulse.robot.constants.Constants;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.math.SLMath;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Num;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -65,6 +69,10 @@ public abstract class Arm extends SubsystemBase{
     public abstract Rotation2d getElbowAngle();
     public abstract Translation2d getEndPosition();
     public abstract void setTargetAngles(Rotation2d shoulderAngle, Rotation2d elbowAngle);
+    public abstract Matrix<N2, N2> calculateMMatrix(); // Mass Intertia Matrix
+    public abstract Matrix<N2, N2> calculateCMatrix(); // Centrifugal + Coriolis Matrix
+    public abstract Matrix<N2, N1> calculateGMatrix(); // Torque due to Gravity Matrix
+    
 
     public void setState(ArmState state) {
         setGoal(state.getShoulderTargetAngle().getDegrees(), state.getShoulderTargetAngle().getDegrees());
