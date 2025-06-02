@@ -79,6 +79,8 @@ public class ArmSim extends Arm {
             "Arm", 30, 60) // thickness, color
         );
 
+        
+
 
 
 }

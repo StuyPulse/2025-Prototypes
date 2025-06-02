@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems.superStructure.telescope;
 
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.superStructure.arm.ArmSim;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -14,6 +15,9 @@ public abstract class Telescope extends SubsystemBase {
     static {
         if (Robot.isReal()) {
             instance = new TelescopeImpl();
+        }
+        else {
+            instance = new TelescopeSim();
         }
     }
 
@@ -51,6 +55,10 @@ public abstract class Telescope extends SubsystemBase {
 
     public TelescopeState getState() {
         return state;
+    }
+
+    public Telescope() {
+        state = TelescopeState.S0;
     }
 
     public static TelescopeState getState(int level, boolean isFacingFrontReef) {

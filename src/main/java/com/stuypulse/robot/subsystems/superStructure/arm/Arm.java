@@ -50,6 +50,11 @@ private static final Arm instance;
     private ArmState state;
 
 
+    public Arm() {
+        state = ArmState.S0;
+    }
+
+
     public ArmState getState() {
         return this.state;
     }
