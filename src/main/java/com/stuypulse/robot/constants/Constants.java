@@ -15,6 +15,7 @@ public interface Constants{
         double SHOULDER_LENGTH = 0.5;
         double SHOULDER_MASS = 0.1;
         double SHOULDER_GEAR_RATIO = 85; // Double Check
+        
 
         double ELBOW_LENGTH = 0.4;
         double ELBOW_MASS = 0.1;

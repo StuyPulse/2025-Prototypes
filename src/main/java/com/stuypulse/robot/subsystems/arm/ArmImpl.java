@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreCANcoder;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.stuypulse.robot.constants.Constants;
@@ -18,7 +19,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -31,7 +31,7 @@ public class ArmImpl extends Arm {
     private final TalonFX elbowMotor;
     
     private final Pigeon2 pigeon;
-    private final DutyCycleEncoder elbowEncoder;
+    private final CoreCANcoder elbowEncoder;
 
     // Matricies
     private Matrix<N2, N2> mMatrix;
@@ -60,7 +60,7 @@ public class ArmImpl extends Arm {
         backShoulderMotor = new TalonFX(Ports.Arm.RIGHT_SHOULDER);
         elbowMotor = new TalonFX(Ports.Arm.ELBOW_MOTOR);
         pigeon = new Pigeon2(Ports.Arm.PIGEON);
-        elbowEncoder = new DutyCycleEncoder(Ports.Arm.ABSOLUTE_ENCODER);
+        elbowEncoder = new CoreCANcoder(Ports.Arm.ABSOLUTE_ENCODER);
         
         mMatrix = new Matrix<>(Nat.N2(), Nat.N2());
         cMatrix = new Matrix<>(Nat.N2(), Nat.N2());
@@ -117,14 +117,36 @@ public class ArmImpl extends Arm {
 
     @Override
     public Rotation2d getElbowAngle() {
-        return Rotation2d.fromRotations(elbowEncoder.get());
+        return Rotation2d.fromRotations(elbowEncoder.getAbsolutePosition().getValueAsDouble());
     }
 
     @Override
     public Matrix<N2, N2> calculateMMatrix() {
         double m0_0 = SHOULDER_MASS * Math.pow(SHOULDER_LENGTH, 2) / 2
-         + ELBOW_MASS * (Math.pow(SHOULDER_LENGTH, 2) + Math.pow(ELBOW_LENGTH / 2, 2))
-    }
+        + ELBOW_MASS * (Math.pow(SHOULDER_LENGTH, 2) + Math.pow(ELBOW_LENGTH / 2, 2))
+        + SHOULDER_LENGTH / pigeon.getAngularVelocityYDevice().getValueAsDouble() // Moment of Inertia (Shouldner)
+        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble() // Moment of Inertia (Elbow)
+        + 2 * ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.cos(getElbowAngle().getDegrees());
+
+        double m0_1 = ELBOW_MASS * Math.pow((ELBOW_LENGTH / 2), 2) 
+        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble() // Moment of Inertia (Elbow)
+        + ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.cos(getElbowAngle().getDegrees());
+
+        double m1_0 = ELBOW_MASS * Math.pow((ELBOW_LENGTH / 2), 2) 
+        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble() // Moment of Inertia (Elbow)
+        + ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.cos(getElbowAngle().getDegrees());
+
+        double m1_1 = ELBOW_MASS * Math.pow((ELBOW_LENGTH / 2), 2) 
+        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble(); // Moment of Inertia (Elbow)
+
+        mMatrix.set(0, 0, m0_0);
+        mMatrix.set(0, 1, m0_1);
+        mMatrix.set(1, 0, m1_0);
+        mMatrix.set(1, 1, m1_1);
+
+        return mMatrix;
+
+    } 
 
     @Override
     public Matrix<N2, N2> calculateCMatrix() {
