@@ -17,13 +17,13 @@ public interface Settings {
 
     public interface DifferentialWrist{
 
-        double PITCH_ANGLE_TOLERANCE = 0;
-        double ROLL_ANGLE_TOLERANCE = 0;
+        double PITCH_ANGLE_TOLERANCE = 0.1;
+        double ROLL_ANGLE_TOLERANCE = 0.1;
 
         double MIN_PITCH_ANGLE = 0;
-        double MAX_PITCH_ANGLE = 0;
+        double MAX_PITCH_ANGLE = 180;
         double MIN_ROLL_ANGLE = 0;
-        double MAX_ROLL_ANGLE = 0;
+        double MAX_ROLL_ANGLE = 180;
 
 
         double LEFT_ANGLE_OFFSET = 0;
@@ -33,11 +33,11 @@ public interface Settings {
         double STOW_PITCH_ANGLE = 0;
         double STOW_ROLL_ANGLE = 0;
 
-        double CORAL_SCORE_L1_PITCH_ANGLE = 0;
-        double CORAL_SCORE_L1_ROLL_ANGLE = 0;
+        double CORAL_SCORE_L1_PITCH_ANGLE = 45;
+        double CORAL_SCORE_L1_ROLL_ANGLE = 45;
 
-        double CORAL_SCORE_L2_PITCH_ANGLE = 0;
-        double CORAL_SCORE_L2_ROLL_ANGLE = 0;
+        double CORAL_SCORE_L2_PITCH_ANGLE = 60;
+        double CORAL_SCORE_L2_ROLL_ANGLE = 60;
 
         double CORAL_SCORE_L3_PITCH_ANGLE = 0;
         double CORAL_SCORE_L3_ROLL_ANGLE = 0;

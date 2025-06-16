@@ -20,6 +20,10 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.*;
 
 /*-
  * File containing all of the configurations that different motors require.
@@ -35,43 +39,55 @@ public interface Motors {
     /** Classes to store all of the values a motor needs */
 
     public interface DifferentialWrist {
-        // TO-DO: FF or PID for roller motor?
-        TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
-            .withCurrentLimitAmps(0)
-            .withRampRate(0)
-            .withNeutralMode(NeutralModeValue.Brake)
-            .withInvertedValue(InvertedValue.CounterClockwise_Positive)
-            .withSupplyCurrentLimitAmps(0)
-            .withMotionProfile(0, 0)
-            .withSensorToMechanismRatio(0)
-            .withFFConstants(0, 0, 0, 0,0)
-            .withPIDConstants(0, 0, 0, 0);
-        
-        TalonFXConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new TalonFXConfig()
-            .withCurrentLimitAmps(0)
-            .withRampRate(0)
-            .withNeutralMode(NeutralModeValue.Brake)
-            .withInvertedValue(InvertedValue.CounterClockwise_Positive)
-            .withGravityType(GravityTypeValue.Arm_Cosine)
-            .withSupplyCurrentLimitAmps(0)
-            .withMotionProfile(0, 0)
-            .withRemoteSensor(0, null, 0)
-            .withSensorToMechanismRatio(0)
-            .withFFConstants(0, 0, 0, 0,0)
-            .withPIDConstants(0, 0, 0, 0);
 
-        TalonFXConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new TalonFXConfig()
-            .withCurrentLimitAmps(0)
-            .withRampRate(0)
-            .withNeutralMode(NeutralModeValue.Brake)
-            .withInvertedValue(InvertedValue.CounterClockwise_Positive)
-            .withGravityType(GravityTypeValue.Arm_Cosine)
-            .withSupplyCurrentLimitAmps(0)
-            .withMotionProfile(0, 0)
-            .withRemoteSensor(0, null, 0)
-            .withSensorToMechanismRatio(0)
-            .withFFConstants(0, 0, 0, 0,0)
-            .withPIDConstants(0, 0, 0, 0);
+        SparkBaseConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(100).openLoopRampRate(0.25).idleMode(IdleMode.kCoast);
+
+        SparkBaseConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(100).openLoopRampRate(0.25).idleMode(IdleMode.kCoast);
+        // TO-DO: FF or PID for roller motor?
+
+
+
+            
+
+
+            
+
+        // TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
+        //     .withCurrentLimitAmps(0)
+        //     .withRampRate(0)
+        //     .withNeutralMode(NeutralModeValue.Brake)
+        //     .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+        //     .withSupplyCurrentLimitAmps(0)
+        //     .withMotionProfile(0, 0)
+        //     .withSensorToMechanismRatio(0)
+        //     .withFFConstants(0, 0, 0, 0,0)
+        //     .withPIDConstants(0, 0, 0, 0);
+        
+        // TalonFXConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new TalonFXConfig()
+        //     .withCurrentLimitAmps(0)
+        //     .withRampRate(0)
+        //     .withNeutralMode(NeutralModeValue.Brake)
+        //     .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+        //     .withGravityType(GravityTypeValue.Arm_Cosine)
+        //     .withSupplyCurrentLimitAmps(0)
+        //     .withMotionProfile(0, 0)
+        //     .withRemoteSensor(0, null, 0)
+        //     .withSensorToMechanismRatio(0)
+        //     .withFFConstants(0, 0, 0, 0,0)
+        //     .withPIDConstants(0, 0, 0, 0);
+
+        // TalonFXConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new TalonFXConfig()
+        //     .withCurrentLimitAmps(0)
+        //     .withRampRate(0)
+        //     .withNeutralMode(NeutralModeValue.Brake)
+        //     .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+        //     .withGravityType(GravityTypeValue.Arm_Cosine)
+        //     .withSupplyCurrentLimitAmps(0)
+        //     .withMotionProfile(0, 0)
+        //     .withRemoteSensor(0, null, 0)
+        //     .withSensorToMechanismRatio(0)
+        //     .withFFConstants(0, 0, 0, 0,0)
+        //     .withPIDConstants(0, 0, 0, 0);
     }
 
     public static class TalonFXConfig {
