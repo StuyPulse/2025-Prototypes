@@ -14,6 +14,7 @@ import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.math.Angle;
+import com.stuypulse.stuylib.math.SLMath;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -49,6 +50,7 @@ public class DifferentialWristImpl extends DifferentialWrist {
 
         
 
+
         // leftDifferentialMotor.set(
         //     Rotation2d.fromRotations(leftDifferentialMotor.getEncoder().getPosition())
         //         .minus(Rotation2d.fromDegrees(Settings.DifferentialWrist.LEFT_ANGLE_OFFSET))
@@ -70,15 +72,16 @@ public class DifferentialWristImpl extends DifferentialWrist {
      
     @Override
     public Rotation2d getLeftCurrentAngle() {
-        return Rotation2d.fromRotations(leftEncoder.getPosition());
+        return Rotation2d.fromRotations(SLMath.clamp(leftEncoder.getPosition(), 0.0, 1.0));
     }
 
-    public Rotation2d getRightCurrentAngle() {
-        return Rotation2d.fromRotations(rightEncoder.getPosition());
+    public Rotation2d getRightCurrentAngle() {  
+        return Rotation2d.fromRotations(SLMath.clamp(rightEncoder.getPosition(), 0.0, 1.0));
     }
     
     @Override
     public void periodic() {
+        super.periodic();
 
         leftController.update(
             Angle.fromRotations(getLeftTargetAngle().getRotations()),
@@ -95,10 +98,10 @@ public class DifferentialWristImpl extends DifferentialWrist {
         double rightVoltage = rightController.getOutput();
 
         leftDifferentialMotor.setVoltage(leftVoltage);
-        leftDifferentialMotor.setVoltage(rightVoltage);
+        rightDifferentialMotor.setVoltage(rightVoltage);
+
 
         
-        super.periodic();
 
     }
 

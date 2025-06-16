@@ -112,6 +112,9 @@ public abstract class DifferentialWrist extends SubsystemBase {
 
     public void setWristState(WristState state) {
         this.wristState = state;
+        this.rollTargetAngle.set(state.roll.getDegrees());
+        this.pitchTargetAngle.set(state.pitch.getDegrees());
+
     }
 
     public RollerState getRollerState() {
@@ -175,13 +178,13 @@ public abstract class DifferentialWrist extends SubsystemBase {
         SmartDashboard.putString("Differential Wrist/Wrist State", getWristState().toString());
         SmartDashboard.putString("Differential Wrist/Roller State", getRollerState().toString());
 
-        SmartDashboard.putNumber("Differential Wrist/Left Motor Angle (deg)", getLeftCurrentAngle().getDegrees());
-        SmartDashboard.putNumber("Differential Wrist/Right Motor Angle (deg)", getRightCurrentAngle().getDegrees());
+        SmartDashboard.putNumber("Differential Wrist/Left Motor Angle (deg)", getLeftCurrentAngle().getDegrees() % 360);
+        SmartDashboard.putNumber("Differential Wrist/Right Motor Angle (deg)", getRightCurrentAngle().getDegrees() % 360);
 
         SmartDashboard.putBoolean("Differential Wrist/At Target Pitch Angle", isAtTargetPitchAngle());
         SmartDashboard.putBoolean("Differential Wrist/At Target Roll Angle", isAtTargetRollAngle());
 
-        SmartDashboard.putNumber("Differential Wrist/Current Pitch Angle (deg)", getCurrentPitchAngle().getDegrees());
-        SmartDashboard.putNumber("Differential Wrist/Current Roll Angle (deg)", getCurrentRollAngle().getDegrees());
+        SmartDashboard.putNumber("Differential Wrist/Current Pitch Angle (deg)", getCurrentPitchAngle().getDegrees() % 360);
+        SmartDashboard.putNumber("Differential Wrist/Current Roll Angle (deg)", getCurrentRollAngle().getDegrees() % 360);
     }
 }
