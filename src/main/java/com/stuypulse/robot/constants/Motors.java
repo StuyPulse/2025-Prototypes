@@ -41,6 +41,7 @@ public interface Motors {
     public interface DifferentialWrist {
 
         SparkBaseConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(100).openLoopRampRate(0.25).idleMode(IdleMode.kCoast);
+        
 
         SparkBaseConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(100).openLoopRampRate(0.25).idleMode(IdleMode.kCoast);
         // TO-DO: FF or PID for roller motor?

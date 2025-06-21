@@ -6,7 +6,7 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
-import com.stuypulse.robot.commands.differentialWrist.roller.DifferentialWristRollerStop;
+// import com.stuypulse.robot.commands.differentialWrist.roller.DifferentialWristRollerStop;
 import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristSetWristState;
 import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristToL1;
 import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristToL2;
@@ -52,9 +52,8 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-
-        driver.getDPadRight().whileTrue(new DifferentialWristToStow());
         driver.getDPadLeft().whileTrue(new DifferentialWristToL1());
+        driver.getDPadRight().whileTrue(new DifferentialWristToStow());
         driver.getDPadUp().whileTrue(new DifferentialWristToL2());
     }
 

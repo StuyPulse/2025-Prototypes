@@ -72,11 +72,11 @@ public class DifferentialWristImpl extends DifferentialWrist {
      
     @Override
     public Rotation2d getLeftCurrentAngle() {
-        return Rotation2d.fromRotations(SLMath.clamp(leftEncoder.getPosition(), 0.0, 1.0));
+        return Rotation2d.fromRotations(leftEncoder.getPosition());
     }
 
     public Rotation2d getRightCurrentAngle() {  
-        return Rotation2d.fromRotations(SLMath.clamp(rightEncoder.getPosition(), 0.0, 1.0));
+        return Rotation2d.fromRotations(rightEncoder.getPosition());
     }
     
     @Override
