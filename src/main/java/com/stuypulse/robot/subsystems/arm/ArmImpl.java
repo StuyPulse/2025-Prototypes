@@ -1,5 +1,7 @@
 package com.stuypulse.robot.subsystems.arm;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -19,10 +21,12 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.Num;
+import edu.wpi.first.math.Pair;
 
 public class ArmImpl extends Arm {
     // Hardware
@@ -33,29 +37,39 @@ public class ArmImpl extends Arm {
     private final Pigeon2 pigeon;
     private final CoreCANcoder elbowEncoder;
 
+    private final Timer timer;
+
     // Matricies
     private Matrix<N2, N2> mMatrix;
     private Matrix<N2, N2> cMatrix;
     private Matrix<N2, N1> gMatrix;
 
+    private Matrix<N2, N1> vMatrix;
+    private Matrix<N2, N1> aMatrix;
+
     // Physical Constants
-    private final double SHOULDER_MASS = Constants.Arm.SHOULDER_MASS; // kg
-    private final double ELBOW_MASS = Constants.Arm.ELBOW_MASS;       // kg
-    private final double SHOULDER_LENGTH = Constants.Arm.SHOULDER_LENGTH; // m
-    private final double ELBOW_LENGTH = Constants.Arm.ELBOW_LENGTH;     // m
-    private final double GRAVITY = 9.81; // m/s²
+    private final double shoulderMass = Constants.Arm.SHOULDER_MASS; // kg
+    private final double elbowMass = Constants.Arm.ELBOW_MASS;       // kg
+    private final double shoulderLength = Constants.Arm.SHOULDER_LENGTH; // m
+    private final double elbowLength = Constants.Arm.ELBOW_LENGTH;     // m
+    private final double GRAVITY = 9.81;
 
     // Conversion Factors
-    private final double SHOULDER_GEAR_RATIO = Constants.Arm.SHOULDER_GEAR_RATIO;
-    private final double ELBOW_GEAR_RATIO = Constants.Arm.ELBOW_GEAR_RATIO;
-    private final double TORQUE_TO_VOLTAGE = 1.0 / 12.0; // Convert Nm to volts
+    private final double shoulderGearRatio = Constants.Arm.SHOULDER_GEAR_RATIO;
+    private final double elbowGearRatio = Constants.Arm.ELBOW_GEAR_RATIO;
+    private final double TORQUE_TO_VOLTAGE = 1.0 / 12.0; // Converts Nm to volts
 
     private final PositionVoltage shoulderPositionReq = new PositionVoltage(0).withSlot(0);
     private final PositionVoltage elbowPositionReq = new PositionVoltage(0).withSlot(1);
 
+    // Configuration Space
+    private final ArmConfigurationSpace configSpace; // Implement
 
+    
 
     public ArmImpl() {
+        configSpace = new ArmConfigurationSpace();
+
         frontShoulderMotor = new TalonFX(Ports.Arm.LEFT_SHOULDER);
         backShoulderMotor = new TalonFX(Ports.Arm.RIGHT_SHOULDER);
         elbowMotor = new TalonFX(Ports.Arm.ELBOW_MOTOR);
@@ -65,6 +79,8 @@ public class ArmImpl extends Arm {
         mMatrix = new Matrix<>(Nat.N2(), Nat.N2());
         cMatrix = new Matrix<>(Nat.N2(), Nat.N2());
         gMatrix = new Matrix<>(Nat.N2(), Nat.N1());
+
+        timer =  new Timer();
         
         configureMotors();
     }
@@ -120,75 +136,108 @@ public class ArmImpl extends Arm {
         return Rotation2d.fromRotations(elbowEncoder.getAbsolutePosition().getValueAsDouble());
     }
 
+    // Return 2x1 Matrix
+    public Matrix<N2, N1> getVelocities() {
+        double a0_0 = pigeon.getAngularVelocityYDevice().getValueAsDouble();
+        double a1_0 = elbowEncoder.getVelocity().getValueAsDouble();
+        vMatrix.set(0, 0, a0_0);
+        vMatrix.set(1, 0, a1_0);
+        return vMatrix;
+    }
+
+    // Return 2x1 Matrix
+    public Matrix<N2, N1> getAccelerations(){
+        
+        Pair<Double, Double> AStream = new Pair<>(pigeon.getAccelerationY().getValueAsDouble(), 
+                                                  elbowEncoder.getVelocity().getValueAsDouble() / timer.get());
+
+        timer.reset();
+
+        aMatrix.set(0, 0, AStream.getSecond());
+        aMatrix.set(1, 0, AStream.getFirst());
+
+        return aMatrix;
+    }
+
     @Override
     public Matrix<N2, N2> calculateMMatrix() {
-        double m0_0 = SHOULDER_MASS * Math.pow(SHOULDER_LENGTH, 2) / 2
-        + ELBOW_MASS * (Math.pow(SHOULDER_LENGTH, 2) + Math.pow(ELBOW_LENGTH / 2, 2))
-        + SHOULDER_LENGTH / pigeon.getAngularVelocityYDevice().getValueAsDouble() // Moment of Inertia (Shouldner)
-        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble() // Moment of Inertia (Elbow)
-        + 2 * ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.cos(getElbowAngle().getDegrees());
+        double c2 = Math.cos(getElbowAngle().getRadians());
+        
+        // Moment of inertia (can be pre determined)
+        // 1/3 mass * length^2
+        double I1 = shoulderMass * Math.pow(shoulderLength, 2) / 3; 
+        double I2 = elbowMass * Math.pow(elbowLength, 2) / 3;
+        
+        double m0_0 = shoulderMass * Math.pow(shoulderLength/2, 2) 
+                    + elbowMass * (Math.pow(shoulderLength, 2) + Math.pow(elbowLength/2, 2))
+                    + I1 + I2 
+                    + 2 * elbowMass * shoulderLength * (elbowLength/2) * c2;
+        
+        double m0_1 = elbowMass * Math.pow(elbowLength/2, 2) 
+                    + I2 
+                    + elbowMass * shoulderLength * (elbowLength/2) * c2;
 
-        double m0_1 = ELBOW_MASS * Math.pow((ELBOW_LENGTH / 2), 2) 
-        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble() // Moment of Inertia (Elbow)
-        + ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.cos(getElbowAngle().getDegrees());
-
-        double m1_0 = ELBOW_MASS * Math.pow((ELBOW_LENGTH / 2), 2) 
-        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble() // Moment of Inertia (Elbow)
-        + ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.cos(getElbowAngle().getDegrees());
-
-        double m1_1 = ELBOW_MASS * Math.pow((ELBOW_LENGTH / 2), 2) 
-        + ELBOW_LENGTH / elbowEncoder.getVelocity().getValueAsDouble(); // Moment of Inertia (Elbow)
-
+        double m1_1 = elbowMass * Math.pow(elbowLength/2, 2) + I2;
+        
+        // M is symmetric
         mMatrix.set(0, 0, m0_0);
         mMatrix.set(0, 1, m0_1);
-        mMatrix.set(1, 0, m1_0);
+        mMatrix.set(1, 0, m0_1); // m1_0 = m0_1
         mMatrix.set(1, 1, m1_1);
-
+        
         return mMatrix;
-
-    } 
+    }
 
     @Override
     public Matrix<N2, N2> calculateCMatrix() {
-        double c0_0 = - ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.sin(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()) * getElbowAngle().getDegrees();
-        double c1_0 = - ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.sin(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()) * (getShoulderAngle().getDegrees() + getElbowAngle().getDegrees());
-        double c0_1 = ELBOW_MASS * SHOULDER_LENGTH * (ELBOW_LENGTH / 2) * Math.sin(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()) * getShoulderAngle().getDegrees();
-        double c1_1 = 0;
-
+        double s2 = Math.sin(getElbowAngle().getRadians());
+        double theta1_dot = getVelocities().get(0, 0);
+        double theta2_dot = getVelocities().get(1, 0);
+        
+        double c0_0 = -elbowMass * shoulderLength * (elbowLength/2) * s2 * theta2_dot;
+        double c0_1 = -elbowMass * shoulderLength * (elbowLength/2) * s2 * (theta1_dot + theta2_dot);
+        double c1_0 = elbowMass * shoulderLength * (elbowLength/2) * s2 * theta1_dot;
+        
         cMatrix.set(0, 0, c0_0);
-        cMatrix.set(1, 0, c1_0);
         cMatrix.set(0, 1, c0_1);
-        cMatrix.set(1, 1, c1_1);
+        cMatrix.set(1, 0, c1_0);
+        cMatrix.set(1, 1, 0.0);
+        
         return cMatrix;
     }
 
     @Override
     public Matrix <N2, N1> calculateGMatrix(){
-        double g0_0 = (SHOULDER_MASS * (SHOULDER_LENGTH / 2) + ELBOW_LENGTH * SHOULDER_LENGTH) * GRAVITY * Math.cos(getShoulderAngle().getDegrees()
-                        + ELBOW_MASS * (ELBOW_LENGTH / 2) * GRAVITY * Math.cos(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()));
-        double g0_1 = (ELBOW_MASS * (ELBOW_LENGTH / 2) * GRAVITY * Math.cos(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()));
+        double g0_0 = (shoulderMass * (shoulderLength / 2) + elbowLength * shoulderLength) * GRAVITY * Math.cos(getShoulderAngle().getDegrees()
+                        + elbowMass * (elbowLength / 2) * GRAVITY * Math.cos(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()));
+        double g1_0 = (elbowMass * (elbowLength / 2) * GRAVITY * Math.cos(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()));
         
         gMatrix.set(0, 0, g0_0);
-        gMatrix.set(1, 0, g0_1);
+        gMatrix.set(1, 0, g1_0);
         
         return gMatrix;
     }
 
-
-
-
+    public Matrix<N2, N1> calculateTorque() {
+        Matrix<N2, N1> velocities = getVelocities();
+        Matrix<N2, N1> accelerations = getAccelerations();
+        
+        // M*accel + C*vel + G
+        return calculateMMatrix().times(accelerations)
+               .plus(calculateCMatrix().times(velocities))
+               .plus(calculateGMatrix());
+    }
 
     @Override
     public void setTargetAngles(Rotation2d shoulder, Rotation2d elbow) {
-        Rotation2d currentShoulder = getShoulderAngle();
-        Rotation2d currentElbow = getElbowAngle();
+        // Required torgque for balance
+        Matrix<N2, N1> tau = calculateTorque();
         
-        // Convert torque to volts + compensate for gear ratios
-        double shoulderVolts = calculateShoulderTorque(currentShoulder, currentElbow) 
-                            / (SHOULDER_GEAR_RATIO * 12.0);
-        double elbowVolts = calculateElbowTorque(currentShoulder, currentElbow) 
-                         / (ELBOW_GEAR_RATIO * 12.0);
+        // Convert torque to volts (considering gear ratios)
+        double shoulderVolts = tau.get(0, 0) / (shoulderGearRatio * TORQUE_TO_VOLTAGE);
+        double elbowVolts = tau.get(1, 0) / (elbowGearRatio* TORQUE_TO_VOLTAGE);
         
+        // Apply control with feedforward
         frontShoulderMotor.setControl(
             shoulderPositionReq
                 .withPosition(shoulder.getRotations())
@@ -208,11 +257,12 @@ public class ArmImpl extends Arm {
         Rotation2d elbow = getElbowAngle();
 
         Transform2d startPoint = new Transform2d(0.0, Constants.Arm.BASE_HEIGHT, new Rotation2d(0.0));
-        Translation2d endPoint = startPoint.plus(new Transform2d(Constants.Arm.SHOULDER_LENGTH, 0.0, shoulder))
-                                .plus(new Transform2d(Constants.Arm.ELBOW_LENGTH, 0.0, elbow.minus(new Rotation2d(180.0 - shoulder.getDegrees()))))
+        Translation2d endPoint = startPoint.plus(new Transform2d(shoulderLength, 0.0, shoulder))
+                                .plus(new Transform2d(elbowLength, 0.0, elbow.minus(new Rotation2d(180.0 - shoulder.getDegrees()))))
                                 .getTranslation();
         return endPoint;
     }
+
 
     @Override
     public void periodic() {
@@ -220,10 +270,8 @@ public class ArmImpl extends Arm {
         SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle().getDegrees());
         SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngle().getDegrees());
         SmartDashboard.putNumber("Arm/End Height", getEndPosition().getY());
-        
-        Rotation2d shoulder = getShoulderAngle();
-        Rotation2d elbow = getElbowAngle();
-        SmartDashboard.putNumber("Arm/Shoulder Torque", calculateShoulderTorque(shoulder, elbow));
-        SmartDashboard.putNumber("Arm/Elbow Torque", calculateElbowTorque(shoulder, elbow));
+
+        SmartDashboard.putNumber("Arm/Shoulder Torque", calculateTorque().get(0, 0));
+        SmartDashboard.putNumber("Arm/Elbow Torque", calculateTorque().get(1, 0));
     }
 }

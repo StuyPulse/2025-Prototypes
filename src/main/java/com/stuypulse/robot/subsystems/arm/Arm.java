@@ -41,12 +41,12 @@ public abstract class Arm extends SubsystemBase{
         private ArmState(Rotation2d shoulderTargetAngle, Rotation2d elbowTargetAngle){
             this.shoulderTargetAngle = Rotation2d.fromDegrees(
                 SLMath.clamp(shoulderTargetAngle.getDegrees(), 
-                Constants.Arm.MIN_ANGLE.getDegrees(), 
-                Constants.Arm.MAX_ANGLE.getDegrees()));
+                Constants.Arm.SHOULDER_MIN_ANGLE.getDegrees(), 
+                Constants.Arm.SHOULDER_MAX_ANGLE.getDegrees()));
             this.elbowTargetAngle = Rotation2d.fromDegrees(
                 SLMath.clamp(elbowTargetAngle.getDegrees(), 
-                Constants.Arm.MIN_ANGLE.getDegrees(), 
-                Constants.Arm.MAX_ANGLE.getDegrees())); 
+                Constants.Arm.SHOULDER_MIN_ANGLE.getDegrees(), 
+                Constants.Arm.SHOULDER_MAX_ANGLE.getDegrees())); 
         } 
 
         public Rotation2d getShoulderTargetAngle(){
