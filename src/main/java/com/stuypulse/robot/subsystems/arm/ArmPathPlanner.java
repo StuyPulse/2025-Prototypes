@@ -7,7 +7,7 @@ public class ArmPathPlanner {
     private final ArmConfigurationSpace configSpace;
     private final double resolution = 0.1; // Rads
 
-    // A* Node class (inner class)
+    // A* Node class
     private static class Node implements Comparable<Node> {
         final double theta1, theta2;
         double gScore = Double.POSITIVE_INFINITY;
@@ -111,7 +111,6 @@ public class ArmPathPlanner {
         return smoothed;
     }
 
-    // Helper methods remain the same as before...
     private boolean atGoal(Node node, double goalTheta1, double goalTheta2) {
         return Math.abs(node.theta1 - goalTheta1) < resolution &&
                Math.abs(node.theta2 - goalTheta2) < resolution;
