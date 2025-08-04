@@ -1,20 +1,21 @@
 package com.stuypulse.robot.subsystems.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import java.util.*;
 
 public class ArmPathPlanner {
     private final ArmConfigurationSpace configSpace;
-    private final double resolution = 0.1; // Rads
+    private final double error = 0.1; // Radians
 
     // A* Node class
     private static class Node implements Comparable<Node> {
-        final double theta1, theta2;
+        final Rotation2d theta1, theta2;
         double gScore = Double.POSITIVE_INFINITY;
         double fScore = Double.POSITIVE_INFINITY;
         Node parent = null;
 
-        Node(double theta1, double theta2) {
+        Node(Rotation2d theta1, Rotation2d theta2) {
             this.theta1 = theta1;
             this.theta2 = theta2;
         }
@@ -29,8 +30,8 @@ public class ArmPathPlanner {
         this.configSpace = configSpace;
     }
 
-    public List<Translation2d> findPath(double startTheta1, double startTheta2,
-                                      double goalTheta1, double goalTheta2) {
+    public List<Translation2d> findPath(Rotation2d startTheta1, Rotation2d  startTheta2,
+                                      Rotation2d goalTheta1, Rotation2d goalTheta2) {
         PriorityQueue<Node> openSet = new PriorityQueue<>();
         Map<String, Node> allNodes = new HashMap<>();
 
@@ -53,8 +54,8 @@ public class ArmPathPlanner {
                 for (int j = -1; j <= 1; j++) {
                     if (i == 0 && j == 0) continue;
 
-                    double newTheta1 = current.theta1 + i * resolution;
-                    double newTheta2 = current.theta2 + j * resolution;
+                    Rotation2d newTheta1 = new Rotation2d(current.theta1.getRadians() + i * error);
+                    Rotation2d newTheta2 = new Rotation2d(current.theta2.getRadians() + j * error);
                     String key = nodeKey(newTheta1, newTheta2);
 
                     if (!configSpace.isValidConfiguration(newTheta1, newTheta2)) continue;
@@ -83,7 +84,7 @@ public class ArmPathPlanner {
         Node current = endNode;
         
         while (current != null) {
-            path.addFirst(new Translation2d(current.theta1, current.theta2));
+            path.addFirst(new Translation2d(current.theta1.getRadians(), current.theta2.getRadians()));
             current = current.parent;
         }
         
@@ -96,35 +97,36 @@ public class ArmPathPlanner {
         List<Translation2d> smoothed = new ArrayList<>();
         smoothed.add(roughPath.get(0));
         
-        // Averaging filter
+        // Average thetas then add to path
         for (int i = 1; i < roughPath.size()-1; i++) {
-            double theta1 = (roughPath.get(i-1).getX() + 
+            Rotation2d theta1 = new Rotation2d((roughPath.get(i-1).getX() + 
                            roughPath.get(i).getX() + 
-                           roughPath.get(i+1).getX()) / 3;
-            double theta2 = (roughPath.get(i-1).getY() + 
+                           roughPath.get(i+1).getX()) / 3);
+            Rotation2d theta2 = new Rotation2d((roughPath.get(i-1).getY() + 
                            roughPath.get(i).getY() + 
-                           roughPath.get(i+1).getY()) / 3;
-            smoothed.add(new Translation2d(theta1, theta2));
+                           roughPath.get(i+1).getY()) / 3);
+            smoothed.add(new Translation2d(theta1.getRadians(), theta2.getRadians()));
         }
         
         smoothed.add(roughPath.get(roughPath.size()-1));
         return smoothed;
     }
 
-    private boolean atGoal(Node node, double goalTheta1, double goalTheta2) {
-        return Math.abs(node.theta1 - goalTheta1) < resolution &&
-               Math.abs(node.theta2 - goalTheta2) < resolution;
+    // Helper Functions
+    private boolean atGoal(Node node, Rotation2d goalTheta1, Rotation2d goalTheta2) {
+        return Math.abs(node.theta1.getRadians() - goalTheta1.getRadians()) < error &&
+               Math.abs(node.theta2.getRadians() - goalTheta2.getRadians()) < error;
     }
 
     private double distance(Node a, Node b) {
-        return Math.hypot(b.theta1 - a.theta1, b.theta2 - a.theta2);
+        return Math.hypot(b.theta1.minus(a.theta1).getRadians(), b.theta2.minus(a.theta2).getRadians());
     }
 
-    private double heuristic(Node node, double goalTheta1, double goalTheta2) {
+    private double heuristic(Node node, Rotation2d goalTheta1, Rotation2d goalTheta2) {
         return distance(node, new Node(goalTheta1, goalTheta2));
     }
 
-    private String nodeKey(double theta1, double theta2) {
-        return String.format("%.3f,%.3f", theta1, theta2);
+    private String nodeKey(Rotation2d theta1, Rotation2d theta2) {
+        return String.format("%.3f,%.3f", theta1.getRadians(), theta2.getRadians());
     }
 }

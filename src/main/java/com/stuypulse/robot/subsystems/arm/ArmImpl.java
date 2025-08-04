@@ -1,7 +1,6 @@
 package com.stuypulse.robot.subsystems.arm;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -26,7 +25,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.Num;
 import edu.wpi.first.math.Pair;
 
 public class ArmImpl extends Arm {
@@ -212,9 +210,9 @@ public class ArmImpl extends Arm {
 
     @Override
     public Matrix <N2, N1> calculateGMatrix(){
-        double g0_0 = (shoulderMass * (shoulderLength / 2) + elbowLength * shoulderLength) * GRAVITY * Math.cos(getShoulderAngle().getDegrees()
-                        + elbowMass * (elbowLength / 2) * GRAVITY * Math.cos(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()));
-        double g1_0 = (elbowMass * (elbowLength / 2) * GRAVITY * Math.cos(getShoulderAngle().getDegrees() + getElbowAngle().getDegrees()));
+        double g0_0 = (shoulderMass * (shoulderLength / 2) + elbowLength * shoulderLength) * GRAVITY * Math.cos(getShoulderAngle().getRadians()
+                        + elbowMass * (elbowLength / 2) * GRAVITY * Math.cos(getShoulderAngle().getRadians() + getElbowAngle().getRadians()));
+        double g1_0 = (elbowMass * (elbowLength / 2) * GRAVITY * Math.cos(getShoulderAngle().getRadians() + getElbowAngle().getRadians()));
         
         gMatrix.set(0, 0, g0_0);
         gMatrix.set(1, 0, g1_0);
@@ -276,10 +274,10 @@ public class ArmImpl extends Arm {
 
         // Plan path
         List<Translation2d> path = pathPlanner.findPath(
-            getShoulderAngle().getRadians(),
-            getElbowAngle().getRadians(),
-            targetAngles[0],
-            targetAngles[1]
+            getShoulderAngle(),
+            getElbowAngle(),
+            new Rotation2d(targetAngles[0]),
+            new Rotation2d(targetAngles[1])
         );
 
         // Generate trajectory
@@ -306,7 +304,7 @@ public class ArmImpl extends Arm {
 
         Transform2d startPoint = new Transform2d(0.0, Constants.Arm.BASE_HEIGHT, new Rotation2d(0.0));
         Translation2d endPoint = startPoint.plus(new Transform2d(shoulderLength, 0.0, shoulder))
-                                .plus(new Transform2d(elbowLength, 0.0, elbow.minus(new Rotation2d(180.0 - shoulder.getDegrees()))))
+                                .plus(new Transform2d(elbowLength, 0.0, elbow.minus(new Rotation2d(Math.PI - shoulder.getRadians()))))
                                 .getTranslation();
         return endPoint;
     }
@@ -322,8 +320,8 @@ public class ArmImpl extends Arm {
         }
 
         // Logging
-        SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle().getDegrees());
-        SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngle().getDegrees());
+        SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle().getRadians());
+        SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngle().getRadians());
         SmartDashboard.putNumber("Arm/End Height", getEndPosition().getY());
 
         SmartDashboard.putNumber("Arm/Shoulder Torque", calculateTorque().get(0, 0));
