@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems.arm;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -51,7 +52,7 @@ public class ArmImpl extends Arm {
     private final double shoulderMass = Constants.Arm.SHOULDER_MASS; // kg
     private final double elbowMass = Constants.Arm.ELBOW_MASS;       // kg
     private final double shoulderLength = Constants.Arm.SHOULDER_LENGTH; // m
-    private final double elbowLength = Constants.Arm.ELBOW_LENGTH;     // m
+    private final double elbowLength = Constants.Arm.ELBOW_LENGTH;       // m
     private final double GRAVITY = 9.81;
 
     // Conversion Factors
@@ -62,13 +63,13 @@ public class ArmImpl extends Arm {
     private final PositionVoltage shoulderPositionReq = new PositionVoltage(0).withSlot(0);
     private final PositionVoltage elbowPositionReq = new PositionVoltage(0).withSlot(1);
 
-    // Configuration Space
-    private final ArmConfigurationSpace configSpace; // Implement
-
-    
+    // Configuration Space + PathPlanner
+    private final ArmConfigurationSpace configSpace; 
+    private final ArmPathPlanner pathPlanner;
+    private List<ArmSpline.ArmTrajectoryPoint> currentTrajectory;
+    private int trajectoryIndex = 0;
 
     public ArmImpl() {
-        configSpace = new ArmConfigurationSpace();
 
         frontShoulderMotor = new TalonFX(Ports.Arm.LEFT_SHOULDER);
         backShoulderMotor = new TalonFX(Ports.Arm.RIGHT_SHOULDER);
@@ -83,6 +84,9 @@ public class ArmImpl extends Arm {
         timer =  new Timer();
         
         configureMotors();
+
+        configSpace = new ArmConfigurationSpace();
+        pathPlanner = new ArmPathPlanner(configSpace);
     }
 
     private void configureMotors() {
@@ -108,7 +112,7 @@ public class ArmImpl extends Arm {
                     .withKV(Settings.Arm.Elbow.FF.kV)
                     .withKA(Settings.Arm.Elbow.FF.kA);
         
-        // Master Motor Configuration
+        // Maaster Motor Configuration
         masterShoulderConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         masterShoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         frontShoulderMotor.getConfigurator().apply(masterShoulderConfig);
@@ -230,14 +234,13 @@ public class ArmImpl extends Arm {
 
     @Override
     public void setTargetAngles(Rotation2d shoulder, Rotation2d elbow) {
-        // Required torgque for balance
         Matrix<N2, N1> tau = calculateTorque();
         
-        // Convert torque to volts (considering gear ratios)
+        // Convert torque to volts (Need Gear Ratio)
         double shoulderVolts = tau.get(0, 0) / (shoulderGearRatio * TORQUE_TO_VOLTAGE);
         double elbowVolts = tau.get(1, 0) / (elbowGearRatio* TORQUE_TO_VOLTAGE);
         
-        // Apply control with feedforward
+        // FeedForward
         frontShoulderMotor.setControl(
             shoulderPositionReq
                 .withPosition(shoulder.getRotations())
@@ -249,6 +252,51 @@ public class ArmImpl extends Arm {
                 .withPosition(elbow.getRotations())
                 .withFeedForward(elbowVolts)
         );
+    }
+
+    private double[] calculateInverseKinematics(double x, double y) {
+        double d = Math.sqrt(x*x + y*y);
+        if (d > shoulderLength + elbowLength || d < Math.abs(shoulderLength - elbowLength)) {
+            return null; 
+        }
+        
+        double theta2 = Math.acos((x*x + y*y - shoulderLength*shoulderLength - elbowLength*elbowLength) 
+                        / (2 * shoulderLength * elbowLength));
+        double theta1 = Math.atan2(y, x) - Math.atan2(elbowLength * Math.sin(theta2), 
+                                            shoulderLength + elbowLength * Math.cos(theta2));
+        
+        return new double[]{theta1, theta2};
+    }
+
+    @Override
+    public void setTargetPosition(Translation2d target) {
+        // Convert target to joint angles
+        double[] targetAngles = calculateInverseKinematics(target.getX(), target.getY());
+        if (targetAngles == null) return; 
+
+        // Plan path
+        List<Translation2d> path = pathPlanner.findPath(
+            getShoulderAngle().getRadians(),
+            getElbowAngle().getRadians(),
+            targetAngles[0],
+            targetAngles[1]
+        );
+
+        // Generate trajectory
+        currentTrajectory = new ArmSpline(
+            new double[]{
+                getShoulderAngle().getRadians(),
+                getElbowAngle().getRadians()
+            },
+            new double[]{0, 0}, // Start velocity
+            new double[]{0, 0}, // Start acceleration
+            targetAngles,
+            new double[]{0, 0}, // End velocity
+            new double[]{0, 0}, // End acceleration
+            2.0     // Duration
+        ).sampleTrajectory(50);
+        
+        trajectoryIndex = 0;
     }
 
     @Override
@@ -263,9 +311,16 @@ public class ArmImpl extends Arm {
         return endPoint;
     }
 
-
     @Override
     public void periodic() {
+        if (currentTrajectory != null && trajectoryIndex < currentTrajectory.size()) {
+            ArmSpline.ArmTrajectoryPoint setpoint = currentTrajectory.get(trajectoryIndex++);
+            setTargetAngles(
+                Rotation2d.fromRadians(setpoint.theta1),
+                Rotation2d.fromRadians(setpoint.theta2)
+            );
+        }
+
         // Logging
         SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle().getDegrees());
         SmartDashboard.putNumber("Arm/Elbow Angle", getElbowAngle().getDegrees());

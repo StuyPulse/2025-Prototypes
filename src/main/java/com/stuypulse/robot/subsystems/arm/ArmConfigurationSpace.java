@@ -22,7 +22,7 @@ public class ArmConfigurationSpace {
     private final boolean[][] obstacleGrid;
     private final double gridResolution = 100;
     
-    // For visualization
+    // For visualization (Sim)
     private Translation2d currentEndEffectorPos;
     private Translation2d targetEndEffectorPos;
     private List<Translation2d> pathPoints = new ArrayList<>();
@@ -38,11 +38,11 @@ public class ArmConfigurationSpace {
         return new Translation2d(x, y);
     }
 
-    // Convert Cartesian to joint angles (inverse kinematics)
+    // Convert Cartesian to joint angles 
     public double[] toJointAngles(double x, double y) {
         double d = Math.sqrt(x*x + y*y);
         if (d > shoulderLength + elbowLength || d < Math.abs(shoulderLength - elbowLength)) {
-            return null; // Invalid target
+            return null; // Invalid Target
         }
         
         double theta2 = Math.acos((x*x + y*y - shoulderLength*shoulderLength - elbowLength*elbowLength) 

@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems.arm;
 
 import edu.wpi.first.math.spline.QuinticHermiteSpline;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
@@ -50,9 +51,16 @@ public class ArmSpline {
     }
 
     public ArmTrajectoryPoint getPoint(double t) {
-        // Get coefficients for both dimensions
-        double[] coeffsX = Stream.of(spline.getCoefficients().toArray2()).flatMapToDouble(DoubleStream::of).toArray(); //not x coeff needs fixing
-        double[] coeffsY = Stream.of(spline.getCoefficients().toArray2()).flatMapToDouble(DoubleStream::of).toArray(); //not y coeff needs fixing
+        double[][] allCoeffs = spline.getCoefficients().toArray2();
+        int numCoeffsPerDimension = 6; // Quintic spline
+
+        double[] coeffsX = Arrays.stream(allCoeffs)
+                    .flatMapToDouble(row -> Arrays.stream(row, 0, numCoeffsPerDimension))
+                    .toArray();
+
+        double[] coeffsY = Arrays.stream(allCoeffs)
+                    .flatMapToDouble(row -> Arrays.stream(row, numCoeffsPerDimension, numCoeffsPerDimension * 2))
+                    .toArray();
 
         // Calculate position (rad)
         double theta1 = calculatePolynomial(coeffsX, t);
@@ -74,22 +82,21 @@ public class ArmSpline {
         );
     }
 
-    // Optimize with Math.pow() later
     private double calculatePolynomial(double[] coeffs, double t) {
-        return coeffs[0] + coeffs[1] * t + coeffs[2] * t * t 
-             + coeffs[3] * t * t * t + coeffs[4] * t * t * t * t 
-             + coeffs[5] * t * t * t * t * t;
+        return coeffs[0] + coeffs[1] * t + coeffs[2] * Math.pow(t, 2)
+             + coeffs[3] * Math.pow(t, 3) + coeffs[4] * Math.pow(t, 4)
+             + coeffs[5] * Math.pow(t, 5);
     }
 
     private double calculatePolynomialDerivative(double[] coeffs, double t) {
         return coeffs[1] + 2 * coeffs[2] * t 
-             + 3 * coeffs[3] * t * t + 4 * coeffs[4] * t * t * t 
-             + 5 * coeffs[5] * t * t * t * t;
+             + 3 * coeffs[3] * Math.pow(t, 2) + 4 * coeffs[4] * Math.pow(t, 3)
+             + 5 * coeffs[5] * Math.pow(t, 4);
     }
 
     private double calculatePolynomialSecondDerivative(double[] coeffs, double t) {
         return 2 * coeffs[2] + 6 * coeffs[3] * t 
-             + 12 * coeffs[4] * t * t + 20 * coeffs[5] * t * t * t;
+             + 12 * coeffs[4] * Math.pow(t, 2) + 20 * coeffs[5] * Math.pow(t, 3);
     }
 
     public List<ArmTrajectoryPoint> sampleTrajectory(int sampleCount) {

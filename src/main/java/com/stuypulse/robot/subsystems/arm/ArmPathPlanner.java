@@ -96,7 +96,7 @@ public class ArmPathPlanner {
         List<Translation2d> smoothed = new ArrayList<>();
         smoothed.add(roughPath.get(0));
         
-        // Simple averaging filter
+        // Averaging filter
         for (int i = 1; i < roughPath.size()-1; i++) {
             double theta1 = (roughPath.get(i-1).getX() + 
                            roughPath.get(i).getX() + 
