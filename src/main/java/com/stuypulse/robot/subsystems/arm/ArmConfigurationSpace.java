@@ -16,7 +16,7 @@ public class ArmConfigurationSpace {
     private final double shoulderLength = Constants.Arm.SHOULDER_LENGTH;
     private final double elbowLength = Constants.Arm.ELBOW_LENGTH;
 
-    private final boolean[][] obstaclePoint; // Meaning?
+    private final boolean[][] obstaclePoint; 
     private final double gridResolution = 100; // 100x100 grid
     
     // For visualization (Sim)
