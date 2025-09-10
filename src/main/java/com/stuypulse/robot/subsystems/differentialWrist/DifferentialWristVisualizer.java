@@ -62,6 +62,7 @@ public class DifferentialWristVisualizer {
     }
 
     public void updateVisualizer(){
+        
         DifferentialWrist wrist = DifferentialWrist.getInstance();
 
         SmartDashboard.putData("Visualizers/Differential Wrist", canvas);

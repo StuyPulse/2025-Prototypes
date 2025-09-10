@@ -52,9 +52,9 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-        driver.getDPadLeft().whileTrue(new DifferentialWristToL1());
-        driver.getDPadRight().whileTrue(new DifferentialWristToStow());
-        driver.getDPadUp().whileTrue(new DifferentialWristToL2());
+        driver.getBottomButton().whileTrue(new DifferentialWristToL1());
+        driver.getTopButton().whileTrue(new DifferentialWristToStow());
+        driver.getLeftButton().whileTrue(new DifferentialWristToL2());
     }
 
     /**************/
