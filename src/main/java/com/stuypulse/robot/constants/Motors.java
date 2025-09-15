@@ -45,6 +45,7 @@ public interface Motors {
 
         SparkBaseConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(100).openLoopRampRate(0.25).idleMode(IdleMode.kCoast);
         // TO-DO: FF or PID for roller motor?
+   
 
 
 

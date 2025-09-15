@@ -7,6 +7,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
@@ -28,6 +29,13 @@ public class DifferentialWristImpl extends DifferentialWrist {
     private final RelativeEncoder leftEncoder;
     private final RelativeEncoder rightEncoder;
 
+    private final EncoderConfig leftEncoderConfig;
+    private final EncoderConfig rightEncoderConfig;
+    
+
+
+    
+
 
     
     
@@ -43,6 +51,12 @@ public class DifferentialWristImpl extends DifferentialWrist {
 
         leftEncoder = leftDifferentialMotor.getEncoder();
         rightEncoder = leftDifferentialMotor.getEncoder();
+
+        leftEncoderConfig = new EncoderConfig();
+        rightEncoderConfig = new EncoderConfig();
+
+        leftEncoderConfig.positionConversionFactor(1/17.2);
+
 
         leftController = new AnglePIDController(0.5, 0, 0.2);
         rightController = new AnglePIDController(0.5, 0, 0.2);
@@ -72,6 +86,7 @@ public class DifferentialWristImpl extends DifferentialWrist {
      
     @Override
     public Rotation2d getLeftCurrentAngle() {
+        System.out.println(leftEncoder.getPosition());
         return Rotation2d.fromRotations(leftEncoder.getPosition());
     }
 
