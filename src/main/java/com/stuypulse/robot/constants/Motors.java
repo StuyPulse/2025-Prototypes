@@ -22,6 +22,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj.Encoder;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.*;
 
@@ -39,20 +42,22 @@ public interface Motors {
     /** Classes to store all of the values a motor needs */
 
     public interface DifferentialWrist {
+               
+        public static void applyConversionFactor(SparkMaxConfig config, double factor) {
+            config
+                .inverted(true)
+                .smartCurrentLimit(100)
+                .openLoopRampRate(0.25)
+                .idleMode(IdleMode.kCoast);
 
-        SparkBaseConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(100).openLoopRampRate(0.25).idleMode(IdleMode.kCoast);
+            config.encoder
+                .positionConversionFactor(factor);
+        }
+
+       
+
+
         
-
-        SparkBaseConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(100).openLoopRampRate(0.25).idleMode(IdleMode.kCoast);
-        // TO-DO: FF or PID for roller motor?
-   
-
-
-
-            
-
-
-            
 
         // TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
         //     .withCurrentLimitAmps(0)

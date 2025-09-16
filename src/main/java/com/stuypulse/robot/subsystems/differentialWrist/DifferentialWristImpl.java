@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
@@ -16,6 +17,7 @@ import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.SLMath;
+
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -29,13 +31,6 @@ public class DifferentialWristImpl extends DifferentialWrist {
     private final RelativeEncoder leftEncoder;
     private final RelativeEncoder rightEncoder;
 
-    private final EncoderConfig leftEncoderConfig;
-    private final EncoderConfig rightEncoderConfig;
-    
-
-
-    
-
 
     
     
@@ -43,21 +38,25 @@ public class DifferentialWristImpl extends DifferentialWrist {
     public DifferentialWristImpl() {
         super();
 
+        SparkMaxConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig();
+        SparkMaxConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig();
+
+        Motors.DifferentialWrist.applyConversionFactor(LEFT_DIFFERENTIAL_MOTOR_CONFIG, Settings.DifferentialWrist.POSITION_CONVERSION_FACTOR);
+        Motors.DifferentialWrist.applyConversionFactor(RIGHT_DIFFERENTIAL_MOTOR_CONFIG, Settings.DifferentialWrist.POSITION_CONVERSION_FACTOR);
+        
+        
+        
+
         leftDifferentialMotor = new SparkMax(Ports.DifferentialWrist.LEFT_DIFFERENTIAL_MOTOR, MotorType.kBrushless);
         rightDifferentialMotor = new SparkMax(Ports.DifferentialWrist.RIGHT_DIFFERENTIAL_MOTOR,MotorType.kBrushless);
 
-        leftDifferentialMotor.configure(Motors.DifferentialWrist.LEFT_DIFFERENTIAL_MOTOR_CONFIG, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
-        rightDifferentialMotor.configure(Motors.DifferentialWrist.RIGHT_DIFFERENTIAL_MOTOR_CONFIG, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        leftDifferentialMotor.configure(LEFT_DIFFERENTIAL_MOTOR_CONFIG, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        rightDifferentialMotor.configure(RIGHT_DIFFERENTIAL_MOTOR_CONFIG, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
 
         leftEncoder = leftDifferentialMotor.getEncoder();
-        rightEncoder = leftDifferentialMotor.getEncoder();
+        rightEncoder = rightDifferentialMotor.getEncoder();
 
-        leftEncoderConfig = new EncoderConfig();
-        rightEncoderConfig = new EncoderConfig();
-
-        leftEncoderConfig.positionConversionFactor(1/17.2);
-
-
+        
         leftController = new AnglePIDController(0.5, 0, 0.2);
         rightController = new AnglePIDController(0.5, 0, 0.2);
 

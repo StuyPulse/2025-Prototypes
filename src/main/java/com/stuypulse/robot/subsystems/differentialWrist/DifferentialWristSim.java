@@ -55,8 +55,6 @@ public class DifferentialWristSim extends DifferentialWrist {
         );
 
         leftSim.setInput(leftController.getOutput());
-        
-        
         rightSim.setInput(rightController.getOutput());
 
     }

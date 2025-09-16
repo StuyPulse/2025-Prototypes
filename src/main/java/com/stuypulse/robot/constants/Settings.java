@@ -27,6 +27,9 @@ public interface Settings {
         double MIN_ROLL_ANGLE = 0;
         double MAX_ROLL_ANGLE = 360;
 
+        double GEAR_RATIO = 1.0;
+        double POSITION_CONVERSION_FACTOR = 1.0 / GEAR_RATIO;
+
 
         double LEFT_ANGLE_OFFSET = 0;
         double RIGHT_ANGLE_OFFSET = 0;
