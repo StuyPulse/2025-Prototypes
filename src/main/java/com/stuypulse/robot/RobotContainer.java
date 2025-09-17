@@ -55,6 +55,7 @@ public class RobotContainer {
         driver.getBottomButton().whileTrue(new DifferentialWristToL1());
         driver.getTopButton().whileTrue(new DifferentialWristToStow());
         driver.getLeftButton().whileTrue(new DifferentialWristToL2());
+        driver.getRightButton().whileTrue(new DifferentialWristToL2());
     }
 
     /**************/

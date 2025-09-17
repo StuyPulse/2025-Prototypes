@@ -41,8 +41,8 @@ public class DifferentialWristImpl extends DifferentialWrist {
         SparkMaxConfig LEFT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig();
         SparkMaxConfig RIGHT_DIFFERENTIAL_MOTOR_CONFIG = new SparkMaxConfig();
 
-        Motors.DifferentialWrist.applyConversionFactor(LEFT_DIFFERENTIAL_MOTOR_CONFIG, Settings.DifferentialWrist.POSITION_CONVERSION_FACTOR);
-        Motors.DifferentialWrist.applyConversionFactor(RIGHT_DIFFERENTIAL_MOTOR_CONFIG, Settings.DifferentialWrist.POSITION_CONVERSION_FACTOR);
+        Motors.DifferentialWrist.applyConversionFactor(LEFT_DIFFERENTIAL_MOTOR_CONFIG, Settings.DifferentialWrist.POSITION_CONVERSION_FACTOR, false);
+        Motors.DifferentialWrist.applyConversionFactor(RIGHT_DIFFERENTIAL_MOTOR_CONFIG, Settings.DifferentialWrist.POSITION_CONVERSION_FACTOR, true);
         
         
         
@@ -57,8 +57,8 @@ public class DifferentialWristImpl extends DifferentialWrist {
         rightEncoder = rightDifferentialMotor.getEncoder();
 
         
-        leftController = new AnglePIDController(0.5, 0, 0.2);
-        rightController = new AnglePIDController(0.5, 0, 0.2);
+        leftController = new AnglePIDController(3.0, 0, 0.05);
+        rightController = new AnglePIDController(3.0, 0, 0.05);
 
 
         
@@ -85,7 +85,6 @@ public class DifferentialWristImpl extends DifferentialWrist {
      
     @Override
     public Rotation2d getLeftCurrentAngle() {
-        System.out.println(leftEncoder.getPosition());
         return Rotation2d.fromRotations(leftEncoder.getPosition());
     }
 

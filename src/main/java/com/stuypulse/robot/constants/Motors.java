@@ -5,6 +5,7 @@
 
 package com.stuypulse.robot.constants;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -43,9 +44,9 @@ public interface Motors {
 
     public interface DifferentialWrist {
                
-        public static void applyConversionFactor(SparkMaxConfig config, double factor) {
+        public static void applyConversionFactor(SparkMaxConfig config, double factor, boolean inverted) {
             config
-                .inverted(true)
+                .inverted(inverted)
                 .smartCurrentLimit(100)
                 .openLoopRampRate(0.25)
                 .idleMode(IdleMode.kCoast);

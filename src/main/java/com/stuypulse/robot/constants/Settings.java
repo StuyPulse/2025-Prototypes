@@ -27,7 +27,7 @@ public interface Settings {
         double MIN_ROLL_ANGLE = 0;
         double MAX_ROLL_ANGLE = 360;
 
-        double GEAR_RATIO = 1.0;
+        double GEAR_RATIO = 8.888;
         double POSITION_CONVERSION_FACTOR = 1.0 / GEAR_RATIO;
 
 
@@ -44,8 +44,8 @@ public interface Settings {
         double CORAL_SCORE_L2_PITCH_ANGLE = 0;
         double CORAL_SCORE_L2_ROLL_ANGLE = 90;
 
-        double CORAL_SCORE_L3_PITCH_ANGLE = 0;
-        double CORAL_SCORE_L3_ROLL_ANGLE = 0;
+        double CORAL_SCORE_L3_PITCH_ANGLE = 45;
+        double CORAL_SCORE_L3_ROLL_ANGLE = 45;
 
         double CORAL_SCORE_L4_PITCH_ANGLE = 0;
         double CORAL_SCORE_L4_ROLL_ANGLE = 0;
