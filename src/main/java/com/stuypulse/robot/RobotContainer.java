@@ -10,6 +10,7 @@ import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristSetWristState;
 import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristToL1;
 import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristToL2;
+import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristToL3;
 import com.stuypulse.robot.commands.differentialWrist.wrist.DifferentialWristToStow;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.differentialWrist.DifferentialWrist;
@@ -55,7 +56,7 @@ public class RobotContainer {
         driver.getBottomButton().whileTrue(new DifferentialWristToL1());
         driver.getTopButton().whileTrue(new DifferentialWristToStow());
         driver.getLeftButton().whileTrue(new DifferentialWristToL2());
-        driver.getRightButton().whileTrue(new DifferentialWristToL2());
+        driver.getRightButton().whileTrue(new DifferentialWristToL3());
     }
 
     /**************/

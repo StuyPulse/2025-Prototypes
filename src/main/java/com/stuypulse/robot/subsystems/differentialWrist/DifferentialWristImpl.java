@@ -57,8 +57,8 @@ public class DifferentialWristImpl extends DifferentialWrist {
         rightEncoder = rightDifferentialMotor.getEncoder();
 
         
-        leftController = new AnglePIDController(3.0, 0, 0.05);
-        rightController = new AnglePIDController(3.0, 0, 0.05);
+        leftController = new AnglePIDController(3.0, 0, 0.075);
+        rightController = new AnglePIDController(3.0, 0, 0.075);
 
 
         
