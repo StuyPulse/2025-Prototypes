@@ -20,6 +20,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 /*-
  * File containing all of the configurations that different motors require.
@@ -31,6 +33,51 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
  *  - The Open Loop Ramp Rate
  */
 public interface Motors {
+
+    public static void applyConversionFactor(SparkMaxConfig config, double factor, boolean inverted) {
+        config
+            .inverted(inverted)
+            .smartCurrentLimit(100)
+            .openLoopRampRate(0.25)
+            .idleMode(IdleMode.kBrake);
+
+        config.encoder
+            .positionConversionFactor(factor);
+    }
+
+    TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
+        .withCurrentLimitAmps(0)
+        .withRampRate(0)
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+        .withSupplyCurrentLimitAmps(0)
+        .withMotionProfile(0, 0)
+        .withSensorToMechanismRatio(0)
+        .withFFConstants(0, 0, 0, 0,0)
+        .withPIDConstants(0, 0, 0, 0);
+
+
+    TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
+        .withCurrentLimitAmps(0)
+        .withRampRate(0)
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+        .withSupplyCurrentLimitAmps(0)
+        .withMotionProfile(0, 0)
+        .withSensorToMechanismRatio(0)
+        .withFFConstants(0, 0, 0, 0,0)
+        .withPIDConstants(0, 0, 0, 0);
+
+    TalonFXConfig HOOD_MOTOR_CONFIG = new TalonFXConfig()
+        .withCurrentLimitAmps(0)
+        .withRampRate(0)
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInvertedValue(InvertedValue.CounterClockwise_Positive)
+        .withSupplyCurrentLimitAmps(0)
+        .withMotionProfile(0, 0)
+        .withSensorToMechanismRatio(0)
+        .withFFConstants(0, 0, 0, 0,0)
+        .withPIDConstants(0, 0, 0, 0);
 
     /** Classes to store all of the values a motor needs */
 
