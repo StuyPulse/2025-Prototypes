@@ -5,9 +5,6 @@
 
 package com.stuypulse.robot.constants;
 
-import com.stuypulse.stuylib.network.SmartBoolean;
-import com.stuypulse.stuylib.network.SmartNumber;
-
 /*-
  * File containing tunable settings for every subsystem on the robot.
  *
@@ -17,6 +14,9 @@ import com.stuypulse.stuylib.network.SmartNumber;
 public interface Settings {
     public interface HDSR {
         public static final double ROLLER_SPEED = 1.0;
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
     }
 
 }

@@ -1,7 +1,5 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
-import org.dyn4j.geometry.Rotation;
-
 import com.stuypulse.robot.Robot;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
@@ -10,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class HoodedShooter extends SubsystemBase{
+public abstract class HoodedShooter extends SubsystemBase{
     public static final HoodedShooter instance;
     private SmartNumber targetVelocity;
     private SmartNumber targetAngle;
@@ -74,7 +72,11 @@ public class HoodedShooter extends SubsystemBase{
         return targetVelocity.doubleValue();
     }
 
+    public boolean hasBall(){
+        return hasBall.get();
+    }
 
+    public abstract void setRollerSpeeds(double speed);
    
 
     @Override

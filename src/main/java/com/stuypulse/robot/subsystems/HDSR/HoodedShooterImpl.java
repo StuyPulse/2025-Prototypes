@@ -1,17 +1,10 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.math.Angle;
-import com.stuypulse.stuylib.streams.booleans.BStream;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DutyCycle;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.stuypulse.robot.constants.Motors;
@@ -19,7 +12,6 @@ import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Motors.*;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class HoodedShooterImpl extends HoodedShooter {
     private final TalonFX hoodMotor;
@@ -28,8 +20,6 @@ public class HoodedShooterImpl extends HoodedShooter {
 
     private final AnglePIDController hoodController;
     private final PIDController shooterController;
-
-    private final DutyCycle rollerCycle;
 
     public HoodedShooterImpl() {
         super();
@@ -50,6 +40,7 @@ public class HoodedShooterImpl extends HoodedShooter {
         hoodMotorConfig.configure(hoodMotor);
 
         hoodController = new AnglePIDController(Gains.HDSR.kP, Gains.HDSR.kI, Gains.HDSR.kD);
+        shooterController = new PIDController(Settings.HDSR.kP, Settings.HDSR.kI, Settings.HDSR.kD);
 
     }
 
@@ -61,10 +52,13 @@ public class HoodedShooterImpl extends HoodedShooter {
         return shooterMotor.getVelocity().getValueAsDouble();
     }
 
+    public void setRollerSpeeds(double speed){
+        rollerMotor.set(speed);
+    }
+
    
    
     @Override
-   
     public void periodic() {
         super.periodic();
 
@@ -74,8 +68,8 @@ public class HoodedShooterImpl extends HoodedShooter {
         shooterController.update(getTargetVelocity(), getCurrentVelocity());
         shooterMotor.setVoltage(shooterController.getOutput());
 
-        rollerMotor.set(Settings.HDSR.ROLLER_SPEED);
-
+        // if (hasBall()) rollerMotor.set(Settings.HDSR.ROLLER_SPEED);
+        // else rollerMotor.set(0);
         
 
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());

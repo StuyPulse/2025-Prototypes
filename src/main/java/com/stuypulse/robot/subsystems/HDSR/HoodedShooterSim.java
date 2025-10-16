@@ -1,5 +1,18 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
-public class HoodedShooterSim {
+import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
+import com.stuypulse.stuylib.control.feedback.PIDController;
 
+public class HoodedShooterSim extends HoodedShooter{
+
+    private AnglePIDController hoodController;
+    private PIDController shooterController;
+
+    // we use da flywheel sim probably
+    public HoodedShooterSim(){
+        super();
+
+        
+        
+    }
 }
