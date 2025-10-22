@@ -5,8 +5,10 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.commands.HDSR.HDSRDefaultCommand;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -16,11 +18,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
 
+
     // Gamepads
     public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
+    private final HoodedShooter hdsr = HoodedShooter.getInstance();
+
 
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -37,7 +42,9 @@ public class RobotContainer {
     /*** DEFAULTS ***/
     /****************/
 
-    private void configureDefaultCommands() {}
+    private void configureDefaultCommands() {
+        hdsr.setDefaultCommand(new HDSRDefaultCommand());
+    }
 
     /***************/
     /*** BUTTONS ***/

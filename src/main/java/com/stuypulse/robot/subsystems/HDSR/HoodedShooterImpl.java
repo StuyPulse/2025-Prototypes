@@ -68,8 +68,6 @@ public class HoodedShooterImpl extends HoodedShooter {
         shooterController.update(getTargetVelocity(), getCurrentVelocity());
         shooterMotor.setVoltage(shooterController.getOutput());
 
-        // if (hasBall()) rollerMotor.set(Settings.HDSR.ROLLER_SPEED);
-        // else rollerMotor.set(0);
         
 
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
