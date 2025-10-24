@@ -20,7 +20,12 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj.Encoder;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 /*-
@@ -33,6 +38,32 @@ import com.revrobotics.spark.config.SparkMaxConfig;
  *  - The Open Loop Ramp Rate
  */
 public interface Motors {
+
+    public interface Swerve {
+        public interface Turn {
+            SparkBaseConfig motorConfig = new SparkMaxConfig()
+                .inverted(true)
+                .smartCurrentLimit(200)
+                .openLoopRampRate(0.25)
+                .idleMode(IdleMode.kBrake)
+                .apply(
+                    new EncoderConfig()
+                        .positionConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION)
+                        .velocityConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION / 60.0));
+
+        }
+        public interface Drive {
+            SparkBaseConfig motorConfig = new SparkMaxConfig()
+            .inverted(true)
+            .smartCurrentLimit(200)
+            .openLoopRampRate(0.25)
+            .idleMode(IdleMode.kBrake)
+            .apply(
+                new EncoderConfig()
+                    .positionConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION)
+                    .velocityConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION / 60.0));
+            }
+        }
 
     public static void applyConversionFactor(SparkMaxConfig config, double factor, boolean inverted) {
         config

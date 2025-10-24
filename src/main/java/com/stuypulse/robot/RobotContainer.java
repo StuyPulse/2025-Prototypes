@@ -5,10 +5,13 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.commands.HDSR.HDSRDefaultCommand;
+import com.stuypulse.robot.commands.HDSR.HDSRSetState;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
+import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
+import com.stuypulse.robot.subsystems.HDSR.HoodedShooter.HoodState;
+import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -25,6 +28,7 @@ public class RobotContainer {
     
     // Subsystem
     private final HoodedShooter hdsr = HoodedShooter.getInstance();
+    private final SwerveDrive swerve = SwerveDrive.getInstance();
 
 
     // Autons
@@ -43,14 +47,16 @@ public class RobotContainer {
     /****************/
 
     private void configureDefaultCommands() {
-        hdsr.setDefaultCommand(new HDSRDefaultCommand());
+        swerve.setDefaultCommand(new SwerveDriveDrive(driver));
     }
 
     /***************/
     /*** BUTTONS ***/
     /***************/
 
-    private void configureButtonBindings() {}
+    private void configureButtonBindings() {
+        driver.getBottomButton().whileTrue(new HDSRSetState(HoodState.STOW));
+    }
 
     /**************/
     /*** AUTONS ***/
@@ -58,7 +64,6 @@ public class RobotContainer {
 
     public void configureAutons() {
         autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
-
         SmartDashboard.putData("Autonomous", autonChooser);
     }
 

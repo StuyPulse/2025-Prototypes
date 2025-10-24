@@ -10,19 +10,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class HoodedShooter extends SubsystemBase{
     public static final HoodedShooter instance;
-    private SmartNumber targetVelocity;
-    private SmartNumber targetAngle;
-    private SmartBoolean hasBall;
 
     private HoodState state;
 
-
     static {
-        if (Robot.isReal()){
-            instance = new HoodedShooterImpl();
-        } else {
-            instance = new HoodedShooterSim();
-        }
+        instance = new HoodedShooterImpl();
+        // if (Robot.isReal()){
+        //     instance = new HoodedShooterImpl();
+        // }
+        // else {
+        //     instance = new HoodedShooterSim();
+        // }
     }
 
     public static HoodedShooter getInstance(){
@@ -31,57 +29,41 @@ public abstract class HoodedShooter extends SubsystemBase{
 
     public enum HoodState{
         STOW(new Rotation2d(0), 0.0),
-        SHOOT(new Rotation2d(10), 1.0);
+        SHOOT(new Rotation2d(10), 3000.0);
 
-        private Rotation2d hoodAngle;
-        private double shooterVelocity;
+        private Rotation2d targetAngle;
+        private double targetRPM;
 
-        
-        private HoodState(Rotation2d hoodAngle, double shooterVelocity) {
-            this.hoodAngle = hoodAngle;
-            this.shooterVelocity = shooterVelocity;
+        private HoodState(Rotation2d targetAngle, double targetRPM) {
+            this.targetAngle = targetAngle;
+            this.targetRPM = targetRPM;
         }
 
-        public Rotation2d getHoodAngle(){
-            return hoodAngle;
+        public Rotation2d getTargetAngle(){
+            return targetAngle;
         }
 
-        public double getShooterVelocity() {
-            return shooterVelocity;
+        public double getTargetRPM() {
+            return targetRPM;
         }
-
     }
 
     public HoodedShooter() {
         state = HoodState.STOW;
-        hasBall = new SmartBoolean("HDSR/hasBall", false);
     }
+
+    public HoodState getState() { return state; }
 
     public void setHoodState(HoodState state) {
         this.state = state;
-        targetAngle.set(state.getHoodAngle().getDegrees());
-        targetVelocity.set(state.getShooterVelocity());
-    }
-    
-    
-    public Rotation2d getTargetAngle() {
-        return Rotation2d.fromDegrees(targetAngle.doubleValue());
     }
 
-    public double getTargetVelocity() {
-        return targetVelocity.doubleValue();
-    }
-
-    public boolean hasBall(){
-        return hasBall.get();
-    }
-
-    public abstract void setRollerSpeeds(double speed);
+    // public abstract boolean hasBall();
    
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("HDSR/state", state.toString());
+        SmartDashboard.putString("HDSR/State", state.toString());
     }
 
 
