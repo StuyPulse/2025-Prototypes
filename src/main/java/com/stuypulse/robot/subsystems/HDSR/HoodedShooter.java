@@ -1,10 +1,5 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
-import com.stuypulse.robot.Robot;
-import com.stuypulse.stuylib.network.SmartBoolean;
-import com.stuypulse.stuylib.network.SmartNumber;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,19 +23,13 @@ public abstract class HoodedShooter extends SubsystemBase{
     }
 
     public enum HoodState{
-        STOW(new Rotation2d(0), 0.0),
-        SHOOT(new Rotation2d(10), 3000.0);
+        STOW(0.0),
+        SHOOT(3000.0);
 
-        private Rotation2d targetAngle;
         private double targetRPM;
 
-        private HoodState(Rotation2d targetAngle, double targetRPM) {
-            this.targetAngle = targetAngle;
+        private HoodState(double targetRPM) {
             this.targetRPM = targetRPM;
-        }
-
-        public Rotation2d getTargetAngle(){
-            return targetAngle;
         }
 
         public double getTargetRPM() {
