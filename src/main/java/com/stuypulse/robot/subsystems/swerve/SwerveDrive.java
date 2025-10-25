@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.swerve;
+package com.stuypulse.robot.subsystems.Swerve;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -14,7 +14,7 @@ import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
-import com.stuypulse.robot.subsystems.odometry.Odometry;
+// import com.stuypulse.robot.subsystems.odometry.Odometry;
 // import com.stuypulse.robot.subsystems.swerve.modules.SimModule;
 // import com.stuypulse.robot.subsystems.swerve.modules.SwerveModule;
 // import com.stuypulse.robot.subsystems.swerve.modules.SwerveModuleImpl;
@@ -120,7 +120,8 @@ public class SwerveDrive extends SubsystemBase {
                 velocity.x,
                 velocity.y,
                 omega,
-                Odometry.getInstance().getRotation());
+                getGyroAngle()
+        );
 
         Pose2d robotVel = new Pose2d(
             Settings.DT * speeds.vxMetersPerSecond,
@@ -206,41 +207,41 @@ public class SwerveDrive extends SubsystemBase {
         setModuleStates(state);
     }
 
-    public void configureAutoBuilder() {        
-        try{
-            Odometry odometry = Odometry.getInstance();
+    // public void configureAutoBuilder() {        
+    //     try{
+    //         Odometry odometry = Odometry.getInstance();
 
-            AutoBuilder.configure(
-                odometry::getPose,
-                odometry::reset,
-                this::getChassisSpeeds,
-                (speeds, feedforwards) -> setChassisSpeeds(speeds),
-                new PPHolonomicDriveController(
-                    Settings.Swerve.Alignment.XY,
-                    Settings.Swerve.Alignment.THETA
-                ),
-                RobotConfig.fromGUISettings(),
-                () -> false,
-                instance
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    //         AutoBuilder.configure(
+    //             odometry::getPose,
+    //             odometry::reset,
+    //             this::getChassisSpeeds,
+    //             (speeds, feedforwards) -> setChassisSpeeds(speeds),
+    //             new PPHolonomicDriveController(
+    //                 Settings.Swerve.Alignment.XY,
+    //                 Settings.Swerve.Alignment.THETA
+    //             ),
+    //             RobotConfig.fromGUISettings(),
+    //             () -> false,
+    //             instance
+    //         );
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
     @Override
     public void periodic() {
-        Odometry odometry = Odometry.getInstance();
-        Pose2d pose = odometry.getPose();
-        Rotation2d angle = odometry.getRotation();
+        // Odometry odometry = Odometry.getInstance();
+        // Pose2d pose = odometry.getPose();
+        // Rotation2d angle = odometry.getRotation();
 
-        for (int i = 0; i < modules.length; ++i) {
-            Pose2d modulePose = new Pose2d(
-                pose.getTranslation().plus(modules[i].getModuleOffset().rotateBy(angle)),
-                modules[i].getState().angle.plus(angle)
-            );
-            module2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
-        }
+        // for (int i = 0; i < modules.length; ++i) {
+        //     Pose2d modulePose = new Pose2d(
+        //         pose.getTranslation().plus(modules[i].getModuleOffset().rotateBy(angle)),
+        //         modules[i].getState().angle.plus(angle)
+        //     );
+        //     module2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
+        // }
 
         SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroPitch());
         SmartDashboard.putNumber("Swerve/Gyro Pitch (deg)", getGyroPitch());

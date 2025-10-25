@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.swerve;
+package com.stuypulse.robot.subsystems.Swerve;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -72,6 +72,7 @@ public class SwerveModuleImpl extends SwerveModule {
         return Rotation2d.fromRotations(pivotEncoder.get())
             .minus(angleOffset);
     }
+
 
     @Override
     public void periodic() {
