@@ -20,10 +20,12 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Encoder;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -46,6 +48,7 @@ public interface Motors {
                 .smartCurrentLimit(200)
                 .openLoopRampRate(0.25)
                 .idleMode(IdleMode.kBrake)
+                .apply(new ClosedLoopConfig().pidf(Settings.Swerve.Drive.kP, Settings.Swerve.Drive.kI, Settings.Swerve.Drive.kD, Settings.Swerve.Drive.kV))
                 .apply(
                     new EncoderConfig()
                         .positionConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION)
@@ -77,15 +80,15 @@ public interface Motors {
     }
 
     TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
-        .withCurrentLimitAmps(0)
-        .withRampRate(0)
+        .withCurrentLimitAmps(80)
+        .withRampRate(1.5)
         .withNeutralMode(NeutralModeValue.Brake)
-        .withInvertedValue(InvertedValue.CounterClockwise_Positive)
-        .withSupplyCurrentLimitAmps(0)
-        .withMotionProfile(0, 0)
-        .withSensorToMechanismRatio(0)
-        .withFFConstants(0, 0, 0, 0,0)
-        .withPIDConstants(0, 0, 0, 0);
+        .withInvertedValue(InvertedValue.Clockwise_Positive)
+        .withSupplyCurrentLimitAmps(80)
+        .withMotionProfile(10, 2)
+        .withSensorToMechanismRatio(1.0)
+        .withFFConstants(0, 0.115, 0.1, 0,0)
+        .withPIDConstants(0.015, 0.01, 0, 0);
 
 
     TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
@@ -123,6 +126,7 @@ public interface Motors {
         private final CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
         private final FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
         private final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+
 
         public void configure(TalonFX motor) {
             motor.getConfigurator().apply(configuration);

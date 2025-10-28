@@ -47,7 +47,7 @@ public class HoodedShooterImpl extends HoodedShooter {
         super.periodic();
 
         // hoodMotor.setControl(new PositionVoltage(getState().getTargetAngle().getRotations()));
-        shooterMotor.setControl(new VelocityVoltage(getState().getTargetRPM() / 60.0));
+        shooterMotor.setControl(new VelocityVoltage(getState().getTargetRPM() / 60.0).withSlot(0));
         
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
         // SmartDashboard.putNumber("HDSR/currentAngle", getCurrentAngle().getDegrees());

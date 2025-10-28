@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.Swerve;
+package com.stuypulse.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;

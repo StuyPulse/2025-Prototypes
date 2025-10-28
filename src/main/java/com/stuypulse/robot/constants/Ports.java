@@ -15,9 +15,10 @@ public interface Ports {
     public interface HDSR {
         int HOOD_MOTOR = 0;
         int ROLLER_MOTOR = 1;
-        int SHOOTER_MOTOR = 2;
+        int SHOOTER_MOTOR = 14;
     }
 
+    //TODO: Fix all these ports, they are wrong
     public interface Swerve {
         int PIGEON = 9;
         public interface FrontRight {
@@ -31,7 +32,7 @@ public interface Ports {
             int ENCODER = 4;
         }
         public interface BackLeft {
-            int DRIVE = 14;
+            int DRIVE = 0;
             int TURN = 13;
             int ENCODER = 3;
         }
