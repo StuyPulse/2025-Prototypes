@@ -37,8 +37,8 @@ public interface Ports {
             int ENCODER = 3;
         }
         public interface BackRight {
-            int DRIVE = 12;
-            int TURN = 11;
+            int DRIVE = 16;
+            int TURN = 17;
             int ENCODER = 2;
         }
     }

@@ -81,13 +81,13 @@ public interface Motors {
 
     TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
         .withCurrentLimitAmps(80)
-        .withRampRate(1.5)
+        .withRampRate(1)
         .withNeutralMode(NeutralModeValue.Brake)
         .withInvertedValue(InvertedValue.Clockwise_Positive)
         .withSupplyCurrentLimitAmps(80)
         .withMotionProfile(10, 2)
         .withSensorToMechanismRatio(1.0)
-        .withFFConstants(0, 0.115, 0.1, 0,0)
+        .withFFConstants(0, 0.115, 1, 0,0)
         .withPIDConstants(0.015, 0.01, 0, 0);
 
 

@@ -35,7 +35,7 @@ public class HoodedShooterImpl extends HoodedShooter {
     // }
 
     public double getCurrentVelocity() {
-        return shooterMotor.getVelocity().getValueAsDouble();
+        return shooterMotor.getVelocity().getValueAsDouble()* 60;
     }
 
     // public void setRollerSpeeds(double speed){
@@ -50,6 +50,7 @@ public class HoodedShooterImpl extends HoodedShooter {
         shooterMotor.setControl(new VelocityVoltage(getState().getTargetRPM() / 60.0).withSlot(0));
         
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
+        SmartDashboard.putNumber("HDSR/ target velocity ", getState().getTargetRPM());
         // SmartDashboard.putNumber("HDSR/currentAngle", getCurrentAngle().getDegrees());
     }
 }
