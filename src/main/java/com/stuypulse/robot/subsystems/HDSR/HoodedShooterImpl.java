@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.hdsr;
+package com.stuypulse.robot.subsystems.HDSR;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -21,7 +21,7 @@ public class HoodedShooterImpl extends HoodedShooter {
 
         // hoodMotor = new TalonFX(Ports.HDSR.HOOD_MOTOR);
         // rollerMotor = new TalonFX(Ports.HDSR.ROLLER_MOTOR);
-        shooterMotor = new TalonFX(Ports.HDSR.SHOOTER_MOTOR);
+        shooterMotor = new TalonFX(Ports.HDSR.SHOOTER_MOTOR, "swerve");
         
         hasBall = false;
         

@@ -9,8 +9,8 @@ import com.stuypulse.robot.commands.HDSR.HDSRSetState;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
-import com.stuypulse.robot.subsystems.hdsr.HoodedShooter.HoodState;
+import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
+import com.stuypulse.robot.subsystems.HDSR.HoodedShooter.HoodState;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
@@ -28,7 +28,7 @@ public class RobotContainer {
     
     // Subsystem
     private final HoodedShooter hdsr = HoodedShooter.getInstance();
-    private final SwerveDrive swerve = SwerveDrive.getInstance();
+  //  private final SwerveDrive swerve = SwerveDrive.getInstance();
 
 
     // Autons
@@ -47,7 +47,7 @@ public class RobotContainer {
     /****************/
 
     private void configureDefaultCommands() {
-        swerve.setDefaultCommand(new SwerveDriveDrive(driver));
+       // swerve.setDefaultCommand(new SwerveDriveDrive(driver));
     }
 
     /***************/

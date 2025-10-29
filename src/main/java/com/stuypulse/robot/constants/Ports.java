@@ -27,7 +27,7 @@ public interface Ports {
             int ENCODER = 1;
         }
         public interface FrontLeft {
-            int DRIVE = 16;
+            int DRIVE = 18;
             int TURN = 15;
             int ENCODER = 4;
         }
@@ -38,7 +38,7 @@ public interface Ports {
         }
         public interface BackRight {
             int DRIVE = 16;
-            int TURN = 17;
+            int TURN = 12;
             int ENCODER = 2;
         }
     }

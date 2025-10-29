@@ -26,7 +26,7 @@ public class OdometryImpl extends Odometry {
         poseEstimator =
             new SwerveDrivePoseEstimator(
                 swerve.getKinematics(),
-                swerve.getGyroAngle(),
+                new Rotation2d().kZero,
                 swerve.getModulePositions(),
                 startingPose,
 
@@ -55,10 +55,10 @@ public class OdometryImpl extends Odometry {
     public void reset(Pose2d pose) {
         SwerveDrive drive = SwerveDrive.getInstance();
 
-        poseEstimator.resetPosition(
-            drive.getGyroAngle(),
-            drive.getModulePositions(),
-            pose);
+        // poseEstimator.resetPosition(
+        //     drive.getGyroAngle(),
+        //     drive.getModulePositions(),
+        //     pose);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class OdometryImpl extends Odometry {
     @Override
     public void periodic() {
         SwerveDrive drive = SwerveDrive.getInstance();
-        poseEstimator.update(drive.getGyroAngle(), drive.getModulePositions());
+        // poseEstimator.update(drive.getGyroAngle(), drive.getModulePositions());
 
         // poseEstimatorPose2d.setPose(Robot.isBlue() ? poseEstimator.getEstimatedPosition() : Field.transformToOppositeAlliance(poseEstimator.getEstimatedPosition()));
 
