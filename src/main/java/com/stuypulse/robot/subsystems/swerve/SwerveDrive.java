@@ -14,10 +14,10 @@ import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
-// import com.stuypulse.robot.subsystems.odometry.Odometry;
-// import com.stuypulse.robot.subsystems.swerve.modules.SimModule;
-// import com.stuypulse.robot.subsystems.swerve.modules.SwerveModule;
-// import com.stuypulse.robot.subsystems.swerve.modules.SwerveModuleImpl;
+import com.stuypulse.robot.subsystems.odometry.Odometry;
+import com.stuypulse.robot.subsystems.swerve.SimModule;
+import com.stuypulse.robot.subsystems.swerve.SwerveModule;
+import com.stuypulse.robot.subsystems.swerve.SwerveModuleImpl;
 import com.stuypulse.stuylib.math.SLMath;
 import com.stuypulse.stuylib.math.Vector2D;
 
@@ -94,13 +94,13 @@ public class SwerveDrive extends SubsystemBase {
         return locations;
     }
 
-    // public SwerveModulePosition[] getModulePositions() {
-    //     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
-    //     for(int i = 0; i < modules.length; i++) {
-    //         positions[i] = modules[i].getModulePosition();
-    //     }
-    //     return positions;
-    // }
+    public SwerveModulePosition[] getModulePositions() {
+        SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
+        for(int i = 0; i < modules.length; i++) {
+            positions[i] = modules[i].getModulePosition();
+        }
+        return positions;
+    }
 
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[modules.length];
@@ -231,17 +231,17 @@ public class SwerveDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Odometry odometry = Odometry.getInstance();
-        // Pose2d pose = odometry.getPose();
-        // Rotation2d angle = odometry.getRotation();
+        Odometry odometry = Odometry.getInstance();
+        Pose2d pose = odometry.getPose();
+        Rotation2d angle = odometry.getRotation();
 
-        // for (int i = 0; i < modules.length; ++i) {
-        //     Pose2d modulePose = new Pose2d(
-        //         pose.getTranslation().plus(modules[i].getModuleOffset().rotateBy(angle)),
-        //         modules[i].getState().angle.plus(angle)
-        //     );
-        //     module2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
-        // }
+        for (int i = 0; i < modules.length; ++i) {
+            Pose2d modulePose = new Pose2d(
+                pose.getTranslation().plus(modules[i].getModuleOffset().rotateBy(angle)),
+                modules[i].getState().angle.plus(angle)
+            );
+            module2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
+        }
 
         SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroPitch());
         SmartDashboard.putNumber("Swerve/Gyro Pitch (deg)", getGyroPitch());

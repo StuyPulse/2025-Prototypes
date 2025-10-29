@@ -73,6 +73,15 @@ public class SwerveModuleImpl extends SwerveModule {
             .minus(angleOffset);
     }
 
+    public double getDistance(){
+        return driveEncoder.getPosition();
+    }
+
+    @Override
+    public SwerveModulePosition getModulePosition() {
+        return new SwerveModulePosition(getDistance(), getAngle());
+    }
+
 
     @Override
     public void periodic() {

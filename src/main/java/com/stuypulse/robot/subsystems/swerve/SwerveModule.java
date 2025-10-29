@@ -40,7 +40,7 @@ public abstract class SwerveModule extends SubsystemBase {
 
     public abstract Rotation2d getAngle();
 
-    // public abstract SwerveModulePosition getModulePosition();
+    public abstract SwerveModulePosition getModulePosition();
 
     public final SwerveModuleState getState() {
         return new SwerveModuleState(getVelocity(), getAngle());

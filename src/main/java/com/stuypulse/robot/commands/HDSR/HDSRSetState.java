@@ -1,7 +1,7 @@
 package com.stuypulse.robot.commands.HDSR;
 
-import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
-import com.stuypulse.robot.subsystems.HDSR.HoodedShooter.HoodState;
+import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
+import com.stuypulse.robot.subsystems.hdsr.HoodedShooter.HoodState;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 

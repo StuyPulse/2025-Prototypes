@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.HDSR;
+package com.stuypulse.robot.subsystems.hdsr;
 
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.control.feedback.PIDController;
