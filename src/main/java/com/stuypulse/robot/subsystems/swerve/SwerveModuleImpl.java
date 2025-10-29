@@ -38,9 +38,10 @@ public class SwerveModuleImpl extends SwerveModule {
     private final Controller driveController;
 
     private final SparkMax pivotMotor;
-    private final DutyCycleEncoder pivotEncoder;
+    private final CANcoder pivotEncoder;
 
     private final AngleController pivotController;
+
 
     public SwerveModuleImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID) {
         super(name, location);
@@ -50,7 +51,7 @@ public class SwerveModuleImpl extends SwerveModule {
 
         pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
         pivotMotor.configure(Motors.Swerve.Turn.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        pivotEncoder = new DutyCycleEncoder(pivotEncoderID);
+        pivotEncoder = new CANcoder(pivotEncoderID);
 
         driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         driveEncoder = driveMotor.getEncoder();
@@ -69,7 +70,7 @@ public class SwerveModuleImpl extends SwerveModule {
 
     @Override
     public Rotation2d getAngle() {
-        return Rotation2d.fromRotations(pivotEncoder.get())
+        return Rotation2d.fromRotations(pivotEncoder.getAbsolutePosition().getValueAsDouble())
             .minus(angleOffset);
     }
 
@@ -104,6 +105,6 @@ public class SwerveModuleImpl extends SwerveModule {
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Voltage", pivotController.getOutput());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Current", pivotMotor.getOutputCurrent());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Angle Error", pivotController.getError().toDegrees());
-        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Raw Encoder Angle", Units.rotationsToDegrees(pivotEncoder.get()));
+        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Raw Encoder Angle", Units.rotationsToDegrees(pivotEncoder.getAbsolutePosition().getValueAsDouble()));
     }
 }

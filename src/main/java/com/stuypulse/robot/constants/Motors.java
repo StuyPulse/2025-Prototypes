@@ -47,7 +47,7 @@ public interface Motors {
                 .inverted(true)
                 .smartCurrentLimit(200)
                 .openLoopRampRate(0.25)
-                .idleMode(IdleMode.kBrake)
+                .idleMode(IdleMode.kCoast)
                 .apply(new ClosedLoopConfig().pidf(Settings.Swerve.Drive.kP, Settings.Swerve.Drive.kI, Settings.Swerve.Drive.kD, Settings.Swerve.Drive.kV))
                 .apply(
                     new EncoderConfig()
@@ -60,7 +60,7 @@ public interface Motors {
             .inverted(true)
             .smartCurrentLimit(200)
             .openLoopRampRate(0.25)
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kCoast)
             .apply(
                 new EncoderConfig()
                     .positionConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION)

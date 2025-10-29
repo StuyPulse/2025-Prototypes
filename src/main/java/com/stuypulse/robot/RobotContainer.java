@@ -28,7 +28,7 @@ public class RobotContainer {
     
     // Subsystem
     private final HoodedShooter hdsr = HoodedShooter.getInstance();
-  //  private final SwerveDrive swerve = SwerveDrive.getInstance();
+   private final SwerveDrive swerve = SwerveDrive.getInstance();
 
 
     // Autons
@@ -47,7 +47,7 @@ public class RobotContainer {
     /****************/
 
     private void configureDefaultCommands() {
-       // swerve.setDefaultCommand(new SwerveDriveDrive(driver));
+       swerve.setDefaultCommand(new SwerveDriveDrive(driver));
     }
 
     /***************/

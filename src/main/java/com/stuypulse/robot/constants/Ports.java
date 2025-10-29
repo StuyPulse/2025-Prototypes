@@ -22,23 +22,23 @@ public interface Ports {
     public interface Swerve {
         int PIGEON = 9;
         public interface FrontRight {
-            int DRIVE = 10;
-            int TURN = 17;
+            int DRIVE = 11;
+            int TURN = 10;
             int ENCODER = 1;
         }
         public interface FrontLeft {
-            int DRIVE = 18;
-            int TURN = 15;
+            int DRIVE = 13;
+            int TURN = 12;
             int ENCODER = 4;
         }
         public interface BackLeft {
-            int DRIVE = 0;
-            int TURN = 13;
+            int DRIVE = 15;
+            int TURN = 14;
             int ENCODER = 3;
         }
         public interface BackRight {
-            int DRIVE = 16;
-            int TURN = 12;
+            int DRIVE = 17;
+            int TURN = 16;
             int ENCODER = 2;
         }
     }
