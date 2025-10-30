@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.stuylib.network.SmartNumber;
 
 public class HoodedShooterImpl extends HoodedShooter {
     // private final TalonFX hoodMotor;
     // private final TalonFX rollerMotor;
     private final TalonFX shooterMotor;
-    
+    double setRPMvalue = 3000;
+    private SmartNumber setRPM = new SmartNumber("HDSR/ setRPM", getState().getTargetRPM());
     private boolean hasBall;
 
     public HoodedShooterImpl() {
@@ -47,7 +49,7 @@ public class HoodedShooterImpl extends HoodedShooter {
         super.periodic();
 
         // hoodMotor.setControl(new PositionVoltage(getState().getTargetAngle().getRotations()));
-        shooterMotor.setControl(new VelocityVoltage(getState().getTargetRPM() / 60.0).withSlot(0));
+        shooterMotor.setControl(new VelocityVoltage(setRPM.getAsDouble() / 60.0).withSlot(0));
         
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
         SmartDashboard.putNumber("HDSR/ target velocity ", getState().getTargetRPM());

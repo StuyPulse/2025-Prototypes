@@ -24,7 +24,7 @@ public abstract class HoodedShooter extends SubsystemBase{
 
     public enum HoodState{
         STOW(0.0),
-        SHOOT(3000.0);
+        SHOOT(2000);
 
         private double targetRPM;
 
