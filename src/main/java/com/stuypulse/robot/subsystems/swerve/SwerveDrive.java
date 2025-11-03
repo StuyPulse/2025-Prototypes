@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -20,6 +21,7 @@ import com.stuypulse.robot.subsystems.swerve.SwerveModule;
 import com.stuypulse.robot.subsystems.swerve.SwerveModuleImpl;
 import com.stuypulse.stuylib.math.SLMath;
 import com.stuypulse.stuylib.math.Vector2D;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -63,14 +65,14 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     private final SwerveModule[] modules;
-    //private final Pigeon2 gyro;
+    AHRS gyro;
     private final SwerveDriveKinematics kinematics;
     private final FieldObject2d[] module2ds;
 
     protected SwerveDrive(SwerveModule... modules) {
         this.modules = modules;
 
-//        gyro = new Pigeon2(9, Settings.Swerve.DRIVE_CANBUS);
+        gyro = new AHRS();
 
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
 
@@ -120,7 +122,7 @@ public class SwerveDrive extends SubsystemBase {
                 velocity.x,
                 velocity.y,
                 omega,
-                new Rotation2d().kZero
+                Rotation2d.fromDegrees(getGyroYaw())
         );
 
         Pose2d robotVel = new Pose2d(
@@ -176,21 +178,21 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     // /** GYRO API **/
-    // public Rotation2d getGyroAngle() {
-    //     return gyro.getRotation2d();
-    // }
+    public Rotation2d getGyroAngle() {
+        return gyro.getRotation2d();
+    }
 
-    // public double getGyroYaw() {
-    //     return gyro.getYaw().getValueAsDouble();
-    // }
+    public double getGyroYaw() {
+        return gyro.getYaw();
+    }
 
-    // public double getGyroPitch() {
-    //     return gyro.getPitch().getValueAsDouble();
-    // }
+    public double getGyroPitch() {
+        return gyro.getPitch();
+    }
 
-    // public double getGyroRoll() {
-    //     return gyro.getRoll().getValueAsDouble();
-    // }
+    public double getGyroRoll() {
+        return gyro.getRoll();
+    }
 
     /** KINEMATICS **/
     public SwerveDriveKinematics getKinematics() {
@@ -243,20 +245,20 @@ public class SwerveDrive extends SubsystemBase {
             module2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
         }
 
-        // SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroPitch());
-        // SmartDashboard.putNumber("Swerve/Gyro Pitch (deg)", getGyroPitch());
-        // SmartDashboard.putNumber("Swerve/Gyro Roll (deg)", getGyroRoll());
+        SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroPitch());
+        SmartDashboard.putNumber("Swerve/Gyro Pitch (deg)", getGyroPitch());
+        SmartDashboard.putNumber("Swerve/Gyro Roll (deg)", getGyroRoll());
 
-        // SmartDashboard.putNumber("Swerve/X Acceleration (Gs)", gyro.getAccelerationX().getValueAsDouble());
-        // SmartDashboard.putNumber("Swerve/Y Acceleration (Gs)", gyro.getAccelerationY().getValueAsDouble());
-        // SmartDashboard.putNumber("Swerve/Z Acceleration (Gs)", gyro.getAccelerationZ().getValueAsDouble());
+        SmartDashboard.putNumber("Swerve/X Acceleration (Gs)", gyro.getRawAccelX());
+        SmartDashboard.putNumber("Swerve/Y Acceleration (Gs)", gyro.getRawAccelY());
+        SmartDashboard.putNumber("Swerve/Z Acceleration (Gs)", gyro.getRawAccelZ());
     }
 
     @Override
     public void simulationPeriodic() {
         // Integrate omega in simulation and store in gyro
         var speeds = getKinematics().toChassisSpeeds(getModuleStates());
-        //gyro.setYaw(gyro.getYaw().getValueAsDouble() - Math.toDegrees(speeds.omegaRadiansPerSecond * Settings.DT));
+        gyro.setAngleAdjustment(Math.toDegrees(speeds.omegaRadiansPerSecond * Settings.DT));
     }
 
 }
