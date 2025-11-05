@@ -20,6 +20,8 @@ import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
 import com.stuypulse.stuylib.math.Angle;
+
+import edu.wpi.first.hal.CANAPIJNI;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -94,12 +96,13 @@ public class SwerveModuleImpl extends SwerveModule {
             driveMotor.setVoltage(0);
             pivotMotor.setVoltage(0);
         } else {
-            driveMotor.setVoltage(driveController.update(targetState.speedMetersPerSecond, getVelocity()));
+            driveMotor.setVoltage(driveController.update(getTargetState().speedMetersPerSecond, getVelocity()));
             pivotMotor.setVoltage(pivotController.update(
                 Angle.fromRotation2d(targetState.angle),
                 Angle.fromRotation2d(getAngle()))); 
         }
 
+        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Target Speed", getTargetState().speedMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Current", driveMotor.getOutputCurrent());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Voltage", driveMotor.getBusVoltage());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Voltage", pivotController.getOutput());

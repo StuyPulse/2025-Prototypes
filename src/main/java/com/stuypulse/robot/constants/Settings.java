@@ -58,16 +58,16 @@ public interface Settings {
         public interface Turn {
             double kP = 3.596;
             double kI = 0.0;
-            double kD = 0.05;
+            double kD = 0.1;
         }
         public interface Drive {
-            double kP = 6.7279E-06;
+            double kP = 0;
             double kI = 0.0;
-            double kD = 0.0;
+            double kD = 0.01;
 
-            double kS = 0.2825;
-            double kV = 2.3716;
-            double kA = 0.075654;
+            double kS = 0.26722;
+            double kV = 2.2119;
+            double kA = 0.36249;
         }
     }
 
