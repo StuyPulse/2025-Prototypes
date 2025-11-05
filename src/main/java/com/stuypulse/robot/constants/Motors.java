@@ -47,7 +47,7 @@ public interface Motors {
                 .inverted(true)
                 .smartCurrentLimit(200)
                 .openLoopRampRate(0.25)
-                .idleMode(IdleMode.kCoast)
+                .idleMode(IdleMode.kBrake)
                 .apply(new ClosedLoopConfig().pidf(Settings.Swerve.Drive.kP, Settings.Swerve.Drive.kI, Settings.Swerve.Drive.kD, Settings.Swerve.Drive.kV))
                 .apply(
                     new EncoderConfig()
@@ -88,7 +88,7 @@ public interface Motors {
         .withMotionProfile(10, 2)
         .withSensorToMechanismRatio(1.0)
         .withFFConstants(0, 0.117, 0, 0,0)
-        .withPIDConstants(1.1, 0, 0.1, 0);
+        .withPIDConstants(0.2, 0.0, 0.01, 0);
 
 
     TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
