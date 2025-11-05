@@ -18,27 +18,27 @@ public interface Ports {
         int SHOOTER_MOTOR = 14;
     }
 
-    //TODO: Fix all these ports, they are wrong
+    //ALL PORTS ARE CORRECT - Ryan and co 11/5
     public interface Swerve {
         //int PIGEON = 9;
         public interface FrontRight {
-            int DRIVE = 11;
-            int TURN = 10;
+            int DRIVE = 11; //(CHECKED)
+            int TURN = 10; // (CHECKED)
             int ENCODER = 1;
         }
         public interface FrontLeft {
-            int DRIVE = 13;
-            int TURN = 12;
+            int DRIVE = 13; // (CHECKED - MECH BROKEN)
+            int TURN = 12; // (CHECKED)
             int ENCODER = 2;
         }
         public interface BackLeft {
-            int DRIVE = 15;
-            int TURN = 14;
+            int DRIVE = 15; // (CHECKED)
+            int TURN = 14; // (CHECKED)
             int ENCODER = 3;
         }
         public interface BackRight {
-            int DRIVE = 17;
-            int TURN = 16;
+            int DRIVE = 17; //(CHECKED)
+            int TURN = 16; // (CHECKED)
             int ENCODER = 0;
         }
     }

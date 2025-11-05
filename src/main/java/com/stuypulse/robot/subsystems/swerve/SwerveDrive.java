@@ -65,7 +65,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     private final SwerveModule[] modules;
-    AHRS gyro;
+    private final AHRS gyro;
     private final SwerveDriveKinematics kinematics;
     private final FieldObject2d[] module2ds;
 
@@ -78,6 +78,7 @@ public class SwerveDrive extends SubsystemBase {
 
         module2ds = new FieldObject2d[modules.length];
     }
+    
 
     public void initFieldObjects(Field2d field) {
         for (int i = 0; i < modules.length; i++) {

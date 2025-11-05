@@ -86,13 +86,18 @@ public class SwerveModuleImpl extends SwerveModule {
     }
 
 
+    public boolean atTargetAngle() {
+        SwerveModuleState targetState = getTargetState();
+        return 1.5 > Math.abs(targetState.angle.getDegrees() - getAngle().getDegrees());
+    }
+
     @Override
     public void periodic() {
         super.periodic();
 
         pivotController.update(Angle.fromRotation2d(getTargetState().angle), Angle.fromRotation2d(getAngle()));
 
-        if (Math.abs(getTargetState().speedMetersPerSecond) < Settings.Swerve.MODULE_VELOCITY_DEADBAND) {
+        if (Math.abs(getTargetState().speedMetersPerSecond) < Settings.Swerve.MODULE_VELOCITY_DEADBAND || atTargetAngle()) {
             driveMotor.setVoltage(0);
             pivotMotor.setVoltage(0);
         } else {
