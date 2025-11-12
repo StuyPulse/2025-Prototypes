@@ -56,10 +56,11 @@ public interface Settings {
             double ALIGNMENT_DEBOUNCE = 0.05;
         }
         public interface Turn {
-            double kP = 0.5;
+            double kP = 2.0;
             double kI = 0.0;
-            double kD = 0.0;
+            double kD = 0.05;
         }
+
         public interface Drive {
             double kP = 0.0;
             double kI = 0.0;

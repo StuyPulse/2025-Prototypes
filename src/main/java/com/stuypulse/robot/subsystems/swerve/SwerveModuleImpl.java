@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,7 +18,8 @@ import com.stuypulse.robot.constants.Settings.Swerve.Drive;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.angle.AngleController;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
-import com.stuypulse.stuylib.control.feedback.PIDController;
+//import com.stuypulse.stuylib.control.feedback.PIDController;
+import edu.wpi.first.math.controller.PIDController;
 import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
 import com.stuypulse.stuylib.math.Angle;
 
@@ -37,12 +39,13 @@ public class SwerveModuleImpl extends SwerveModule {
 
     private final SparkMax driveMotor;
     private final RelativeEncoder driveEncoder;
-    private final Controller driveController;
+    // private final Controller driveController;
 
     private final SparkMax pivotMotor;
     private final CANcoder pivotEncoder;
 
-    private final AngleController pivotController;
+    // private final AngleController pivotController;
+    private final PIDController pivotController;
 
 
     public SwerveModuleImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID) {
@@ -59,10 +62,11 @@ public class SwerveModuleImpl extends SwerveModule {
         driveEncoder = driveMotor.getEncoder();
         driveMotor.configure(Motors.Swerve.Turn.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        driveController = 
-            new PIDController(Drive.kP, Drive.kI, Drive.kD)
-                .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
-        pivotController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kD);
+        // driveController = 
+            // new PIDController(Drive.kP, Drive.kI, Drive.kD)
+                // .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
+        pivotController = new PIDController(Turn.kP, Turn.kI, Turn.kD);
+        pivotController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
@@ -72,8 +76,9 @@ public class SwerveModuleImpl extends SwerveModule {
 
     @Override
     public Rotation2d getAngle() {
-        return Rotation2d.fromRotations(pivotEncoder.getAbsolutePosition().getValueAsDouble())
-            .minus(angleOffset);
+        // double raw = pivotEncoder.getAbsolutePosition().getValueAsDouble() - angleOffset.getRotations() + 1;
+        // return Rotation2d.fromRotations(raw % 1f);
+        return Rotation2d.fromRotations((pivotEncoder.getAbsolutePosition().getValueAsDouble()));
     }
 
     public double getDistance(){
@@ -88,31 +93,32 @@ public class SwerveModuleImpl extends SwerveModule {
 
     public boolean atTargetAngle() {
         SwerveModuleState targetState = getTargetState();
-        return 1.5 > Math.abs(targetState.angle.getDegrees() - getAngle().getDegrees());
+        return 0.5 > Math.abs(targetState.angle.getDegrees() - getAngle().getDegrees());
     }
 
     @Override
     public void periodic() {
         super.periodic();
 
-        pivotController.update(Angle.fromRotation2d(getTargetState().angle), Angle.fromRotation2d(getAngle()));
+        double voltage = pivotController.calculate(getAngle().getRadians(), getTargetState().angle.getRadians());
+
 
         if (Math.abs(getTargetState().speedMetersPerSecond) < Settings.Swerve.MODULE_VELOCITY_DEADBAND || atTargetAngle()) {
             driveMotor.setVoltage(0);
             pivotMotor.setVoltage(0);
         } else {
-            driveMotor.setVoltage(driveController.update(getTargetState().speedMetersPerSecond, getVelocity()));
-            pivotMotor.setVoltage(pivotController.update(
-                Angle.fromRotation2d(targetState.angle),
-                Angle.fromRotation2d(getAngle()))); 
+            driveMotor.setVoltage(0);
+            pivotMotor.setVoltage(voltage); 
         }
 
+
+        SmartDashboard.putBoolean("Swerve/Modules" + getName() + "/At Target Angle", atTargetAngle());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Target Speed", getTargetState().speedMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Current", driveMotor.getOutputCurrent());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Voltage", driveMotor.getBusVoltage());
-        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Voltage", pivotController.getOutput());
+        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Voltage", voltage);
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Current", pivotMotor.getOutputCurrent());
-        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Angle Error", pivotController.getError().toDegrees());
-        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Raw Encoder Angle", Units.rotationsToDegrees(pivotEncoder.getAbsolutePosition().getValueAsDouble()));
+        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Angle Error", pivotController.getError());
+        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Raw Encoder Angle", pivotEncoder.getAbsolutePosition().getValueAsDouble());
     }
 }

@@ -118,10 +118,10 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /** MODULE STATES API **/
-    public void drive(Vector2D velocity, double omega) {
+    public void drive(Translation2d velocity, double omega) {
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                velocity.x,
-                velocity.y,
+                velocity.getX(),
+                velocity.getY(),
                 omega,
                 Rotation2d.fromDegrees(getGyroYaw())
         );

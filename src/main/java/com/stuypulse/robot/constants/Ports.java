@@ -27,7 +27,7 @@ public interface Ports {
             int ENCODER = 1;
         }
         public interface FrontLeft {
-            int DRIVE = 13; // (CHECKED - MECH BROKEN)
+            int DRIVE = 13; // (CHECKED)
             int TURN = 12; // (CHECKED)
             int ENCODER = 2;
         }
