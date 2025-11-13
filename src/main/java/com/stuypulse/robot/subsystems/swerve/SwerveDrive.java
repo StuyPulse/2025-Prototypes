@@ -119,7 +119,7 @@ public class SwerveDrive extends SubsystemBase {
 
     /** MODULE STATES API **/
     public void drive(Translation2d velocity, double omega) {
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
                 velocity.getX(),
                 velocity.getY(),
                 omega,

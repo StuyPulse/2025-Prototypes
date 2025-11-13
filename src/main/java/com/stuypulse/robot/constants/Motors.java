@@ -44,11 +44,11 @@ public interface Motors {
     public interface Swerve {
         public interface Turn {
             SparkBaseConfig motorConfig = new SparkMaxConfig()
-                .inverted(true)
+                .inverted(false)
                 .smartCurrentLimit(200)
                 .openLoopRampRate(0.25)
                 .idleMode(IdleMode.kBrake)
-                .apply(new ClosedLoopConfig().pidf(Settings.Swerve.Drive.kP, Settings.Swerve.Drive.kI, Settings.Swerve.Drive.kD, Settings.Swerve.Drive.kV))
+                //.apply(new ClosedLoopConfig().pidf(Settings.Swerve.Drive.kP, Settings.Swerve.Drive.kI, Settings.Swerve.Drive.kD, Settings.Swerve.Drive.kV))
                 .apply(
                     new EncoderConfig()
                         .positionConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION)

@@ -8,6 +8,7 @@ import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.stuylib.input.Gamepad;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SwerveDriveDrive extends Command{
@@ -69,6 +70,7 @@ public class SwerveDriveDrive extends Command{
 
     @Override
     public void execute() {
+        SmartDashboard.putNumber("Swerve/ turn", turn.getAsDouble());
         swerve.drive(speed.get(), turn.getAsDouble());
     }
 }
