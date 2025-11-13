@@ -38,6 +38,8 @@ public abstract class SwerveModule extends SubsystemBase {
 
     public abstract double getVelocity();
 
+    public abstract double getTargetRPM();
+
     public abstract Rotation2d getAngle();
 
     public abstract SwerveModulePosition getModulePosition();

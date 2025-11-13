@@ -86,6 +86,11 @@ public class SimModule extends SwerveModule {
     }
 
     @Override
+    public double getTargetRPM() {
+        return 0.0;
+    }
+
+    @Override
     public Rotation2d getAngle() {
         return Rotation2d.fromRadians(turnSim.getOutput(0));
     }

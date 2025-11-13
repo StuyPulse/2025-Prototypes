@@ -20,6 +20,8 @@ import com.stuypulse.stuylib.control.angle.AngleController;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 //import com.stuypulse.stuylib.control.feedback.PIDController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
 import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
 import com.stuypulse.stuylib.math.Angle;
 
@@ -39,7 +41,8 @@ public class SwerveModuleImpl extends SwerveModule {
 
     private final SparkMax driveMotor;
     private final RelativeEncoder driveEncoder;
-    // private final Controller driveController;
+    private final PIDController driveControllerpid;
+    private final SimpleMotorFeedforward driveControllerFF;
 
     private final SparkMax pivotMotor;
     private final CANcoder pivotEncoder;
@@ -62,9 +65,10 @@ public class SwerveModuleImpl extends SwerveModule {
         driveEncoder = driveMotor.getEncoder();
         driveMotor.configure(Motors.Swerve.Turn.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // driveController = 
-            // new PIDController(Drive.kP, Drive.kI, Drive.kD)
-                // .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
+        driveControllerpid  = new PIDController(Drive.kP, Drive.kI, Drive.kD);
+        driveControllerFF = new SimpleMotorFeedforward(Drive.kS, Drive.kV, Drive.kA);
+
+                        // .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
         pivotController = new PIDController(Turn.kP, Turn.kI, Turn.kD);
         pivotController.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -72,6 +76,11 @@ public class SwerveModuleImpl extends SwerveModule {
     @Override
     public double getVelocity() {
         return driveEncoder.getVelocity();
+    }
+
+    @Override
+    public double getTargetRPM() {
+        return (getTargetState().speedMetersPerSecond / (Units.inchesToMeters(4) * Math.PI)) * 60;
     }
 
     @Override
@@ -100,23 +109,25 @@ public class SwerveModuleImpl extends SwerveModule {
     public void periodic() {
         super.periodic();
 
-        double voltage = pivotController.calculate(getAngle().getRadians(), getTargetState().angle.getRadians());
+        double turnVoltage = pivotController.calculate(getAngle().getRadians(), getTargetState().angle.getRadians());
+        double driveVoltage = driveControllerpid.calculate(getVelocity(), getTargetRPM()) + driveControllerFF.calculate(getTargetRPM());
 
 
         if (Math.abs(getTargetState().speedMetersPerSecond) < Settings.Swerve.MODULE_VELOCITY_DEADBAND || atTargetAngle()) {
             driveMotor.setVoltage(0);
             pivotMotor.setVoltage(0);
         } else {
-            driveMotor.setVoltage(0);
-            pivotMotor.setVoltage(voltage); 
+            driveMotor.setVoltage(driveVoltage);
+            pivotMotor.setVoltage(turnVoltage); 
         }
 
 
         SmartDashboard.putBoolean("Swerve/Modules" + getName() + "/At Target Angle", atTargetAngle());
+        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Controller Voltage", driveVoltage);
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Target Speed", getTargetState().speedMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Current", driveMotor.getOutputCurrent());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Drive Voltage", driveMotor.getBusVoltage());
-        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Voltage", voltage);
+        SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Voltage", turnVoltage);
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Turn Current", pivotMotor.getOutputCurrent());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Angle Error", pivotController.getError());
         SmartDashboard.putNumber("Swerve/Modules/" + getName() + "/Raw Encoder Angle", pivotEncoder.getAbsolutePosition().getValueAsDouble());

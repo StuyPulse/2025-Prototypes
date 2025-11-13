@@ -62,13 +62,13 @@ public interface Settings {
         }
 
         public interface Drive {
-            double kP = 0.0;
+            double kP = 2.0;
             double kI = 0.0;
-            double kD = 0.0;
+            double kD = 0.01;
 
-            double kS = 0.0;
-            double kV = 0.0;
-            double kA = 0.0;
+            double kS = 0.26722;
+            double kV = 2.2119;
+            double kA = 0.36249;
         }
     }
 

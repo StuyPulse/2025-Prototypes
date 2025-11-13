@@ -70,6 +70,9 @@ public class SwerveDriveDrive extends Command{
 
     @Override
     public void execute() {
+        double[] inputvelocites = {getInputVelocity().getX(), getInputVelocity().getY()};
+        SmartDashboard.putNumberArray("Swerve/ driver x", inputvelocites);
+        SmartDashboard.putNumber("Swerve/ Driver Y", driver.getLeftY());
         SmartDashboard.putNumber("Swerve/ turn", turn.getAsDouble());
         swerve.drive(speed.get(), turn.getAsDouble());
     }
