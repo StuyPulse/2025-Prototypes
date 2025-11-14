@@ -19,8 +19,6 @@ import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SimModule;
 import com.stuypulse.robot.subsystems.swerve.SwerveModule;
 import com.stuypulse.robot.subsystems.swerve.SwerveModuleImpl;
-import com.stuypulse.stuylib.math.SLMath;
-import com.stuypulse.stuylib.math.Vector2D;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -140,16 +138,19 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void setChassisSpeeds(ChassisSpeeds robotSpeed) {
-        Vector2D xy = new Vector2D(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
-        xy = xy.clamp(Settings.Swerve.Constraints.MAX_VELOCITY.get());
-        robotSpeed.vxMetersPerSecond = xy.x;
-        robotSpeed.vyMetersPerSecond = xy.y;
+        //Translation2d xy = new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
+        //xy = xy.clamp(Settings.Swerve.Constraints.MAX_VELOCITY.get());
+        double x = (robotSpeed.vxMetersPerSecond < Settings.Swerve.Constraints.MAX_VELOCITY.get()) ? robotSpeed.vxMetersPerSecond : Settings.Swerve.Constraints.MAX_VELOCITY.get();
+        double y = (robotSpeed.vyMetersPerSecond < Settings.Swerve.Constraints.MAX_VELOCITY.get()) ? robotSpeed.vyMetersPerSecond : Settings.Swerve.Constraints.MAX_VELOCITY.get();
+        robotSpeed.vxMetersPerSecond = x;
+        robotSpeed.vyMetersPerSecond = y;
 
-        robotSpeed.omegaRadiansPerSecond = SLMath.clamp(
-            robotSpeed.omegaRadiansPerSecond, 
-            -Settings.Swerve.Constraints.MAX_ANGULAR_VELOCITY.get(),
-            Settings.Swerve.Constraints.MAX_ANGULAR_VELOCITY.get()
-        );
+        
+        if (Math.abs(robotSpeed.omegaRadiansPerSecond) > Settings.Swerve.Constraints.MAX_ANGULAR_VELOCITY.get() ) {
+            robotSpeed.omegaRadiansPerSecond = (robotSpeed.omegaRadiansPerSecond > Settings.Swerve.Constraints.MAX_ANGULAR_VELOCITY.get() ) ? Settings.Swerve.Constraints.MAX_ANGULAR_VELOCITY.get() : -Settings.Swerve.Constraints.MAX_ANGULAR_VELOCITY.get();  
+        } else {
+            robotSpeed.omegaRadiansPerSecond = robotSpeed.omegaRadiansPerSecond;
+        }
         
         setModuleStates(kinematics.toSwerveModuleStates(robotSpeed));
     }
