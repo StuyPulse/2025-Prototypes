@@ -51,7 +51,7 @@ public class SwerveModuleImpl extends SwerveModule {
     private final PIDController pivotController;
 
 
-    public SwerveModuleImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID) {
+    public SwerveModuleImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID, boolean driveInverted) {
         super(name, location);
 
         this.angleOffset = angleOffset;
@@ -63,7 +63,8 @@ public class SwerveModuleImpl extends SwerveModule {
 
         driveMotor = new SparkMax(driveMotorID, MotorType.kBrushless);
         driveEncoder = driveMotor.getEncoder();
-        driveMotor.configure(Motors.Swerve.Turn.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        driveMotor.configure(Motors.Swerve.Drive.motorConfig.inverted(driveInverted), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
 
         driveControllerpid  = new PIDController(Drive.kP, Drive.kI, Drive.kD);
         driveControllerFF = new SimpleMotorFeedforward(Drive.kS, Drive.kV, Drive.kA);
@@ -76,6 +77,7 @@ public class SwerveModuleImpl extends SwerveModule {
     @Override
     public double getVelocity() {
         return driveEncoder.getVelocity();
+
     }
 
     @Override
@@ -110,7 +112,7 @@ public class SwerveModuleImpl extends SwerveModule {
         super.periodic();
 
         double turnVoltage = pivotController.calculate(getAngle().getRadians(), getTargetState().angle.getRadians());
-        double driveVoltage = driveControllerpid.calculate(getVelocity(), getTargetRPM()) + driveControllerFF.calculate(getTargetRPM());
+        double driveVoltage = driveControllerpid.calculate(getVelocity(), getTargetState().speedMetersPerSecond) + driveControllerFF.calculate(getTargetState().speedMetersPerSecond );
 
 
         if (Math.abs(getTargetState().speedMetersPerSecond) < Settings.Swerve.MODULE_VELOCITY_DEADBAND || atTargetAngle()) {

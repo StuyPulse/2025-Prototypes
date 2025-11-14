@@ -57,10 +57,10 @@ public interface Motors {
         }
         public interface Drive {
             SparkBaseConfig motorConfig = new SparkMaxConfig()
-            .inverted(true)
+            //.inverted(true)
             .smartCurrentLimit(200)
             .openLoopRampRate(0.25)
-            .idleMode(IdleMode.kCoast)
+            .idleMode(IdleMode.kBrake)
             .apply(
                 new EncoderConfig()
                     .positionConversionFactor(Constants.Swerve.Encoder.Drive.POSITION_CONVERSION)

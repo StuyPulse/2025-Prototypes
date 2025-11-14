@@ -1,79 +1,60 @@
 package com.stuypulse.robot.commands.swerve;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
-import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.constants.Settings.Driver.Drive;
+import com.stuypulse.robot.constants.Settings.Driver.Turn;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.stuylib.input.Gamepad;
+import com.stuypulse.stuylib.math.SLMath;
+import com.stuypulse.stuylib.math.Vector2D;
+import com.stuypulse.stuylib.streams.numbers.IStream;
+import com.stuypulse.stuylib.streams.numbers.filters.LowPassFilter;
+import com.stuypulse.stuylib.streams.vectors.VStream;
+import com.stuypulse.stuylib.streams.vectors.filters.VDeadZone;
+import com.stuypulse.stuylib.streams.vectors.filters.VLowPassFilter;
+import com.stuypulse.stuylib.streams.vectors.filters.VRateLimit;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class SwerveDriveDrive extends Command{
-    private com.stuypulse.robot.subsystems.swerve.SwerveDrive swerve;
-    private Gamepad driver;
+public class SwerveDriveDrive extends Command {
 
-    private final Supplier<Translation2d> speed;
-    private final DoubleSupplier turn;
+    private final SwerveDrive swerve;
+
+    private final Gamepad driver;
+
+    private final VStream speed;
+    private final IStream turn;
 
     public SwerveDriveDrive(Gamepad driver) {
         swerve = SwerveDrive.getInstance();
+
+        speed = VStream.create(this::getDriverInputAsVelocity)
+            .filtered(
+                new VDeadZone(Drive.DEADBAND),
+                x -> x.clamp(1),
+                x -> x.pow(Drive.POWER.get()),
+                x -> x.mul(Drive.MAX_TELEOP_SPEED.get()),
+                new VRateLimit(Drive.MAX_TELEOP_ACCEL),
+                new VLowPassFilter(Drive.RC));
+
+        turn = IStream.create(driver::getRightX)
+            .filtered(
+                x -> -x,
+                x -> SLMath.deadband(x, Turn.DEADBAND.get()),
+                x -> SLMath.spow(x, Turn.POWER.get()),
+                x -> x * Turn.MAX_TELEOP_TURN_SPEED.get(),
+                new LowPassFilter(Turn.RC));
+
         this.driver = driver;
 
-        speed = () -> {
-            Translation2d inputVel = getInputVelocity();
-            if (inputVel.getNorm() < 0.05){
-                return new Translation2d();
-            }
-            double x = inputVel.getX();
-            double y = inputVel.getY();
-
-
-            x /= inputVel.getNorm();
-            y /= inputVel.getNorm();
-
-            x *= Math.abs(x) * 1.5;
-            y *= Math.abs(y) * 1.5;
-            
-            if (Robot.isBlue()) {
-                return new Translation2d(x, -y);
-            } else {
-                return new Translation2d(-x, y);
-            }
-
-            
-        };
-
-        
-        turn = () -> {
-            double inputTurn = -driver.getRightX();
-
-            if (Math.abs(inputTurn) < 0.05){
-                return 0;
-            }
-            
-            inputTurn *= Math.signum(inputTurn) * inputTurn;
-
-            inputTurn *= 2 * Math.PI;
-
-            return inputTurn;
-        };
-        
         addRequirements(swerve);
     }
 
-    private Translation2d getInputVelocity() {
-        return new Translation2d(driver.getLeftY(), -driver.getLeftX());
+    private Vector2D getDriverInputAsVelocity() {
+        return new Vector2D(driver.getLeftStick().y, -driver.getLeftStick().x);
     }
 
     @Override
     public void execute() {
-        double[] inputvelocites = {getInputVelocity().getX(), getInputVelocity().getY()};
-        SmartDashboard.putNumberArray("Swerve/ driver x", inputvelocites);
-        SmartDashboard.putNumber("Swerve/ Driver Y", driver.getLeftY());
-        SmartDashboard.putNumber("Swerve/ turn", turn.getAsDouble());
-        swerve.drive(speed.get(), turn.getAsDouble());
+        swerve.drive(speed.get(), turn.get());
     }
 }

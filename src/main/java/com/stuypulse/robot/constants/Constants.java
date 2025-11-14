@@ -16,10 +16,12 @@ public interface Constants {
                 double GEAR_RATIO = 5.36;
 
                 double POSITION_CONVERSION = WHEEL_CIRCUMFERENCE / GEAR_RATIO;
+                double VELOCITY_CONVERSION = POSITION_CONVERSION / 60.0;
             }
         }
 
         public interface FrontLeft {
+            boolean inverted = true;
             String ID = "Front Left";
             Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0);
             Translation2d MODULE_OFFSET = new Translation2d(LENGTH * +0.5, WIDTH * +0.5);
@@ -27,17 +29,21 @@ public interface Constants {
 
         public interface BackLeft {
             String ID = "Back Left";
+            boolean inverted = true;
             Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0);
             Translation2d MODULE_OFFSET = new Translation2d(LENGTH * -0.5, WIDTH * +0.5);
         }
 
         public interface BackRight {
+            boolean inverted = false;
             String ID = "Back Right";
             Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0);
             Translation2d MODULE_OFFSET = new Translation2d(LENGTH * -0.5, WIDTH * -0.5);
+
         }
 
         public interface FrontRight {
+            boolean inverted = false;
             String ID = "Front Right";
             Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0);
             Translation2d MODULE_OFFSET = new Translation2d(LENGTH * +0.5, WIDTH * -0.5);

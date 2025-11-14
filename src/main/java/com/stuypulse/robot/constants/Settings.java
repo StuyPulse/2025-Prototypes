@@ -29,6 +29,9 @@ public interface Settings {
         public static final Translation2d[] distanceXrpm = {new Translation2d(5, 1000 ), new Translation2d(10, 2000), new Translation2d(15, 3000 ), new Translation2d(20, 4000 )};
         public static final double MAX_DISTANCE_METERS = 20;
         public static final double MIN_DISTANCE_METERS = 5;
+        public static final double xRPMSlope = 1;
+        public static final double xRPMB = 1;
+
     }
 
     public interface Swerve {
@@ -67,7 +70,7 @@ public interface Settings {
         }
 
         public interface Drive {
-            double kP = 2.0;
+            double kP = 0.5;
             double kI = 0.0;
             double kD = 0.01;
 
