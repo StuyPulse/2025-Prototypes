@@ -46,21 +46,32 @@ public class HoodedShooterImpl extends HoodedShooter {
     //     rollerMotor.set(speed);
     // }
 
-    public double RPMshootToDistance(double distanceMeters) {
+    public double RPMToDistanceInterpolation(double distanceMeters) {
         if (distanceMeters > Settings.HDSR.MAX_DISTANCE_METERS || distanceMeters < Settings.HDSR.MIN_DISTANCE_METERS ) {
             distanceMeters = (distanceMeters > Settings.HDSR.MAX_DISTANCE_METERS ) ? Settings.HDSR.MAX_DISTANCE_METERS : Settings.HDSR.MIN_DISTANCE_METERS;  
         }
+
+        // return distanceMeters*Settings.HDSR.xRPMSlope + Settings.HDSR.xRPMB;
+
         Translation2d[] distanceXrpm = Settings.HDSR.distanceXrpm;
+        
         int index = 0;
-        for (int i = 0; i < distanceXrpm.length; i++ ) {
-            index = (Math.abs(distanceXrpm[i].getX() - distanceMeters) <= Math.abs(distanceXrpm[index].getY() - distanceMeters)) ? i : index;
+        for (int i = 0; i < distanceXrpm.length; i++) {
+            if (distanceMeters > distanceXrpm[i].getX()) {
+                index = i;
+                break;
+            }
         }
             
-        if ((distanceXrpm[index].getX() - distanceMeters) > 0) {
+        if (distanceXrpm[index].getX() > distanceMeters) {
+            if (index == 0) return distanceXrpm[index].getX();
+
             return distanceXrpm[index - 1].getY() + (distanceMeters - distanceXrpm[index - 1].getX()) * ((distanceXrpm[index].getY() - distanceXrpm[index - 1].getY()) / (distanceXrpm[index].getX() - distanceXrpm[index - 1].getX()));
-        } else if ((distanceXrpm[index].getX() - distanceMeters) == 0) {
+        }
+        else if (distanceXrpm[index].getX() == distanceMeters) {
             return distanceXrpm[index].getY();
-        } else {
+        }
+        else {
             return distanceXrpm[index + 1].getY() + (distanceMeters - distanceXrpm[index + 1].getX()) * ((distanceXrpm[index].getY() - distanceXrpm[index + 1].getY()) / (distanceXrpm[index].getX() - distanceXrpm[index + 1].getX()));
         }
     }
