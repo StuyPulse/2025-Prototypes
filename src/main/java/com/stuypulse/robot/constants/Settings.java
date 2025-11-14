@@ -9,6 +9,8 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.path.PathConstraints;
 import com.stuypulse.stuylib.network.SmartNumber;
 
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 /*-
@@ -24,6 +26,9 @@ public interface Settings {
         public static final double kP = 0.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
+        public static final Translation2d[] distanceXrpm = {new Translation2d(5, 1000 ), new Translation2d(10, 2000), new Translation2d(15, 3000 ), new Translation2d(20, 4000 )};
+        public static final double MAX_DISTANCE_METERS = 20;
+        public static final double MIN_DISTANCE_METERS = 5;
     }
 
     public interface Swerve {
@@ -93,5 +98,7 @@ public interface Settings {
             SmartNumber MAX_TELEOP_TURN_ACCEL = new SmartNumber("Driver Settings/Turn/Max Turn Accel (rad per s^2)", Swerve.Constraints.MAX_ANGULAR_ACCELERATION.get());
         }
     }
+
+
     
 }

@@ -4,11 +4,13 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.stuylib.network.SmartNumber;
+import com.stuypulse.robot.constants.Settings;
 
 public class HoodedShooterImpl extends HoodedShooter {
     // private final TalonFX hoodMotor;
@@ -43,6 +45,25 @@ public class HoodedShooterImpl extends HoodedShooter {
     // public void setRollerSpeeds(double speed){
     //     rollerMotor.set(speed);
     // }
+
+    public double RPMshootToDistance(double distanceMeters) {
+        if (distanceMeters > Settings.HDSR.MAX_DISTANCE_METERS || distanceMeters < Settings.HDSR.MIN_DISTANCE_METERS ) {
+            distanceMeters = (distanceMeters > Settings.HDSR.MAX_DISTANCE_METERS ) ? Settings.HDSR.MAX_DISTANCE_METERS : Settings.HDSR.MIN_DISTANCE_METERS;  
+        }
+        Translation2d[] distanceXrpm = Settings.HDSR.distanceXrpm;
+        int index = 0;
+        for (int i = 0; i < distanceXrpm.length; i++ ) {
+            index = (Math.abs(distanceXrpm[i].getX() - distanceMeters) <= Math.abs(distanceXrpm[index].getY() - distanceMeters)) ? i : index;
+        }
+            
+        if ((distanceXrpm[index].getX() - distanceMeters) > 0) {
+            return distanceXrpm[index - 1].getY() + (distanceMeters - distanceXrpm[index - 1].getX()) * ((distanceXrpm[index].getY() - distanceXrpm[index - 1].getY()) / (distanceXrpm[index].getX() - distanceXrpm[index - 1].getX()));
+        } else if ((distanceXrpm[index].getX() - distanceMeters) == 0) {
+            return distanceXrpm[index].getY();
+        } else {
+            return distanceXrpm[index + 1].getY() + (distanceMeters - distanceXrpm[index + 1].getX()) * ((distanceXrpm[index].getY() - distanceXrpm[index + 1].getY()) / (distanceXrpm[index].getX() - distanceXrpm[index + 1].getX()));
+        }
+    }
    
     @Override
     public void periodic() {
