@@ -10,12 +10,6 @@ public abstract class WiffleWorksShooter extends SubsystemBase{
 
     static {
         instance = new WiffleWorksShooterImpl();
-        // if (Robot.isReal()){
-        //     instance = new HoodedShooterImpl();
-        // }
-        // else {
-        //     instance = new HoodedShooterSim();
-        // }
     }
 
     public static WiffleWorksShooter getInstance(){

@@ -13,8 +13,6 @@ import com.stuypulse.stuylib.network.SmartNumber;
 import com.stuypulse.robot.constants.Settings;
 
 public class WiffleWorksShooterImpl extends WiffleWorksShooter {
-    // private final TalonFX hoodMotor;
-    // private final TalonFX rollerMotor;
     private final TalonFX shooterMotor;
     double setRPMvalue = 3000;
     private SmartNumber setRPM = new SmartNumber("HDSR/ setRPM", getState().getTargetRPM());
@@ -22,29 +20,17 @@ public class WiffleWorksShooterImpl extends WiffleWorksShooter {
 
     public WiffleWorksShooterImpl() {
         super();
-
-        // hoodMotor = new TalonFX(Ports.HDSR.HOOD_MOTOR);
-        // rollerMotor = new TalonFX(Ports.HDSR.ROLLER_MOTOR);
         shooterMotor = new TalonFX(Ports.HDSR.SHOOTER_MOTOR, "swerve");
         
         hasBall = false;
         
         Motors.SHOOTER_MOTOR_CONFIG.configure(shooterMotor);
-        // Motors.ROLLER_MOTOR_CONFIG.configure(rollerMotor);
-        // Motors.HOOD_MOTOR_CONFIG.configure(hoodMotor);
-    }
 
-    // public Rotation2d getCurrentAngle() {
-    //     return Rotation2d.fromRotations(hoodMotor.getPosition().getValueAsDouble());
-    // }
+    }
 
     public double getCurrentVelocity() {
         return shooterMotor.getVelocity().getValueAsDouble()* 60;
     }
-
-    // public void setRollerSpeeds(double speed){
-    //     rollerMotor.set(speed);
-    // }
 
     public double RPMToDistanceInterpolation(double distanceMeters) {
         if (distanceMeters > Settings.WiffleWorksShooter.MAX_DISTANCE_METERS || distanceMeters < Settings.WiffleWorksShooter.MIN_DISTANCE_METERS ) {
@@ -80,11 +66,9 @@ public class WiffleWorksShooterImpl extends WiffleWorksShooter {
     public void periodic() {
         super.periodic();
 
-        // hoodMotor.setControl(new PositionVoltage(getState().getTargetAngle().getRotations()));
         shooterMotor.setControl(new VelocityVoltage(setRPM.getAsDouble() / 60.0).withSlot(0));
         
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
         SmartDashboard.putNumber("HDSR/ target velocity ", getState().getTargetRPM());
-        // SmartDashboard.putNumber("HDSR/currentAngle", getCurrentAngle().getDegrees());
     }
 }
