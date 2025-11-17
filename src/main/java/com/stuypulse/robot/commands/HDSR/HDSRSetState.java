@@ -1,17 +1,17 @@
 package com.stuypulse.robot.commands.HDSR;
 
-import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
-import com.stuypulse.robot.subsystems.HDSR.HoodedShooter.HoodState;
+import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter;
+import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter.ShooterState;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class HDSRSetState extends InstantCommand{
-    private HoodState state;
-    private HoodedShooter hdsr;
+    private ShooterState state;
+    private WiffleWorksShooter hdsr;
 
-    public HDSRSetState(HoodState hoodState){
+    public HDSRSetState(ShooterState hoodState){
         state = hoodState;
-        hdsr = HoodedShooter.getInstance();
+        hdsr = WiffleWorksShooter.getInstance();
 
         addRequirements(hdsr);
     }

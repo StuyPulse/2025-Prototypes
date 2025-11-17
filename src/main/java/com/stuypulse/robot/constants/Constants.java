@@ -49,4 +49,14 @@ public interface Constants {
             Translation2d MODULE_OFFSET = new Translation2d(LENGTH * +0.5, WIDTH * -0.5);
         }
     }
+
+
+    public interface HDSR {
+        public interface HoodAngles {
+            public final Rotation2d STOW = new Rotation2d().fromDegrees(0);
+            public final Rotation2d EXTENDED = new Rotation2d().fromDegrees(0);
+            public final Rotation2d DEFAULT = new Rotation2d().fromDegrees(0);
+        }
+        
+    }
 }

@@ -21,17 +21,26 @@ import edu.wpi.first.math.util.Units;
  */
 public interface Settings {
     double DT = 0.020;
-    public interface HDSR {
+    public interface WiffleWorksShooter {
+        
         public static final double ROLLER_SPEED = 1.0;
-        public static final double kP = 0.0;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
-        public static final Translation2d[] distanceXrpm = {new Translation2d(5, 1000 ), new Translation2d(10, 2000), new Translation2d(15, 3000 ), new Translation2d(20, 4000 )};
         public static final double MAX_DISTANCE_METERS = 20;
         public static final double MIN_DISTANCE_METERS = 5;
+
+        //Shooter to distance  
+        public static final Translation2d[] distanceXrpm = {new Translation2d(5, 1000 ), new Translation2d(10, 2000), new Translation2d(15, 3000 ), new Translation2d(20, 4000 )};
         public static final double xRPMSlope = 1;
         public static final double xRPMB = 1;
 
+    }
+
+    public interface HDSR {
+        public interface Roller {
+            public static final double intakeSpeed = 0; 
+            public static final double stowSpeed = 0;
+            public static final double ShootSpeed = 0;
+        }
+        
     }
 
     public interface Swerve {
