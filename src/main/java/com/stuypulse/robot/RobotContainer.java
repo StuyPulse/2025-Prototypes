@@ -56,7 +56,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         driver.getBottomButton().whileTrue(new HDSRSetState(HoodState.STOW));
-        driver.getTopButton().whileTrue(new HDSRSetState(HoodState.SHOOT));
+        driver.getTopButton().whileTrue(new HDSRSetState(HoodState.DEFAULT));
     }
 
     /**************/

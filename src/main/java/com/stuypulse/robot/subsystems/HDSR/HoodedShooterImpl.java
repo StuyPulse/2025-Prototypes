@@ -16,7 +16,7 @@ public class HoodedShooterImpl extends HoodedShooter {
     // private final TalonFX rollerMotor;
     private final TalonFX shooterMotor;
     double setRPMvalue = 3000;
-    private SmartNumber setRPM = new SmartNumber("HDSR/ setRPM", getState().getTargetRPM());
+   private SmartNumber setRPM = new SmartNumber("HDSR/ setRPM", getState().getTargetRPM());
     private boolean hasBall;
     private final Translation2d[] distancexRPM;
     private InterpolatingDoubleTreeMap interpolator; 
@@ -54,8 +54,11 @@ public class HoodedShooterImpl extends HoodedShooter {
     // }
 
     public double RPMToDistanceInterpolation(double distanceMeters) {
+        distanceMeters = Math.max(distanceMeters, 1);
+        distanceMeters = Math.min(distanceMeters, 6);
 
-        return  interpolator.get(distanceMeters);
+        SmartDashboard.putNumber("HDSR/interpolatorRPM", interpolator.get(distanceMeters));
+        return interpolator.get(distanceMeters);
         // if (distanceMeters > Settings.HDSR.MAX_DISTANCE_METERS || distanceMeters < Settings.HDSR.MIN_DISTANCE_METERS ) {
         //     distanceMeters = (distanceMeters > Settings.HDSR.MAX_DISTANCE_METERS ) ? Settings.HDSR.MAX_DISTANCE_METERS : Settings.HDSR.MIN_DISTANCE_METERS;  
         // }
@@ -92,10 +95,11 @@ public class HoodedShooterImpl extends HoodedShooter {
         if (getState() == HoodState.DEFAULT) getState().setTargetRPM(RPMToDistanceInterpolation(getDistanceToTarget()));
 
         // hoodMotor.setControl(new PositionVoltage(getState().getTargetAngle().getRotations()));
-        shooterMotor.setControl(new VelocityVoltage(setRPM.getAsDouble() / 60.0).withSlot(0));
+        shooterMotor.setControl(new VelocityVoltage(setRPM.doubleValue() / 60.0).withSlot(0));
         
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
         SmartDashboard.putNumber("HDSR/ target velocity ", getState().getTargetRPM());
         // SmartDashboard.putNumber("HDSR/currentAngle", getCurrentAngle().getDegrees());
     }
 }
+

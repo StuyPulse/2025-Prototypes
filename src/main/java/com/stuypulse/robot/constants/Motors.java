@@ -88,7 +88,7 @@ public interface Motors {
         .withMotionProfile(10, 2)
         .withSensorToMechanismRatio(1.0)
         .withFFConstants(0, 0.117, 0.2, 0,0)
-        .withPIDConstants(2, 0.0, 0.05, 0);
+        .withPIDConstants(1.9, 0.0, 0.03, 0);
 
 
     TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()

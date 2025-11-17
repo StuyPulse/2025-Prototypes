@@ -26,7 +26,16 @@ public interface Settings {
         public static final double kP = 0.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final Translation2d[] distanceXrpm = {new Translation2d(5, 1000 ), new Translation2d(10, 2000), new Translation2d(15, 3000 ), new Translation2d(20, 4000 )};
+        public static final Translation2d[] distanceXrpm = {
+            new Translation2d(1, 1300),
+            new Translation2d(2, 1900),
+            new Translation2d(3, 2450),
+            new Translation2d(4, 2800),
+            new Translation2d(5, 3150),
+            new Translation2d(6, 3625),
+            new Translation2d(7, 3975)
+        };
+            
         public static final double MAX_DISTANCE_METERS = 20;
         public static final double MIN_DISTANCE_METERS = 5;
         public static final double xRPMSlope = 1;
