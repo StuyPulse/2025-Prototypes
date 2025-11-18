@@ -13,12 +13,6 @@ public abstract class HoodedShooter extends SubsystemBase{
 
     static {
         instance = new HoodedShooterImpl();
-        // if (Robot.isReal()){
-        //     instance = new HoodedShooterImpl();
-        // }
-        // else {
-        //     instance = new HoodedShooterSim();
-        // }
     }
 
     public static HoodedShooter getInstance(){
@@ -59,7 +53,6 @@ public abstract class HoodedShooter extends SubsystemBase{
     }
 
     public abstract double RPMToDistanceInterpolation(double distanceMeters);
-    // public abstract boolean hasBall();
 
     public double getDistanceToTarget() {
         return distanceToTarget.getAsDouble();

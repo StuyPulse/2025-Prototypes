@@ -1,10 +1,7 @@
 package com.stuypulse.robot.subsystems.swerve;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Constants.Swerve.BackLeft;
@@ -17,11 +14,7 @@ import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
-import com.stuypulse.robot.subsystems.swerve.SimModule;
-import com.stuypulse.robot.subsystems.swerve.SwerveModule;
-import com.stuypulse.robot.subsystems.swerve.SwerveModuleImpl;
 import com.stuypulse.stuylib.math.Vector2D;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -140,8 +133,6 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void setChassisSpeeds(ChassisSpeeds robotSpeed) {
-        //Translation2d xy = new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
-        //xy = xy.clamp(Settings.Swerve.Constraints.MAX_VELOCITY.get());
         double x = (robotSpeed.vxMetersPerSecond < Settings.Swerve.Constraints.MAX_VELOCITY.get()) ? robotSpeed.vxMetersPerSecond : Settings.Swerve.Constraints.MAX_VELOCITY.get();
         double y = (robotSpeed.vyMetersPerSecond < Settings.Swerve.Constraints.MAX_VELOCITY.get()) ? robotSpeed.vyMetersPerSecond : Settings.Swerve.Constraints.MAX_VELOCITY.get();
         robotSpeed.vxMetersPerSecond = x;
