@@ -66,6 +66,7 @@ public class SwerveDrive extends SubsystemBase {
         this.modules = modules;
 
         gyro = new AHRS();
+        gyro.setAngleAdjustment(Settings.Swerve.gyroOffset);
 
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
 
@@ -74,10 +75,10 @@ public class SwerveDrive extends SubsystemBase {
     
 
     public void initFieldObjects(Field2d field) {
-        for (int i = 0; i < modules.length; i++) {
-            module2ds[i] = field.getObject(modules[i].getName()+"-2d");
-            module2ds[i].setPose(Robot.isBlue() ? module2ds[i].getPose() : Field.transformToOppositeAlliance(module2ds[i].getPose()));
-        }
+        // for (int i = 0; i < modules.length; i++) {
+            // module2ds[i] = field.getObject(modules[i].getName()+"-2d");
+            // module2ds[i].setPose(Robot.isBlue() ? module2ds[i].getPose() : Field.transformToOppositeAlliance(module2ds[i].getPose()));
+        // }
     }
 
     private Translation2d[] getModuleOffsets() {
@@ -121,6 +122,7 @@ public class SwerveDrive extends SubsystemBase {
 
         Pose2d robotVel = new Pose2d(
             Settings.DT * speeds.vxMetersPerSecond,
+
             Settings.DT * speeds.vyMetersPerSecond,
             Rotation2d.fromRadians(Settings.DT * speeds.omegaRadiansPerSecond));
         Twist2d twistVel = new Pose2d().log(robotVel);
@@ -237,7 +239,7 @@ public class SwerveDrive extends SubsystemBase {
                 pose.getTranslation().plus(modules[i].getModuleOffset().rotateBy(angle)),
                 modules[i].getState().angle.plus(angle)
             );
-            module2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
+            // module2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
         }
 
         SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroPitch());

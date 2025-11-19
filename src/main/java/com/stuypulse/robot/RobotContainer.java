@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
 
-    SmartNumber setdistanceToTarget = new SmartNumber("HDSR/ Settings/ SetDistanceToTarget", 5);
+    SmartNumber setdistanceToTarget = new SmartNumber("HDSR/ Settings/ SetDistanceToTarget", 1);
 
     // Gamepads
     public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);
@@ -59,6 +59,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         driver.getBottomButton().onTrue(new HDSRSetState(HoodState.STOW));
+        driver.getRightButton().onTrue(new HDSRSetState(HoodState.SHOOT));
         driver.getTopButton().onTrue(new HDSRSetState(HoodState.DEFAULT))
             .onTrue(new HDSRsetshootdistance(setdistanceToTarget.getAsDouble()));
 

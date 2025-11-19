@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class HoodedShooterImpl extends HoodedShooter {
     private final TalonFX shooterMotor;
-    private SmartNumber setRPM;
+    // private SmartNumber setRPM;
     //private SmartNumber setDistanceToTarget;
 
     private Translation2d[] distancexRPM;
@@ -43,8 +43,10 @@ public class HoodedShooterImpl extends HoodedShooter {
         odometry = Odometry.getInstance();
         swerve = SwerveDrive.getInstance();
 
-        setRPM = new SmartNumber("HDSR/Setable Values/ setRPM", getState().getTargetRPM());
+        // setRPM = new SmartNumber("HDSR/Setable Values/ setRPM", getState().getTargetRPM());
         //setDistanceToTarget = new SmartNumber("HDSR/Setable Values/ setdistancetotarget", 0);
+
+        targetTranslation = new Translation2d();
     }
 
 
@@ -89,7 +91,7 @@ public class HoodedShooterImpl extends HoodedShooter {
         if (getState() == HoodState.DEFAULT) getState().setTargetRPM(RPMToDistanceInterpolation());
 
         // hoodMotor.setControl(new PositionVoltage(getState().getTargetAngle().getRotations()));
-        shooterMotor.setControl(new VelocityVoltage(setRPM.doubleValue() / 60.0).withSlot(0));
+        shooterMotor.setControl(new VelocityVoltage(getState().getTargetRPM() / 60.0).withSlot(0));
         
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
         SmartDashboard.putNumber("HDSR/ target velocity ", getState().getTargetRPM());
