@@ -1,7 +1,10 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
+import java.util.concurrent.TransferQueue;
+
 import com.stuypulse.stuylib.network.SmartNumber;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -52,7 +55,7 @@ public abstract class HoodedShooter extends SubsystemBase{
         this.state = state;
     }
 
-    public abstract double RPMToDistanceInterpolation(double distanceMeters);
+    public abstract double RPMToDistanceInterpolation(Translation2d targetTranslation);
 
     public double getDistanceToTarget() {
         return distanceToTarget.getAsDouble();

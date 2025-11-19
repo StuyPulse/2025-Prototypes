@@ -5,18 +5,26 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.odometry.Odometry;
+import com.stuypulse.robot.subsystems.odometry.OdometryImpl;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.stuylib.network.SmartNumber;
 
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class HoodedShooterImpl extends HoodedShooter {
     private final TalonFX shooterMotor;
-    private SmartNumber setRPM = new SmartNumber("HDSR/ setRPM", getState().getTargetRPM());
+    private SmartNumber setRPM;
+    private SmartNumber setDistanceToTarget;
+
     private Translation2d[] distancexRPM;
     private InterpolatingDoubleTreeMap interpolator; 
+    private final Odometry odometry;
 
     public HoodedShooterImpl() {
         super();
@@ -30,6 +38,10 @@ public class HoodedShooterImpl extends HoodedShooter {
         shooterMotor = new TalonFX(Ports.HDSR.SHOOTER_MOTOR, "swerve");
                 
         Motors.SHOOTER_MOTOR_CONFIG.configure(shooterMotor);
+
+        odometry = Odometry.getInstance();
+        setRPM = new SmartNumber("HDSR/Setable Values/ setRPM", getState().getTargetRPM());
+        setDistanceToTarget = new SmartNumber("HDSR/Setable Values/ setdistancetotarget", 0);
     }
 
 
@@ -43,27 +55,29 @@ public class HoodedShooterImpl extends HoodedShooter {
 
     /**
      * finds the rpm to shoot to a target x meters away
-     * @param distanceMeters distance to target in meters, must be between 1 and 6
+     * @param targettranslation represents the target translation to shoot to
      * @return rpm needed to reach distance 
      */
-    public double RPMToDistanceInterpolation(double distanceMeters) {
+    public double RPMToDistanceInterpolation(Translation2d targetTranslation) {
         //prelim drive while shoot code
-        distanceMeters = distanceMeters - SwerveDrive.getInstance().getChassisSpeeds().vxMetersPerSecond / 50;
+        Translation2d currentTranslation = odometry.getPose().getTranslation();
+        double distanceToTarget = currentTranslation.getDistance(targetTranslation);
+        // distanceMeters = distanceMeters - SwerveDrive.getInstance().getChassisSpeeds().vxMetersPerSecond / 50;
 
         //clamping
-        distanceMeters = Math.max(distanceMeters, 1);
-        distanceMeters = Math.min(distanceMeters, 6);
+        distanceToTarget = Math.max(distanceToTarget, 1);
+        distanceToTarget = Math.min(distanceToTarget, 7);
 
-        SmartDashboard.putNumber("HDSR/interpolatorRPM", interpolator.get(distanceMeters));
+        SmartDashboard.putNumber("HDSR/interpolatorRPM", interpolator.get(distanceToTarget));
 
-        return interpolator.get(distanceMeters);
+        return interpolator.get(distanceToTarget);
     }
    
     @Override
     public void periodic() {
         super.periodic();
 
-        if (getState() == HoodState.DEFAULT) getState().setTargetRPM(RPMToDistanceInterpolation(getDistanceToTarget()));
+        if (getState() == HoodState.DEFAULT) getState().setTargetRPM(RPMToDistanceInterpolation(new Translation2d(odometry.getPose().getX() + setDistanceToTarget.getAsDouble(), odometry.getPose().getY())));
 
         // hoodMotor.setControl(new PositionVoltage(getState().getTargetAngle().getRotations()));
         shooterMotor.setControl(new VelocityVoltage(setRPM.doubleValue() / 60.0).withSlot(0));
