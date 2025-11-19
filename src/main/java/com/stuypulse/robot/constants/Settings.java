@@ -25,6 +25,7 @@ public interface Settings {
         public static final double kP = 0.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
+
         public static final Translation2d[] distanceXrpm = {
             new Translation2d(1, 1300),
             new Translation2d(2, 1900),
@@ -34,11 +35,10 @@ public interface Settings {
             new Translation2d(6, 3625),
             new Translation2d(7, 3975)
         };
+        public static final double projectileResistanceoffset = 0.0; //meant to represent friction and air resistance
             
-        public static final double MAX_DISTANCE_METERS = 20;
-        public static final double MIN_DISTANCE_METERS = 5;
-        public static final double xRPMSlope = 1;
-        public static final double xRPMB = 1;
+        public static final double MAX_DISTANCE_METERS = 7;
+        public static final double MIN_DISTANCE_METERS = 1;
 
     }
 

@@ -55,11 +55,13 @@ public abstract class HoodedShooter extends SubsystemBase{
         this.state = state;
     }
 
-    public abstract double RPMToDistanceInterpolation(Translation2d targetTranslation);
+    public abstract double RPMToDistanceInterpolation();
 
     public double getDistanceToTarget() {
         return distanceToTarget.getAsDouble();
     }
+
+    public abstract void setTargetTranslation(Translation2d targetTranslation);
    
 
     @Override

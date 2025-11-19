@@ -49,4 +49,14 @@ public interface Constants {
             Translation2d MODULE_OFFSET = new Translation2d(LENGTH * +0.5, WIDTH * -0.5);
         }
     }
+
+    public interface HDSR {
+        public interface Shooter {
+            public static final double SHOOTER_DIAMETER = Units.inchesToMeters(5.0); // PLACEHOLDER
+            public static final double SHOOTER_CIRCUMFERENCE_METERS = SHOOTER_DIAMETER * Math.PI; 
+            
+        }
+    
+        
+    }
 }

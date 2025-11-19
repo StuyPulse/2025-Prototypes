@@ -6,6 +6,7 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.HDSR.HDSRSetState;
+import com.stuypulse.robot.commands.HDSR.HDSRsetshootdistance;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
@@ -14,6 +15,7 @@ import com.stuypulse.robot.subsystems.HDSR.HoodedShooter.HoodState;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
+import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
 
+    SmartNumber setdistanceToTarget = new SmartNumber("HDSR/ Settings/ SetDistanceToTarget", 5);
 
     // Gamepads
     public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);
@@ -28,7 +31,7 @@ public class RobotContainer {
     
     // Subsystem
     private final HoodedShooter hdsr = HoodedShooter.getInstance();
-   private final SwerveDrive swerve = SwerveDrive.getInstance();
+    private final SwerveDrive swerve = SwerveDrive.getInstance();
 
 
     // Autons
@@ -56,7 +59,9 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         driver.getBottomButton().onTrue(new HDSRSetState(HoodState.STOW));
-        driver.getTopButton().onTrue(new HDSRSetState(HoodState.DEFAULT));
+        driver.getTopButton().onTrue(new HDSRSetState(HoodState.DEFAULT))
+            .onTrue(new HDSRsetshootdistance(setdistanceToTarget.getAsDouble()));
+
     }
 
     /**************/
