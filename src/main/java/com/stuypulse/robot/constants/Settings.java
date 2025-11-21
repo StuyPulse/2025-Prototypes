@@ -76,6 +76,9 @@ public interface Settings {
             double kP = 2.0;
             double kI = 0.0;
             double kD = 0.05;
+
+            double kV = 0.25; 
+            double kA = 0.007;
         }
 
         public interface Drive {
