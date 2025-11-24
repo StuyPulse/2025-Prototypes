@@ -24,8 +24,8 @@ public interface Settings {
     public interface WiffleWorksShooter {
         
         public static final double ROLLER_SPEED = 1.0;
-        public static final double MAX_DISTANCE_METERS = 20;
-        public static final double MIN_DISTANCE_METERS = 5;
+        public static final double MAX_DISTANCE_METERS = 7;
+        public static final double MIN_DISTANCE_METERS = 1;
 
         //Shooter to distance  
         public static final Translation2d[] distanceXrpm = {new Translation2d(5, 1000 ), new Translation2d(10, 2000), new Translation2d(15, 3000 ), new Translation2d(20, 4000 )};

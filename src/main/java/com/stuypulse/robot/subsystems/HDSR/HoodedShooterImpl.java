@@ -14,6 +14,7 @@ import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.stuylib.network.SmartNumber;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.odometry.Odometry;
 
 public class HoodedShooterImpl extends HoodedShooter {
     private final TalonFX hoodMotor;
@@ -22,6 +23,7 @@ public class HoodedShooterImpl extends HoodedShooter {
     private final SmartNumber setRPM = new SmartNumber("HDSR/ setRPM", getShooterState().getTargetRPM());
     private final InterpolatingDoubleTreeMap interpolator;
     private final Translation2d[] distanceXrpm = Settings.WiffleWorksShooter.distanceXrpm;
+    private Translation2d targetTranlation;
 
     public HoodedShooterImpl() {
         super();
@@ -38,6 +40,8 @@ public class HoodedShooterImpl extends HoodedShooter {
         Motors.SHOOTER_MOTOR_CONFIG.configure(shooterMotor);
         Motors.ROLLER_MOTOR_CONFIG.configure(rollerMotor);
         Motors.HOOD_MOTOR_CONFIG.configure(hoodMotor);
+
+        targetTranlation = new Translation2d();
     }
 
     public Rotation2d getCurrentAngle() {
@@ -52,38 +56,10 @@ public class HoodedShooterImpl extends HoodedShooter {
     //     rollerMotor.set(speed);
     // }
 
-    public double RPMToDistanceInterpolation(double distanceMeters) {
-
-        return interpolator.get(distanceMeters);
-
-        // if (distanceMeters > Settings.WiffleWorksShooter.MAX_DISTANCE_METERS || distanceMeters < Settings.WiffleWorksShooter.MIN_DISTANCE_METERS ) {
-        //     distanceMeters = (distanceMeters > Settings.WiffleWorksShooter.MAX_DISTANCE_METERS ) ? Settings.WiffleWorksShooter.MAX_DISTANCE_METERS : Settings.WiffleWorksShooter.MIN_DISTANCE_METERS;  
-        // }
-
-        // // return distanceMeters*Settings.HDSR.xRPMSlope + Settings.HDSR.xRPMB;
-
-        // Translation2d[] distanceXrpm = Settings.WiffleWorksShooter.distanceXrpm;
-        
-        // int index = 0;
-        // for (int i = 0; i < distanceXrpm.length; i++) {
-        //     if (distanceMeters > distanceXrpm[i].getX()) {
-        //         index = i;
-        //         break;
-        //     }
-        // }
-            
-        // if (distanceXrpm[index].getX() > distanceMeters) {
-        //     if (index == 0) return distanceXrpm[index].getX();
-
-        //     return distanceXrpm[index - 1].getY() + (distanceMeters - distanceXrpm[index - 1].getX()) * ((distanceXrpm[index].getY() - distanceXrpm[index - 1].getY()) / (distanceXrpm[index].getX() - distanceXrpm[index - 1].getX()));
-        // }
-        // else if (distanceXrpm[index].getX() == distanceMeters) {
-        //     return distanceXrpm[index].getY();
-        // }
-        // else {
-        //     return distanceXrpm[index + 1].getY() + (distanceMeters - distanceXrpm[index + 1].getX()) * ((distanceXrpm[index].getY() - distanceXrpm[index + 1].getY()) / (distanceXrpm[index].getX() - distanceXrpm[index + 1].getX()));
-        // }
-    }
+    public double RPMToDistanceInterpolation() {
+        double targetDistance = Odometry.getInstance().getPose().getTranslation().getDistance(targetTranlation);
+        return interpolator.get(targetDistance);
+        }
    
     @Override
     public void periodic() {

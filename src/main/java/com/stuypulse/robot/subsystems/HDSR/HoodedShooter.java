@@ -68,7 +68,7 @@ public abstract class HoodedShooter extends SubsystemBase{
     public enum ShooterState{
         STOW(0.0),
         SHOOTDEFAULT(2000),
-        SHOOT(HoodedShooter.getInstance().RPMToDistanceInterpolation(HoodedShooter.getInstance().getDistanceToTarget()));
+        SHOOT(HoodedShooter.getInstance().RPMToDistanceInterpolation());
 
         private double targetRPM;
 
@@ -105,7 +105,7 @@ public abstract class HoodedShooter extends SubsystemBase{
         this.shooterState = state;
     }
 
-    public abstract double RPMToDistanceInterpolation(double distanceMeters);
+    public abstract double RPMToDistanceInterpolation();
 
     // public abstract boolean hasBall();
 

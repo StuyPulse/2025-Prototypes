@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems.wiffleWorksShooter;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,7 +20,7 @@ public abstract class WiffleWorksShooter extends SubsystemBase{
     public enum ShooterState{
         STOW(0.0),
         SHOOT(2000),
-        DEFAULT(WiffleWorksShooter.getInstance().RPMToDistanceInterpolation(WiffleWorksShooter.getInstance().getDistanceToTarget()));
+        DEFAULT(0);
 
         private double targetRPM;
 
@@ -29,6 +30,9 @@ public abstract class WiffleWorksShooter extends SubsystemBase{
 
         public double getTargetRPM() {
             return targetRPM;
+        }
+        public void setTargetRPM(double targetRPM) {
+            this.targetRPM = targetRPM;
         }
     }
 
@@ -42,8 +46,9 @@ public abstract class WiffleWorksShooter extends SubsystemBase{
         this.state = state;
     }
 
-    public abstract double RPMToDistanceInterpolation(double distanceMeters);
-    // public abstract boolean hasBall();
+    public abstract void setTargetTranslation(Translation2d targetTranslation);
+
+    public abstract double RPMToDistanceInterpolation();
 
     public double getDistanceToTarget() {
         return 0.0;
