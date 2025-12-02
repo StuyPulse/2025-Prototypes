@@ -26,7 +26,7 @@ public class WiffleWorksShooterImpl extends WiffleWorksShooter {
 
     public WiffleWorksShooterImpl() {
         super();
-        shooterMotor = new TalonFX(Ports.HDSR.SHOOTER_MOTOR, "swerve");
+        shooterMotor = new TalonFX(Ports.WiffleWorksShooter.SHOOTER_MOTOR, "swerve");
 
         interpolationdata = Settings.WiffleWorksShooter.distanceXrpm;
         for (Translation2d datapoint : interpolationdata) {

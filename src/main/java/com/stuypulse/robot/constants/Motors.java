@@ -79,6 +79,39 @@ public interface Motors {
             .positionConversionFactor(factor);
     }
 
+    TalonFXConfig HDSR_SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
+        .withCurrentLimitAmps(80)
+        .withRampRate(1)
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInvertedValue(InvertedValue.Clockwise_Positive)
+        .withSupplyCurrentLimitAmps(80)
+        .withMotionProfile(10, 2)
+        .withSensorToMechanismRatio(1.0)
+        .withFFConstants(0, 0.117, 0.2, 0,0)
+        .withPIDConstants(2, 0.0, 0.05, 0);
+
+    TalonFXConfig HDSR_ROLLER_MOTOR_CONFIG = new TalonFXConfig()
+        .withCurrentLimitAmps(80)
+        .withRampRate(1)
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInvertedValue(InvertedValue.Clockwise_Positive)
+        .withSupplyCurrentLimitAmps(80)
+        .withMotionProfile(10, 2)
+        .withSensorToMechanismRatio(1.0)
+        .withFFConstants(0, 0.117, 0.2, 0,0)
+        .withPIDConstants(2, 0.0, 0.05, 0);
+
+    TalonFXConfig HDSR_HOOD_MOTOR_CONFIG = new TalonFXConfig()
+        .withCurrentLimitAmps(80)
+        .withRampRate(1)
+        .withNeutralMode(NeutralModeValue.Brake)
+        .withInvertedValue(InvertedValue.Clockwise_Positive)
+        .withSupplyCurrentLimitAmps(80)
+        .withMotionProfile(10, 2)
+        .withSensorToMechanismRatio(1.0)
+        .withFFConstants(0, 0.117, 0.2, 0,0)
+        .withPIDConstants(2, 0.0, 0.05, 0);
+        
     TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
         .withCurrentLimitAmps(80)
         .withRampRate(1)

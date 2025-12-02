@@ -13,8 +13,12 @@ public interface Ports {
         int DEBUGGER = 2;
     }
     public interface HDSR {
-        int HOOD_MOTOR = 0;
-        int ROLLER_MOTOR = 1;
+        int HOOD_MOTOR = 10;
+        int ROLLER_MOTOR = 0;
+        int SHOOTER_MOTOR = 16;
+    }
+
+    public interface WiffleWorksShooter {
         int SHOOTER_MOTOR = 14;
     }
 

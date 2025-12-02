@@ -4,6 +4,7 @@ import java.security.PublicKey;
 
 import com.stuypulse.robot.constants.Constants;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.constants.Settings.HDSR.Roller;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,6 +16,7 @@ public abstract class HoodedShooter extends SubsystemBase{
     private ShooterState shooterState;
     private HoodState hoodState;
     private RollerState rollerState;
+    private HDSRState hdsrState;
 
     static {
         instance = new HoodedShooterImpl();
@@ -27,7 +29,7 @@ public abstract class HoodedShooter extends SubsystemBase{
     }
 
     public static HoodedShooter getInstance(){
-        return instance;
+        return new HoodedShooterImpl();
     }
 
 
@@ -68,7 +70,7 @@ public abstract class HoodedShooter extends SubsystemBase{
     public enum ShooterState{
         STOW(0.0),
         SHOOTDEFAULT(2000),
-        SHOOT(HoodedShooter.getInstance().RPMToDistanceInterpolation());
+        SHOOT(0);
 
         private double targetRPM;
 
@@ -81,10 +83,39 @@ public abstract class HoodedShooter extends SubsystemBase{
         }
     }
 
+    public enum HDSRState{
+        STOW(HoodState.STOW, ShooterState.STOW, RollerState.STOW),
+        SHOOT(HoodState.EXTENDED, ShooterState.SHOOT, RollerState.SHOOT),
+        INTAKE(HoodState.DEFAULT, ShooterState.STOW, RollerState.INTAKE);
+        
+        private HoodState hoodState;
+        private ShooterState shooterState;
+        private RollerState rollerState;
+        
+        private HDSRState(HoodState hoodState, ShooterState shooterState, RollerState rollerState) {
+            this.shooterState = shooterState;
+            this.hoodState = hoodState;
+            this.rollerState = rollerState;
+        }
+
+        public HoodState getHoodState() {
+            return hoodState;
+        }
+
+        public ShooterState getShooterState() {
+            return shooterState;
+        }
+
+        public RollerState getRollerState() {
+            return rollerState;
+        }
+    }
+
     public HoodedShooter() {
-        shooterState = ShooterState.STOW;
-        rollerState = RollerState.STOW;
-        hoodState = HoodState.STOW;
+         hdsrState = HDSRState.STOW;
+         shooterState = ShooterState.STOW;
+         rollerState = RollerState.STOW;
+         hoodState = HoodState.STOW;
     }
 
 
@@ -94,18 +125,15 @@ public abstract class HoodedShooter extends SubsystemBase{
 
     public RollerState getRollerState() { return rollerState; }
 
-    public void setHoodState(HoodState state) {
-        this.hoodState = state;
-    }
-    public void setRollerState(RollerState state) {
-        this.rollerState = state;
-    }
+    public HDSRState getHDSRState() {return hdsrState; } 
 
-    public void setShooterState(ShooterState state) {
-        this.shooterState = state;
-    }
 
-    public abstract double RPMToDistanceInterpolation();
+    public void setHDSRstate(HDSRState hdsrState) {
+        this.hdsrState = hdsrState;
+        this.shooterState = hdsrState.getShooterState();
+        this.rollerState = hdsrState.getRollerState();
+        this.hoodState = hdsrState.getHoodState();
+    }
 
     // public abstract boolean hasBall();
 
@@ -119,6 +147,7 @@ public abstract class HoodedShooter extends SubsystemBase{
         SmartDashboard.putString("HDSR/ Shooter State", shooterState.toString());
         SmartDashboard.putString("HDSR/ Roller State", rollerState.toString());
         SmartDashboard.putString("HDSR/ Hood State", hoodState.toString());
+        SmartDashboard.putString("HDSR/ HDSR state", hdsrState.toString());
     }
 
 

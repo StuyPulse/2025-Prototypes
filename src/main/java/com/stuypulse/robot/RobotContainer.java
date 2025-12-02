@@ -9,6 +9,7 @@ import com.stuypulse.robot.commands.HDSR.HDSRSetState;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter;
 import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter.ShooterState;
@@ -27,8 +28,9 @@ public class RobotContainer {
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
-    private final WiffleWorksShooter hdsr = WiffleWorksShooter.getInstance();
-   private final SwerveDrive swerve = SwerveDrive.getInstance();
+   // private final WiffleWorksShooter hdsr = WiffleWorksShooter.getInstance();
+    //private final SwerveDrive swerve = SwerveDrive.getInstance();
+    private final HoodedShooter hoodedShooter = HoodedShooter.getInstance();
 
 
     // Autons
@@ -47,7 +49,7 @@ public class RobotContainer {
     /****************/
 
     private void configureDefaultCommands() {
-       swerve.setDefaultCommand(new SwerveDriveDrive(driver));
+       //swerve.setDefaultCommand(new SwerveDriveDrive(driver));
     }
 
     /***************/
@@ -55,8 +57,8 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-        driver.getBottomButton().whileTrue(new HDSRSetState(ShooterState.STOW));
-        driver.getTopButton().whileTrue(new HDSRSetState(ShooterState.SHOOT));
+       // driver.getBottomButton().whileTrue(new HDSRSetState(ShooterState.STOW));
+        //driver.getTopButton().whileTrue(new HDSRSetState(ShooterState.SHOOT));
     }
 
     /**************/
