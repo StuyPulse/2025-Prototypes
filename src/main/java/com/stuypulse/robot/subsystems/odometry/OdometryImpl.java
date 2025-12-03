@@ -5,10 +5,13 @@ import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,9 +69,13 @@ public class OdometryImpl extends Odometry {
         return field;
     }
 
-    @Override
-    public void addVisionData(Pose2d robotPose, double timestamp) {
-        poseEstimator.addVisionMeasurement(robotPose, timestamp);
+
+    
+    public void updateVisionMeasurement(Matrix<N3, N1> visionStdDevs, Pose2d pose, double timestampSeconds) {
+        poseEstimator.setVisionMeasurementStdDevs(visionStdDevs);
+        poseEstimator.addVisionMeasurement(
+                pose,
+                timestampSeconds);
     }
 
     @Override
