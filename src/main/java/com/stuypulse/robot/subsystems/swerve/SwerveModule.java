@@ -25,7 +25,8 @@ public abstract class SwerveModule extends SubsystemBase {
         this.offset = offset;
 
         targetState = new SwerveModuleState();
-    }
+        
+        }
 
     @Override
     public final String getName() {
