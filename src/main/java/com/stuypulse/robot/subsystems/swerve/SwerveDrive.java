@@ -191,6 +191,10 @@ public class SwerveDrive extends SubsystemBase {
         return gyro.getRoll();
     }
 
+    public void setgyro() {
+        gyro.zeroYaw();
+    }
+
     /** KINEMATICS **/
     public SwerveDriveKinematics getKinematics() {
         return kinematics;

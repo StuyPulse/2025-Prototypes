@@ -45,7 +45,7 @@ public interface Settings {
     public interface Swerve {
         String DRIVE_CANBUS = "Swerve Drive Drive";
         double MODULE_VELOCITY_DEADBAND = 0.05;
-        public final double gyroOffset = 270;
+        public final double gyroOffset = 180;
 
         public interface Constraints {
             double MAX_MODULE_SPEED = 4.9;

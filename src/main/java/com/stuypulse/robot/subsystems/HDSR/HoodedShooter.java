@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
 import java.util.concurrent.TransferQueue;
+import java.util.function.Supplier;
 
 import com.stuypulse.stuylib.network.SmartNumber;
 
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public abstract class HoodedShooter extends SubsystemBase{
     public static final HoodedShooter instance;
 
-    private HoodState state;
+    private ShooterState state;
     private SmartNumber distanceToTarget;
 
     static {
@@ -22,20 +23,20 @@ public abstract class HoodedShooter extends SubsystemBase{
         return instance;
     }
 
-    public enum HoodState{
+    public enum ShooterState{
         STOW(0.0),
-        SHOOT(2000),
-        DEFAULT(0.0);
+        SHOOTRPM(2000),
+        INTERP(0.0);
 
         private double targetRPM;
 
 
-        private HoodState(double targetRPM) {
+        private ShooterState(double targetRPM) {
             this.targetRPM = targetRPM;
         }
 
-        public void setTargetRPM(double targetRPM) {
-            this.targetRPM = targetRPM;
+        public void setTargetRPM(Supplier<Double> targetRPM) {
+            this.targetRPM = targetRPM.get();
         }
 
         public double getTargetRPM() {
@@ -45,13 +46,13 @@ public abstract class HoodedShooter extends SubsystemBase{
     }
 
     public HoodedShooter() {
-        state = HoodState.STOW;
+        state = ShooterState.STOW;
         distanceToTarget = new SmartNumber("HDSR/distanceToTarget", 0.0);
     }
 
-    public HoodState getState() { return state; }
+    public ShooterState getState() { return state; }
 
-    public void setHoodState(HoodState state) {
+    public void setHoodState(ShooterState state) {
         this.state = state;
     }
 
@@ -62,6 +63,10 @@ public abstract class HoodedShooter extends SubsystemBase{
     }
 
     public abstract void setTargetTranslation(Translation2d targetTranslation);
+
+    public abstract void UpdateTargetDistance(double targetDistance);
+
+    public abstract double getTargetDistance();
    
 
     @Override
