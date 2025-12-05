@@ -7,7 +7,6 @@ package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.HDSR.HDSRSetState;
 import com.stuypulse.robot.commands.HDSR.HDSRsetshootdistance;
-import com.stuypulse.robot.commands.HDSR.UpdateTargetDistance;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.swerve.SeedGyro;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
@@ -62,10 +61,8 @@ public class RobotContainer {
     private void configureButtonBindings() {
         driver.getBottomButton().onTrue(new HDSRSetState(ShooterState.STOW));
         driver.getRightButton().onTrue(new HDSRSetState(ShooterState.SHOOTRPM));
-        driver.getTopButton().onTrue(new HDSRSetState(ShooterState.INTERP))
-            .onTrue(new UpdateTargetDistance(setdistanceToTarget.getAsDouble()));
-        driver.getRightMenuButton()
-            .onTrue(new SeedGyro());
+        driver.getTopButton().onTrue(new HDSRsetshootdistance(() -> setdistanceToTarget.getAsDouble()));
+        driver.getRightMenuButton().onTrue(new SeedGyro());
 
     }
 

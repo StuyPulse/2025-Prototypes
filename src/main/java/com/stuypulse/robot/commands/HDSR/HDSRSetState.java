@@ -18,6 +18,6 @@ public class HDSRSetState extends InstantCommand{
 
     @Override
     public void initialize(){
-        hdsr.setHoodState(state);
+        hdsr.setShooterState(state);
     }
 }

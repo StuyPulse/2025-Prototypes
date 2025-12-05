@@ -1,6 +1,5 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
-import java.util.concurrent.TransferQueue;
 import java.util.function.Supplier;
 
 import com.stuypulse.stuylib.network.SmartNumber;
@@ -52,7 +51,7 @@ public abstract class HoodedShooter extends SubsystemBase{
 
     public ShooterState getState() { return state; }
 
-    public void setHoodState(ShooterState state) {
+    public void setShooterState(ShooterState state) {
         this.state = state;
     }
 
