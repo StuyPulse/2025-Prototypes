@@ -9,7 +9,7 @@ import com.stuypulse.robot.commands.HDSR.HDSRSetState;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
+import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter;
 import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter.ShooterState;
