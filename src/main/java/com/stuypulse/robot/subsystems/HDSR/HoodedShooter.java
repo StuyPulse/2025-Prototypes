@@ -1,7 +1,5 @@
 package com.stuypulse.robot.subsystems.HDSR;
 
-import java.util.function.Supplier;
-
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,7 +10,6 @@ public abstract class HoodedShooter extends SubsystemBase{
     public static final HoodedShooter instance;
 
     private ShooterState state;
-    private SmartNumber distanceToTarget;
 
     static {
         instance = new HoodedShooterImpl();
@@ -34,8 +31,8 @@ public abstract class HoodedShooter extends SubsystemBase{
             this.targetRPM = targetRPM;
         }
 
-        public void setTargetRPM(Supplier<Double> targetRPM) {
-            this.targetRPM = targetRPM.get();
+        public void setTargetRPM(double targetRPM) {
+            this.targetRPM = targetRPM;
         }
 
         public double getTargetRPM() {
@@ -46,7 +43,6 @@ public abstract class HoodedShooter extends SubsystemBase{
 
     public HoodedShooter() {
         state = ShooterState.STOW;
-        distanceToTarget = new SmartNumber("HDSR/distanceToTarget", 0.0);
     }
 
     public ShooterState getState() { return state; }
@@ -55,15 +51,11 @@ public abstract class HoodedShooter extends SubsystemBase{
         this.state = state;
     }
 
-    public abstract double RPMToDistanceInterpolation();
-
-    public double getDistanceToTarget() {
-        return distanceToTarget.getAsDouble();
-    }
+    public abstract double distanceInterpolation();
 
     public abstract void setTargetTranslation(Translation2d targetTranslation);
 
-    public abstract void UpdateTargetDistance(double targetDistance);
+    public abstract void updateTargetDistance(double targetDistance);
 
     public abstract double getTargetDistance();
    

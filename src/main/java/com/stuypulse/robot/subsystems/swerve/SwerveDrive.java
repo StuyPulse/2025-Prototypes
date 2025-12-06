@@ -9,7 +9,6 @@ import com.stuypulse.robot.constants.Constants.Swerve.BackRight;
 import com.stuypulse.robot.constants.Constants.Swerve.FrontLeft;
 import com.stuypulse.robot.constants.Constants.Swerve.FrontRight;
 import com.stuypulse.robot.constants.Constants;
-import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
@@ -60,7 +59,6 @@ public class SwerveDrive extends SubsystemBase {
     private final SwerveModule[] modules;
     private final AHRS gyro;
     private final SwerveDriveKinematics kinematics;
-    private final FieldObject2d[] module2ds;
 
     protected SwerveDrive(SwerveModule... modules) {
         this.modules = modules;
@@ -69,17 +67,8 @@ public class SwerveDrive extends SubsystemBase {
         gyro.setAngleAdjustment(Settings.Swerve.gyroOffset);
 
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
-
-        module2ds = new FieldObject2d[modules.length];
     }
     
-
-    public void initFieldObjects(Field2d field) {
-        // for (int i = 0; i < modules.length; i++) {
-            // module2ds[i] = field.getObject(modules[i].getName()+"-2d");
-            // module2ds[i].setPose(Robot.isBlue() ? module2ds[i].getPose() : Field.transformToOppositeAlliance(module2ds[i].getPose()));
-        // }
-    }
 
     private Translation2d[] getModuleOffsets() {
         Translation2d[] locations = new Translation2d[modules.length];

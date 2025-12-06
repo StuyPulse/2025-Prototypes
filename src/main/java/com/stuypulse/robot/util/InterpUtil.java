@@ -9,23 +9,36 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class InterpUtil {
-    private static InterpolatingDoubleTreeMap distanceInterp;
-    private static  Odometry odometry;
+    private static InterpolatingDoubleTreeMap levelDistanceInterp;
+    private static InterpolatingDoubleTreeMap goalinterpolation;
+    private static Odometry odometry;
     
     public InterpUtil() {
-        distanceInterp = new InterpolatingDoubleTreeMap();
-        for(Translation2d cords : Settings.HDSR.distanceXrpm) {
-            distanceInterp.put(cords.getX(), cords.getY());
+        levelDistanceInterp = new InterpolatingDoubleTreeMap();
+        for(Translation2d cords : Settings.HDSR.levelDistanceXrpm) {
+            levelDistanceInterp.put(cords.getX(), cords.getY());
         }
+
+        goalinterpolation = new InterpolatingDoubleTreeMap();
+        for (Translation2d data : Settings.HDSR.goalDistanceXrpm ) {
+            goalinterpolation.put(data.getX(), data.getY());
+        }
+
         odometry = Odometry.getInstance();
-
-
     }
 
-    public static double getDistanceInterp(Translation2d targetTranslation) {
+    public static double getLevelDistanceInterp(Translation2d targetTranslation) {
         targetTranslation = FieldUtil.fieldTransform(new Pose2d(targetTranslation.getX(), targetTranslation.getY(), Rotation2d.kZero)).getTranslation();
         double targetDistance = odometry.getPose().getTranslation().getDistance(targetTranslation);
-        return distanceInterp.get(targetDistance);
+
+        return levelDistanceInterp.get(targetDistance);
+    }
+
+    public static double getGoalDistanceInterp(Translation2d targetTranslation) {
+        targetTranslation = FieldUtil.fieldTransform(new Pose2d(targetTranslation.getX(), targetTranslation.getY(), Rotation2d.kZero)).getTranslation();
+        double targetDistance = odometry.getPose().getTranslation().getDistance(targetTranslation);
+
+        return goalinterpolation.get(targetDistance);
     }
 
 

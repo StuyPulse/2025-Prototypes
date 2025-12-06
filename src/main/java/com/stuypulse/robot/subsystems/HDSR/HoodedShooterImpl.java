@@ -10,6 +10,7 @@ import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
+import com.stuypulse.robot.util.InterpUtil;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,7 +29,6 @@ public class HoodedShooterImpl extends HoodedShooter {
 
 
     private final Odometry odometry;
-    private final SwerveDrive swerve;
     private double targetDistance;
     private SmartNumber setRPMHDSR;
 
@@ -36,17 +36,15 @@ public class HoodedShooterImpl extends HoodedShooter {
         super();
         
         interpolator = new InterpolatingDoubleTreeMap();
-        distancexRPM = Settings.HDSR.distanceXrpm;
+        distancexRPM = Settings.HDSR.levelDistanceXrpm;
         for (Translation2d point : distancexRPM) {
             interpolator.put(point.getX(), point.getY());
         }
 
         shooterMotor = new TalonFX(Ports.HDSR.SHOOTER_MOTOR, "swerve");
-                
         Motors.SHOOTER_MOTOR_CONFIG.configure(shooterMotor);
 
         odometry = Odometry.getInstance();
-        swerve = SwerveDrive.getInstance();
 
         setRPMHDSR = new SmartNumber("HDSR/Settings/setRPM", getState().getTargetRPM());
         manualSetDistance = new SmartNumber("HDSR/Setable Values/Manual Set Distance", 4.2);
@@ -69,10 +67,10 @@ public class HoodedShooterImpl extends HoodedShooter {
     }
 
     /**
-     * finds the rpm to shoot to a target x meters away
-\     * @return rpm needed to reach target 
+     * finds the rpm to shoot to a target x meters away on a level plane
+     * @return rpm needed to reach target 
      */
-    public double RPMToDistanceInterpolation() {
+    public double distanceInterpolation() {
         //prelim drive while shoot code
         Translation2d currentTranslation = odometry.getPose().getTranslation();
         double distanceToTarget = currentTranslation.getDistance(targetTranslation);
@@ -81,13 +79,11 @@ public class HoodedShooterImpl extends HoodedShooter {
         distanceToTarget = Math.max(distanceToTarget, Settings.HDSR.MIN_DISTANCE_METERS);
         distanceToTarget = Math.min(distanceToTarget, Settings.HDSR.MAX_DISTANCE_METERS);
 
-        SmartDashboard.putNumber("HDSR/interpolatorRPM", interpolator.get(distanceToTarget));
-
-        return interpolator.get(distanceToTarget);
+        return InterpUtil.getLevelDistanceInterp(currentTranslation);
     } 
 
     @Override
-    public void UpdateTargetDistance(double targetDistance) {
+    public void updateTargetDistance(double targetDistance) {
         this.targetDistance = targetDistance;
     }
 
@@ -104,13 +100,13 @@ public class HoodedShooterImpl extends HoodedShooter {
 
         switch (getState()) {
             case SHOOTRPM:
-                    getState().setTargetRPM(() -> setRPMHDSR.getAsDouble());
+                    getState().setTargetRPM(setRPMHDSR.getAsDouble());
                 break;
             case INTERP:
-                getState().setTargetRPM(() -> RPMToDistanceInterpolation());
+                getState().setTargetRPM(distanceInterpolation());
                 break;
             default:
-                getState().setTargetRPM(() -> 0.0);
+                getState().setTargetRPM(0.0);
                 break;
         } 
 
@@ -120,6 +116,8 @@ public class HoodedShooterImpl extends HoodedShooter {
         SmartDashboard.putNumber("HDSR/currentVelocity", getCurrentVelocity());
         SmartDashboard.putNumber("HDSR/target velocity ", getState().getTargetRPM());
         SmartDashboard.putNumber("HDSR/Target distance hdsr", odometry.getPose().getTranslation().getDistance(targetTranslation));
+        SmartDashboard.putNumber("HDSR/interpolatorRPM", distanceInterpolation());
+
     }
 }
 

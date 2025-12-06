@@ -87,8 +87,6 @@ public class SwerveModuleImpl extends SwerveModule {
 
     @Override
     public Rotation2d getAngle() {
-        // double raw = pivotEncoder.getAbsolutePosition().getValueAsDouble() - angleOffset.getRotations() + 1;
-        // return Rotation2d.fromRotations(raw % 1f);
         return Rotation2d.fromRotations((pivotEncoder.getAbsolutePosition().getValueAsDouble()));
     }
 

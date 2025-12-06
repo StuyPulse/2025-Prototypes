@@ -25,11 +25,7 @@ public abstract class Odometry extends SubsystemBase {
 
     public abstract void reset(Pose2d pose2d);
 
-    public abstract Pose2d getPose();
-
-    public final Translation2d getTranslation() {
-        return getPose().getTranslation();
-    }
+    public abstract Pose2d getPose();  
 
     public final Rotation2d getRotation() {
         return getPose().getRotation();
@@ -39,8 +35,6 @@ public abstract class Odometry extends SubsystemBase {
         Pose2d newPose = new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d());
         reset(newPose);
     }
-
-    //public abstract void addVisionData(Pose2d robotPose, double timestamp);
 
     public abstract void updateVisionMeasurement(Matrix<N3, N1> visionStdDevs, Pose2d pose, double timestampSeconds);
 
