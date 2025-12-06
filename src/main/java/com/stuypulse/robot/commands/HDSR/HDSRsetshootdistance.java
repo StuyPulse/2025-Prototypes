@@ -1,11 +1,11 @@
-package com.stuypulse.robot.commands.HDSR;
+package com.stuypulse.robot.commands.hdsr;
 
 import java.util.function.Supplier;
 
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Field;
-import com.stuypulse.robot.subsystems.HDSR.HoodedShooter;
-import com.stuypulse.robot.subsystems.HDSR.HoodedShooter.ShooterState;
+import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
+import com.stuypulse.robot.subsystems.hdsr.HoodedShooter.ShooterState;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 
 import edu.wpi.first.math.geometry.Pose2d;

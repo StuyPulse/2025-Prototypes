@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.HDSR;
+package com.stuypulse.robot.subsystems.hdsr;
 
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
