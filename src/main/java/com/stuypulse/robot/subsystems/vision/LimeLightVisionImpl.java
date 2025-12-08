@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems.vision;
 
 import javax.security.auth.login.FailedLoginException;
 
+import org.dyn4j.collision.narrowphase.FallbackCondition;
 import org.dyn4j.dynamics.Settings;
 
 import com.stuypulse.robot.constants.Constants;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LimeLightVisionImpl extends LimelightVision {
     private final Odometry odometry;
@@ -49,14 +51,12 @@ public class LimeLightVisionImpl extends LimelightVision {
     private void updatePoseEstimatorVisionMeasurement() {
             LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight"); 
 
-            if(mt1 == null) return;
-
             if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
-                if(mt1.rawFiducials[0].ambiguity > .7) {
+                if(mt1.rawFiducials[0].ambiguity > .7 || mt1.rawFiducials[0].distToCamera > 3) {
                     doRejectUpdate = true;
-                }
-                if(mt1.rawFiducials[0].distToCamera > 3) {
-                    doRejectUpdate = true;
+                    SmartDashboard.putBoolean("Vision/ambiguity > .7", true);
+                } else {
+                    doRejectUpdate = false;
                 }
             }
 
@@ -64,11 +64,20 @@ public class LimeLightVisionImpl extends LimelightVision {
                 doRejectUpdate = true;
             }
 
+            
             if(!doRejectUpdate) {
                 apriltagDetected = true;
-
-                odometry.updateVisionMeasurement(visionStdDevs, mt1.pose, mt1.timestampSeconds);
+                
+            odometry.updateVisionMeasurement(visionStdDevs, mt1.pose, mt1.timestampSeconds);
             }
+            SmartDashboard.putBoolean("Vision/do reject update", doRejectUpdate);
+
         }
+
+    @Override
+    public void periodic() {
+        updatePoseEstimatorVisionMeasurement();
+        SmartDashboard.putBoolean("Vision/April tag detected?", apriltagDetected);
+    }
     
 }

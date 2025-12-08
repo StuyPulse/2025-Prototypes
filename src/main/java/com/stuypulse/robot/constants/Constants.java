@@ -63,7 +63,7 @@ public interface Constants {
     }
 
     public enum Cameras{
-        Limelight("Limelight", new Pose3d(0, 0, 0, new Rotation3d(0,0,0)));
+        Limelight("Limelight", new Pose3d(Units.inchesToMeters(-14.412) , Units.inchesToMeters(4.8399), Units.inchesToMeters(4.359), new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(75), Units.degreesToRadians(180))));
 
         private Pose3d location;
         private String name;
