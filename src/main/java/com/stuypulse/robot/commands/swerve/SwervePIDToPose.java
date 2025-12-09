@@ -2,15 +2,19 @@ package com.stuypulse.robot.commands.swerve;
 
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
+import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.math.Angle;
+import com.stuypulse.stuylib.math.Vector2D;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Field;
+import com.stuypulse.robot.constants.Gains;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,11 +28,12 @@ public class SwervePIDToPose extends Command {
 
     private PIDController xController;
     private PIDController yController;
-    private AnglePIDController thetaController;
+    private PIDController thetaController;
+    private Gamepad controller;
 
     private final FieldObject2d targetPose2d;
 
-    public SwervePIDToPose(Pose2d targetPose){
+    public SwervePIDToPose(Pose2d targetPose, Gamepad controller){
         swerve = SwerveDrive.getInstance();
         odometry = Odometry.getInstance();
         this.targetPose = targetPose;
@@ -36,9 +41,10 @@ public class SwervePIDToPose extends Command {
         targetPose2d = odometry.getField().getObject("Swerve Target Pose");
         
 
-        xController = new PIDController(1.0, 0, 0);
-        yController = new PIDController(1.0, 0, 0);
-        thetaController = new AnglePIDController(1.0, 0, 0);
+        xController = new PIDController(Gains.pidToPose.x.kP, Gains.pidToPose.x.kI, Gains.pidToPose.x.kD);
+        yController = new PIDController(Gains.pidToPose.y.kP, Gains.pidToPose.y.kI, Gains.pidToPose.y.kD);
+        thetaController = new PIDController(Gains.pidToPose.theta.kP, Gains.pidToPose.theta.kI, Gains.pidToPose.theta.kD);
+        this.controller = controller;
         
         addRequirements(swerve, odometry);
     }
@@ -61,7 +67,7 @@ public class SwervePIDToPose extends Command {
 
         double outX = xController.calculate(robotPose.getX(), targetPose.getX());
         double outY = yController.calculate(robotPose.getY(), targetPose.getY());
-        double outTheta = thetaController.update(Angle.fromRotation2d(robotPose.getRotation()), Angle.fromRotation2d(targetPose.getRotation()));
+        double outTheta = thetaController.calculate(robotPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
         ChassisSpeeds swerveChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             outX, 
@@ -91,7 +97,9 @@ public class SwervePIDToPose extends Command {
 
     @Override
     public boolean isFinished() {
-        return isAlignedX() && isAlignedY() && isAlignedTheta();
+        return (isAlignedX() && isAlignedY() && isAlignedTheta()) 
+        || 
+        ((new Translation2d(controller.getLeftX(), controller.getLeftY()).getNorm() > 0.1) || (new Translation2d(controller.getRightX(), controller.getRightY()).getNorm() > 0.1));
     }
 
     @Override
@@ -99,5 +107,7 @@ public class SwervePIDToPose extends Command {
         swerve.setChassisSpeeds(
             ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, 0.0, Rotation2d.kZero)
         );
+        SmartDashboard.putBoolean("Alignment/is finished?", true);
+        Field.clearFieldObject(targetPose2d);
     }
 }

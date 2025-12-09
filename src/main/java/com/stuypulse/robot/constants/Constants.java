@@ -81,4 +81,25 @@ public interface Constants {
             return location;
         }
     }
+
+    public enum Tags{
+        GoalTag(new Pose3d(), 4);
+
+        private Pose3d pose;
+        private int id;
+
+        private Tags(Pose3d pose, int id) {
+            this.pose = pose;
+            this.id = id;
+        }
+
+        public Pose3d getpose() {
+            return pose;
+        }
+
+        public int getID() {
+            return id;
+        }
+        
+    }
 }
