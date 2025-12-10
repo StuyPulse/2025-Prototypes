@@ -54,7 +54,7 @@ public class OdometryImpl extends Odometry {
 
     @Override
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition();
+        return new Pose2d(10, 2, Rotation2d.k180deg);
     }
 
     @Override
@@ -84,9 +84,10 @@ public class OdometryImpl extends Odometry {
     @Override
     public void periodic() {
         SwerveDrive drive = SwerveDrive.getInstance();
-        poseEstimator.update(drive.getGyroAngle(), drive.getModulePositions());
+        // poseEstimator.update(drive.getGyroAngle(), drive.getModulePositions());
 
-        poseFieldObject.setPose(FieldUtil.fieldTransform(poseEstimator.getEstimatedPosition()));
+        // poseFieldObject.setPose(FieldUtil.fieldTransform(poseEstimator.getEstimatedPosition()));
+        poseFieldObject.setPose(new Pose2d(10, 2, Rotation2d.k180deg));
 
         SmartDashboard.putNumber("Odometry/Pose Estimator Pose X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Odometry/Pose Estimator Pose Y", poseEstimator.getEstimatedPosition().getY());
