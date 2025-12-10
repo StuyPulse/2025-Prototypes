@@ -19,6 +19,7 @@ import com.stuypulse.robot.subsystems.hdsr.HoodedShooter.ShooterState;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.subsystems.vision.LimeLightVisionImpl;
 import com.stuypulse.robot.subsystems.vision.LimelightVision;
+import com.stuypulse.robot.util.FieldUtil;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 import com.stuypulse.stuylib.network.SmartNumber;
@@ -76,6 +77,8 @@ public class RobotContainer {
             .onTrue(new SeedGyro());
         driver.getLeftButton()
             .onTrue(new SwervePIDToPose(new Pose2d(), operator));
+        driver.getRightTriggerButton()
+            .onTrue(new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver));
 
     }
     /**************/

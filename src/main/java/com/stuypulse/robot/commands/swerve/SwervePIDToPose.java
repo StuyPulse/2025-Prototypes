@@ -5,6 +5,9 @@ import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.Vector2D;
+
+import java.util.function.Supplier;
+
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Field;
 import com.stuypulse.robot.constants.Gains;
@@ -23,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class SwervePIDToPose extends Command {
     private SwerveDrive swerve;
     private Odometry odometry;
-    private Pose2d targetPose;
+    private Supplier<Pose2d> targetPose;
     private Pose2d robotPose;
 
     private PIDController xController;
@@ -33,7 +36,11 @@ public class SwervePIDToPose extends Command {
 
     private final FieldObject2d targetPose2d;
 
-    public SwervePIDToPose(Pose2d targetPose, Gamepad controller){
+    public SwervePIDToPose(Pose2d targetPose, Gamepad controller) {
+        this(() -> targetPose, controller); 
+    }
+
+    public SwervePIDToPose(Supplier<Pose2d> targetPose, Gamepad controller){
         swerve = SwerveDrive.getInstance();
         odometry = Odometry.getInstance();
         this.targetPose = targetPose;
@@ -50,24 +57,24 @@ public class SwervePIDToPose extends Command {
     }
 
     boolean isAlignedX() {
-        return Math.abs(targetPose.getX() - robotPose.getX()) < Settings.Swerve.Alignment.X_TOLERANCE.getAsDouble();
+        return Math.abs(targetPose.get().getX() - robotPose.getX()) < Settings.Swerve.Alignment.X_TOLERANCE.getAsDouble();
     }
     boolean isAlignedY() {
-        return Math.abs(targetPose.getY() - robotPose.getY()) < Settings.Swerve.Alignment.Y_TOLERANCE.getAsDouble();
+        return Math.abs(targetPose.get().getY() - robotPose.getY()) < Settings.Swerve.Alignment.Y_TOLERANCE.getAsDouble();
     }
     boolean isAlignedTheta() {
-        return Math.abs(targetPose.getRotation().minus(robotPose.getRotation()).getRadians()) < Settings.Swerve.Alignment.THETA_TOLERANCE.getAsDouble();
+        return Math.abs(targetPose.get().getRotation().minus(robotPose.getRotation()).getRadians()) < Settings.Swerve.Alignment.THETA_TOLERANCE.getAsDouble();
     }
     
     @Override
     public void execute() {
         robotPose = odometry.getPose();
 
-        targetPose2d.setPose(Robot.isBlue() ? targetPose : Field.transformToOppositeAlliance(targetPose));
+        targetPose2d.setPose(Robot.isBlue() ? targetPose.get() : Field.transformToOppositeAlliance(targetPose.get()));
 
-        double outX = xController.calculate(robotPose.getX(), targetPose.getX());
-        double outY = yController.calculate(robotPose.getY(), targetPose.getY());
-        double outTheta = thetaController.calculate(robotPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+        double outX = xController.calculate(robotPose.getX(), targetPose.get().getX());
+        double outY = yController.calculate(robotPose.getY(), targetPose.get().getY());
+        double outTheta = thetaController.calculate(robotPose.getRotation().getRadians(), targetPose.get().getRotation().getRadians());
 
         ChassisSpeeds swerveChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             outX, 
@@ -79,9 +86,9 @@ public class SwervePIDToPose extends Command {
         swerve.setChassisSpeeds(swerveChassisSpeeds);
 
 
-        SmartDashboard.putNumber("Alignment/Target x", targetPose.getX());
-        SmartDashboard.putNumber("Alignment/Target y", targetPose.getY());
-        SmartDashboard.putNumber("Alignment/Target angle", targetPose.getRotation().getDegrees());
+        SmartDashboard.putNumber("Alignment/Target x", targetPose.get().getX());
+        SmartDashboard.putNumber("Alignment/Target y", targetPose.get().getY());
+        SmartDashboard.putNumber("Alignment/Target angle", targetPose.get().getRotation().getDegrees());
 
 
         SmartDashboard.putBoolean("Alignment/Is Aligned X", isAlignedX());
