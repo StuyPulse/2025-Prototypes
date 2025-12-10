@@ -11,6 +11,8 @@ import com.stuypulse.robot.subsystems.odometry.Odometry;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FieldUtil {
     private static Odometry odometry;
@@ -27,7 +29,9 @@ public class FieldUtil {
 
     
     public static Pose2d getGoalRelativePose() {
-        return odometry.getPose().relativeTo(goaltag.getpose().toPose2d());
+        odometry = Odometry.getInstance();
+        odometry.getField().getObject("tag").setPose(goaltag.getpose().toPose2d());
+        return new Pose2d(goaltag.getpose().toPose2d().minus(odometry.getPose()).getTranslation(), odometry.getPose().relativeTo(Tags.GoalTag.getpose().toPose2d()).getRotation());
     }
 
 
@@ -36,7 +40,8 @@ public class FieldUtil {
      * @return angle error
      */
     public static Rotation2d getGoalAngleError() {
-        return getGoalRelativePose().getRotation();
+        SmartDashboard.putNumber("Goal Alignment/ relative angle", getGoalRelativePose().getRotation().getDegrees());
+        return Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getX()/-getGoalRelativePose().getY()));
     }
 
     /**
@@ -44,12 +49,16 @@ public class FieldUtil {
      * @return Pose2d object with current pose with angle correction or closest pose to shoot at if too close or too far.
      */
     public static Pose2d getShootPose() {
+        odometry = Odometry.getInstance();
         if (odometry.getPose().getTranslation().getDistance(goaltag.getpose().getTranslation().toTranslation2d()) > com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS) {
-            return new Pose2d(-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS, getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS, getGoalAngleError());
+            SmartDashboard.putBoolean("Alignment/to far from goal",true);
+            return new Pose2d(-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS, getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS, Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));
         } else if (odometry.getPose().getTranslation().getDistance(goaltag.getpose().getTranslation().toTranslation2d()) < com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS) {
-            return new Pose2d(-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS, getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS, getGoalAngleError());
+            SmartDashboard.putBoolean("Alignment/to close to goal",true);
+            return new Pose2d(-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS, getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS, Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));
         } else {
-            return odometry.getPose().rotateBy(getGoalAngleError());
+            SmartDashboard.putBoolean("Alignment/in goal range",true);
+            return odometry.getPose().rotateBy(Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));
         }
     }
 }
