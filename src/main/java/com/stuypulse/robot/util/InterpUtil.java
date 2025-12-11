@@ -1,6 +1,7 @@
 package com.stuypulse.robot.util;
 
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.constants.Constants.Tags;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,12 +31,9 @@ public class InterpUtil {
         return levelDistanceInterp.get(targetDistance);
     }
 
-    public static double getGoalDistanceInterp(Translation2d targetTranslation) {
-        targetTranslation = FieldUtil.fieldTransform(new Pose2d(targetTranslation.getX(), targetTranslation.getY(), Rotation2d.kZero)).getTranslation();
-        double targetDistance = odometry.getPose().getTranslation().getDistance(targetTranslation);
-
+    public static double getGoalDistanceInterp() {
+        double targetDistance = odometry.getPose().getTranslation().getDistance(Tags.GoalTag.getpose().getTranslation().toTranslation2d());
         return goalinterpolation.get(targetDistance);
     }
-
 
 }

@@ -52,9 +52,9 @@ public class FieldUtil {
     public static Pose2d getShootPose() {
         odometry = Odometry.getInstance();
         if (odometry.getPose().getTranslation().getDistance(goaltag.getpose().getTranslation().toTranslation2d()) > com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS) {
-            SmartDashboard.putBoolean("Alignment/to far from goal",true);
+            SmartDashboard.putBoolean("Alignment/To far from goal",true);
             return new Pose2d(Math.abs(goaltag.getpose().getX() - (-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS)), Math.abs(goaltag.getpose().getY() - getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS), Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));        } else if (odometry.getPose().getTranslation().getDistance(goaltag.getpose().getTranslation().toTranslation2d()) < com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS) {
-            SmartDashboard.putBoolean("Alignment/to close to goal",true);
+            SmartDashboard.putBoolean("Alignment/To close to goal",true);
             // return new Pose2d(
             //     goaltag.getpose().toPose2d()
             //         .minus(new Pose2d(-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS, 
@@ -64,7 +64,7 @@ public class FieldUtil {
             //     Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())) );
             return new Pose2d(Math.abs(goaltag.getpose().getX() - (-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS)), Math.abs(goaltag.getpose().getY() - getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS), Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));
         } else {
-            SmartDashboard.putBoolean("Alignment/in goal range",true);
+            SmartDashboard.putBoolean("Alignment/In goal range",true);
             return new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), (Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX()))));
         }
     }

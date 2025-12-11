@@ -43,7 +43,7 @@ public class HDSRSetShootDistance extends InstantCommand {
         targetPose2d = new Pose2d(new Translation2d(odometry.getPose().getX() + distance.get(), odometry.getPose().getY()), Rotation2d.kZero);
         targetPose.setPose(Robot.isBlue() ? targetPose2d : Field.transformToOppositeAlliance(targetPose2d));
 
-        hdsr.setShooterState(ShooterState.INTERP);
+        hdsr.setShooterState(ShooterState.LEVELINTERP);
         hdsr.setTargetTranslation(targetPose2d.getTranslation());
 
         SmartDashboard.putNumber("HDSR/Distance to Target Meters", distance.get());

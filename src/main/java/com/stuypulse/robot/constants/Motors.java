@@ -76,6 +76,18 @@ public interface Motors {
             .positionConversionFactor(factor);
     }
 
+    public interface HoodedShooter {
+        SparkBaseConfig motorConfig = new SparkMaxConfig()
+        //.inverted(true)
+        .smartCurrentLimit(200)
+        .openLoopRampRate(0.25)
+        .idleMode(IdleMode.kBrake)
+        .apply(
+            new EncoderConfig()
+                .positionConversionFactor(1.0));
+        
+    }
+
     TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
         .withCurrentLimitAmps(80)
         .withRampRate(1)
@@ -89,15 +101,15 @@ public interface Motors {
 
 
     TalonFXConfig ROLLER_MOTOR_CONFIG = new TalonFXConfig()
-        .withCurrentLimitAmps(0)
-        .withRampRate(0)
+        .withCurrentLimitAmps(80)
+        .withRampRate(1)
         .withNeutralMode(NeutralModeValue.Brake)
         .withInvertedValue(InvertedValue.CounterClockwise_Positive)
-        .withSupplyCurrentLimitAmps(0)
-        .withMotionProfile(0, 0)
-        .withSensorToMechanismRatio(0)
-        .withFFConstants(0, 0, 0, 0,0)
-        .withPIDConstants(0, 0, 0, 0);
+        .withSupplyCurrentLimitAmps(80)
+        .withMotionProfile(10, 2)
+        .withSensorToMechanismRatio(1.0)
+        .withFFConstants(0, 0.117, 0.2, 0,0)
+        .withPIDConstants(1.9, 0, 0.03, 0);
 
     TalonFXConfig HOOD_MOTOR_CONFIG = new TalonFXConfig()
         .withCurrentLimitAmps(0)

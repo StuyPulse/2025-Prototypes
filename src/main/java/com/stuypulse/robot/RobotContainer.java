@@ -9,12 +9,15 @@ import org.photonvision.estimation.VisionEstimation;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.hdsr.HDSRSetState;
+import com.stuypulse.robot.commands.hdsr.HDSRSetRollerState;
 import com.stuypulse.robot.commands.hdsr.HDSRSetShootDistance;
+import com.stuypulse.robot.commands.hdsr.HDSRSetShooterState;
 import com.stuypulse.robot.commands.swerve.SeedGyro;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.commands.swerve.SwervePIDToPose;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
+import com.stuypulse.robot.subsystems.hdsr.HoodedShooter.RollerState;
 import com.stuypulse.robot.subsystems.hdsr.HoodedShooter.ShooterState;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.subsystems.vision.LimeLightVisionImpl;
@@ -28,6 +31,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RobotContainer {
 
@@ -38,9 +43,9 @@ public class RobotContainer {
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
-    //private final HoodedShooter hdsr = HoodedShooter.getInstance();
+    private final HoodedShooter hdsr = HoodedShooter.getInstance();
     private final SwerveDrive swerve = SwerveDrive.getInstance();
-    //private final LimeLightVisionImpl vison = LimelightVision.getInstance();
+    private final LimeLightVisionImpl vison = LimelightVision.getInstance();
 
 
     // Autons
@@ -67,19 +72,23 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-        // driver.getBottomButton()
-        //     .onTrue(new HDSRSetState(ShooterState.STOW));
-        // driver.getRightButton()
-        //     .onTrue(new HDSRSetState(ShooterState.SHOOTRPM));
-        // driver.getTopButton()
-        //     .onTrue(new HDSRSetShootDistance(() -> setdistanceToTarget.getAsDouble()));
+        driver.getBottomButton()
+            .onTrue(new HDSRSetState(ShooterState.STOW))
+            .onTrue(new HDSRSetRollerState(RollerState.STOW));
+        driver.getRightButton()
+            .onTrue(new HDSRSetState(ShooterState.SHOOTRPM))
+            .onTrue(new HDSRSetRollerState(RollerState.Intake));
+        driver.getTopButton()
+            .onTrue(new HDSRSetShootDistance(() -> setdistanceToTarget.getAsDouble()));
         driver.getRightMenuButton()
             .onTrue(new SeedGyro());
         driver.getLeftButton()
             .onTrue(new SwervePIDToPose(new Pose2d(), operator));
         driver.getRightTriggerButton()
-            .onTrue(new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver));
-
+            .onTrue(new SequentialCommandGroup(new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver),
+                    new HDSRSetShooterState(ShooterState.GOALINTERP),
+                    new WaitCommand(3),
+                    new HDSRSetRollerState(RollerState.Intake)));
     }
     /**************/
     /*** AUTONS ***/

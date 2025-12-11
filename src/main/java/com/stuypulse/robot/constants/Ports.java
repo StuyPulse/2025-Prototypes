@@ -13,7 +13,6 @@ public interface Ports {
         int DEBUGGER = 2;
     }
     public interface HDSR {
-        int HOOD_MOTOR = 0;
         int ROLLER_MOTOR = 1;
         int SHOOTER_MOTOR = 14;
     }
