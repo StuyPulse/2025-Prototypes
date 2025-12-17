@@ -38,26 +38,34 @@ public interface Settings {
 
         public static final Translation2d[] goalDistanceXrpm = {
             new Translation2d(1, 1300),
-            new Translation2d(2, 1900),
-            new Translation2d(3, 2450),
-            new Translation2d(4, 2800),
-            new Translation2d(5, 3150),
-            new Translation2d(6, 3625),
-            new Translation2d(7, 3975)
+            new Translation2d(2, 4650.0),
+            new Translation2d(2.5, 3800),
+            new Translation2d(3, 3700.0),
+            new Translation2d(3.5, 3550.0),
+            new Translation2d(4, 3550.0),
+            new Translation2d(5, 3720.0),
+            new Translation2d(5.5, 3820.0),
+            new Translation2d(6, 3900.0),
+            new Translation2d(6.5, 4000.0),
+            new Translation2d(7, 4100.0),
+            new Translation2d(7.5, 4220.0),
+            new Translation2d(8, 4400.0),
+            new Translation2d(8.5, 4500.00)
         };
         
         public static final double projectileResistanceoffset = 0.0; //meant to represent friction and air resistance
             
-        public static final double MAX_DISTANCE_METERS = 7;
-        public static final double MIN_DISTANCE_METERS = 1;
+        public static final double MAX_DISTANCE_METERS = 8.5;
+        public static final double MIN_DISTANCE_METERS = 1.5;
 
     }
 
     public interface Swerve {
         String DRIVE_CANBUS = "Swerve Drive Drive";
         double MODULE_VELOCITY_DEADBAND = 0.05;
-        public final double gyroOffset = -158.729996;
-
+        // public final double gyroOffset = -158.729996;
+        public final double gyroOffset = -1.2;
+        
         public interface Constraints {
             double MAX_MODULE_SPEED = 4.9;
 

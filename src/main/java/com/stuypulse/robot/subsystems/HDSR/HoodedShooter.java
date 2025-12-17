@@ -68,6 +68,10 @@ public abstract class HoodedShooter extends SubsystemBase{
         rollerState = RollerState.STOW;
     }
 
+    public abstract double getCurrentShooterVelocity();
+    
+    //public abstract double getCurrentRollerVelocity(); 
+
     public ShooterState getShooterState() { return shooterState; }
 
     public RollerState getRollerState() { return rollerState; }

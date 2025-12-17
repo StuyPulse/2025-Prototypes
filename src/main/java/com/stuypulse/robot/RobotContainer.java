@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class RobotContainer {
 
@@ -73,22 +74,20 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         driver.getBottomButton()
-            .onTrue(new HDSRSetState(ShooterState.STOW))
-            .onTrue(new HDSRSetRollerState(RollerState.STOW));
+            .onTrue(new HDSRSetState(ShooterState.STOW));
         driver.getRightButton()
-            .onTrue(new HDSRSetState(ShooterState.SHOOTRPM))
-            .onTrue(new HDSRSetRollerState(RollerState.Intake));
+            .onTrue(new HDSRSetState(ShooterState.SHOOTRPM));
         driver.getTopButton()
-            .onTrue(new HDSRSetShootDistance(() -> setdistanceToTarget.getAsDouble()));
+            .onTrue(new HDSRSetState(ShooterState.GOALINTERP));
         driver.getRightMenuButton()
             .onTrue(new SeedGyro());
-        driver.getLeftButton()
-            .onTrue(new SwervePIDToPose(new Pose2d(), operator));
+        //driver.getLeftButton()
+          //  .onTrue(new SwervePIDToPose(new Pose2d(), operator));
         driver.getRightTriggerButton()
-            .onTrue(new SequentialCommandGroup(new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver),
-                    new HDSRSetShooterState(ShooterState.GOALINTERP),
-                    new WaitCommand(3),
-                    new HDSRSetRollerState(RollerState.Intake)));
+            .onTrue(new SequentialCommandGroup(
+                        new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver),
+                        new HDSRSetShooterState(ShooterState.GOALINTERP)
+                     ));
     }
     /**************/
     /*** AUTONS ***/

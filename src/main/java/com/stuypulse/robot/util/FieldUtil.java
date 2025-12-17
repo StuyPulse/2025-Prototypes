@@ -1,5 +1,7 @@
 package com.stuypulse.robot.util;
 
+import java.util.function.Supplier;
+
 import org.dyn4j.dynamics.Settings;
 import org.dyn4j.geometry.Rotation;
 import org.opencv.core.Mat;
@@ -50,22 +52,28 @@ public class FieldUtil {
      * @return Pose2d object with current pose with angle correction or closest pose to shoot at if too close or too far.
      */
     public static Pose2d getShootPose() {
+        Supplier<Rotation2d> poseAngle = () -> {
+            if (Math.signum(Math.atan(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX()))) == 1) {
+                return Rotation2d.k180deg.minus(Rotation2d.fromRadians(Math.atan(Math.abs(getGoalRelativePose().getY())/Math.abs(getGoalRelativePose().getX()))));
+            } else {
+                return Rotation2d.fromRadians(Math.atan(Math.abs(getGoalRelativePose().getY())/Math.abs(getGoalRelativePose().getX())));
+            }
+        };
         odometry = Odometry.getInstance();
         if (odometry.getPose().getTranslation().getDistance(goaltag.getpose().getTranslation().toTranslation2d()) > com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS) {
             SmartDashboard.putBoolean("Alignment/To far from goal",true);
-            return new Pose2d(Math.abs(goaltag.getpose().getX() - (-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS)), Math.abs(goaltag.getpose().getY() - getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS), Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));        } else if (odometry.getPose().getTranslation().getDistance(goaltag.getpose().getTranslation().toTranslation2d()) < com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS) {
+            return new Pose2d(Math.abs(goaltag.getpose().getX() - (-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS)), Math.abs(goaltag.getpose().getY() - getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MAX_DISTANCE_METERS), Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));
+            } else if (odometry.getPose().getTranslation().getDistance(goaltag.getpose().getTranslation().toTranslation2d()) < com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS) {
             SmartDashboard.putBoolean("Alignment/To close to goal",true);
-            // return new Pose2d(
-            //     goaltag.getpose().toPose2d()
-            //         .minus(new Pose2d(-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS, 
-            //         getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS, 
-            //         Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX()))))
-            //      .getTranslation(), 
-            //     Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())) );
             return new Pose2d(Math.abs(goaltag.getpose().getX() - (-getGoalAngleError().getSin() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS)), Math.abs(goaltag.getpose().getY() - getGoalAngleError().getCos() * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS), Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX())));
         } else {
             SmartDashboard.putBoolean("Alignment/In goal range",true);
-            return new Pose2d(odometry.getPose().getX(), odometry.getPose().getY(), (Rotation2d.fromRadians(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX()))));
+            return new Pose2d(
+                odometry.getPose().getX(), 
+                odometry.getPose().getY(),  
+                    // Tags.GoalTag.getpose().getRotation().toRotation2d().plus(Rotation2d.fromRadians(Math.atan(Math.atan(getGoalRelativePose().getY()/getGoalRelativePose().getX()))))
+                    poseAngle.get()
+                );
         }
     }
 }

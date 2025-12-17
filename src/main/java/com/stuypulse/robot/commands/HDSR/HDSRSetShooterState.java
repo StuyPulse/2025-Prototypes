@@ -21,9 +21,4 @@ public class HDSRSetShooterState extends InstantCommand {
     public void execute() {
         hdsr.setShooterState(state);
     }
-
-    @Override
-    public boolean isFinished() {
-        return hdsr.getShooterState() == state;
-    }
 }

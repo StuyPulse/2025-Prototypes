@@ -82,6 +82,7 @@ public interface Motors {
         .smartCurrentLimit(200)
         .openLoopRampRate(0.25)
         .idleMode(IdleMode.kBrake)
+        .inverted(false)
         .apply(
             new EncoderConfig()
                 .positionConversionFactor(1.0));

@@ -14,7 +14,9 @@ import com.stuypulse.stuylib.math.Vector2D;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -33,9 +35,9 @@ public class LimeLightVisionImpl extends LimelightVision {
         apriltagDetected = false;
         visionStdDevs = VecBuilder.fill(1, 1, .3);
 
-        for (Cameras camera : Constants.Cameras.values()) {
-                   Pose3d robotRelativePose = camera.getLocation();
-            LimelightHelpers.setCameraPose_RobotSpace(
+        // for (Cameras camera : Constants.Cameras.values()) {
+                   Pose3d robotRelativePose = Cameras.Limelight.getLocation();
+                    LimelightHelpers.setCameraPose_RobotSpace(
                     camera.getName(),
                     robotRelativePose.getX(),
                     -robotRelativePose.getY(),
@@ -43,7 +45,8 @@ public class LimeLightVisionImpl extends LimelightVision {
                     Units.radiansToDegrees(robotRelativePose.getRotation().getX()),
                     Units.radiansToDegrees(robotRelativePose.getRotation().getY()),
                     Units.radiansToDegrees(robotRelativePose.getRotation().getZ()));
-        }
+                    //imelightHelpers.setCameraPose_RobotSpace(camera.getName(), 0, 0, 0, 0, 0, 0);
+        // }
     }
 
 
@@ -54,10 +57,15 @@ public class LimeLightVisionImpl extends LimelightVision {
             if (mt1 == null ) return;
 
             if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
-                if(mt1.rawFiducials[0].ambiguity > .7 || mt1.rawFiducials[0].distToCamera > 3) {
+                if(mt1.rawFiducials[0].ambiguity > 0.7 ) {
                     doRejectUpdate = true;
+                    SmartDashboard.putNumber("Vision/ambiguity value",mt1.rawFiducials[0].ambiguity);
                     SmartDashboard.putBoolean("Vision/ambiguity > .7", true);
-                } else {
+                } else if (mt1.rawFiducials[0].distToCamera > 3) {
+                    doRejectUpdate = true;
+                    SmartDashboard.putBoolean("Vision distance > 3", true);
+                }
+                else {
                     doRejectUpdate = false;
                 }
             }
@@ -69,17 +77,19 @@ public class LimeLightVisionImpl extends LimelightVision {
             
             if(!doRejectUpdate) {
                 apriltagDetected = true;
-                
-            odometry.updateVisionMeasurement(visionStdDevs, mt1.pose, mt1.timestampSeconds);
+            
+            
+            odometry.updateVisionMeasurement(visionStdDevs, mt1.pose.rotateAround(mt1.pose.getTranslation(), Rotation2d.k180deg), mt1.timestampSeconds);
             }
             SmartDashboard.putBoolean("Vision/do reject update", doRejectUpdate);
-
+            SmartDashboard.putNumber("Vision/Vision heading ", mt1.pose.getRotation().getDegrees());
         }
 
     @Override
     public void periodic() {
         updatePoseEstimatorVisionMeasurement();
         SmartDashboard.putBoolean("Vision/April tag detected?", apriltagDetected);
+        SmartDashboard.putNumberArray("Vision/Robot relative pose", LimelightHelpers.getCameraPose_TargetSpace(Cameras.Limelight.getName()));
     }
     
 }

@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.constants.Constants.Tags;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.util.InterpUtil;
 import com.stuypulse.stuylib.control.feedback.PIDController;
@@ -22,8 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class HoodedShooterImpl extends HoodedShooter {
     private final TalonFX shooterMotor;
-    private final SparkMax rollerMotor;
-    private final RelativeEncoder rollerEncoder;
+    //private final SparkMax rollerMotor;
+    //private final RelativeEncoder rollerEncoder;
     private final PIDController rollerController;
     private final SimpleMotorFeedforward rollerFFController;
 
@@ -49,9 +50,9 @@ public class HoodedShooterImpl extends HoodedShooter {
         shooterMotor = new TalonFX(Ports.HDSR.SHOOTER_MOTOR, "swerve");
         Motors.SHOOTER_MOTOR_CONFIG.configure(shooterMotor);
 
-        rollerMotor = new SparkMax(Ports.HDSR.ROLLER_MOTOR, MotorType.kBrushless);
-        rollerMotor.configure(Motors.HoodedShooter.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rollerEncoder = rollerMotor.getEncoder();
+        // rollerMotor = new SparkMax(Ports.HDSR.ROLLER_MOTOR, MotorType.kBrushless);
+        // rollerMotor.configure(Motors.HoodedShooter.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // rollerEncoder = rollerMotor.getEncoder();
 
         odometry = Odometry.getInstance();
 
@@ -69,13 +70,15 @@ public class HoodedShooterImpl extends HoodedShooter {
      * Method to get shooter velocity in RPM
      *@return Shooter velocity in RPM 
      */
+    @Override
     public double getCurrentShooterVelocity() {
         return shooterMotor.getVelocity().getValueAsDouble()* 60;
     }
 
-    public double getCurrentRollerVelocity() {
-        return rollerEncoder.getVelocity();
-    }
+    // @Override
+    // public double getCurrentRollerVelocity() {
+    //     return rollerEncoder.getVelocity();
+    // }
 
     public void setTargetTranslation(Translation2d targetTranslation) {
         this.targetTranslation = targetTranslation;
@@ -111,7 +114,7 @@ public class HoodedShooterImpl extends HoodedShooter {
         switch (getShooterState()) {
             case SHOOTRPM:
                     getShooterState().setShooterRPM(setRPMHDSR.getAsDouble());
-                    getRollerState().setRollerRPM(setRollerRPM.getAsDouble());
+                    //getRollerState().setRollerRPM(setRollerRPM.getAsDouble());
                 break;
             case LEVELINTERP:
                 getShooterState().setShooterRPM(getShootDistanceRPM());
@@ -121,18 +124,23 @@ public class HoodedShooterImpl extends HoodedShooter {
                 break;
             default:
                 getShooterState().setShooterRPM(0.0);
-                getRollerState().setRollerRPM(0.0);
+                //getRollerState().setRollerRPM(0.0);
                 break;
         } 
 
-        rollerController.update(getCurrentRollerVelocity(), getRollerState().getRollerRPM());
+        //rollerController.update(getCurrentRollerVelocity(), getRollerState().getRollerRPM());
         shooterMotor.setControl(new VelocityVoltage(getShooterState().getShooterRPM() / 60.0).withSlot(0));
-        rollerMotor.setVoltage(rollerController.getOutput() + rollerFFController.calculate(getRollerState().getRollerRPM()));
-        
+        //rollerMotor.setVoltage(rollerController.getOutput() + rollerFFController.calculate(getRollerState().getRollerRPM()));
+        //rollerMotor.setVoltage(rollerFFController.calculate(getRollerState().getRollerRPM()));
+        //rollerMotor.set(setRollerRPM.doubleValue());
+
         SmartDashboard.putNumber("HDSR/Current Shooter Velocity", getCurrentShooterVelocity());
-        SmartDashboard.putNumber("HDSR/Current Roller Velocity", getCurrentRollerVelocity());
-        SmartDashboard.putNumber("HDSR/Target velocity ", getShooterState().getShooterRPM());
-        SmartDashboard.putNumber("HDSR/interpolatorRPM", getShootDistanceRPM());
+        SmartDashboard.putNumber("HDSR/Distance to Goal", odometry.getPose().getTranslation().getDistance(Tags.GoalTag.getpose().getTranslation().toTranslation2d()));
+       // SmartDashboard.putNumber("HDSR/Current Roller Velocity",  getCurrentRollerVelocity());
+        //SmartDashboard.putNumber("HDSR/Target Roller Velocity", getRollerState().getRollerRPM());
+        SmartDashboard.putNumber("HDSR/Target Shooter velocity ", getShooterState().getShooterRPM());
+        SmartDashboard.putNumber("HDSR/Level interpolation output", getShootDistanceRPM());
+        SmartDashboard.putNumber("HDSR/Goal interpolation Rmp", getShootGoalRPM());
 
     }
 }

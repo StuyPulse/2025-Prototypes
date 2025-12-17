@@ -21,8 +21,4 @@ public class HDSRSetRollerState extends InstantCommand {
         hdsr.setRollerState(state);
     }
 
-    @Override
-    public boolean isFinished() {
-        return hdsr.getRollerState() == state;
-    }
 }
