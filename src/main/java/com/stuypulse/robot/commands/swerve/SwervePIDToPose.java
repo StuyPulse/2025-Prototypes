@@ -68,21 +68,15 @@ public class SwervePIDToPose extends Command {
         return Math.abs(targetPose.get().getRotation().minus(robotPose.getRotation()).getRadians()) < Settings.Swerve.Alignment.THETA_TOLERANCE.getAsDouble();
     }
     
-    
-    // @Override
-    // public void initialize() {
-    //     usedPose = targetPose.get();
-    // }
-    
     @Override
     public void execute() {
         robotPose = odometry.getPose();
+        Pose2d currentTarget = targetPose.get();
+        targetPose2d.setPose(currentTarget);
 
-        targetPose2d.setPose(targetPose.get());
-
-        double outX = xController.calculate(robotPose.getX(), targetPose.get().getX());
-        double outY = yController.calculate(robotPose.getY(), targetPose.get().getY());
-        double outTheta = thetaController.calculate(robotPose.getRotation().getRadians(), targetPose.get().getRotation().getRadians());
+        double outX = xController.calculate(robotPose.getX(), currentTarget.getX());
+        double outY = yController.calculate(robotPose.getY(), currentTarget.getY());
+        double outTheta = thetaController.calculate(robotPose.getRotation().getRadians(), currentTarget.getRotation().getRadians());
 
         ChassisSpeeds swerveChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             outX, 
@@ -94,9 +88,9 @@ public class SwervePIDToPose extends Command {
         swerve.setChassisSpeeds(swerveChassisSpeeds);
 
 
-        SmartDashboard.putNumber("Alignment/Target x", targetPose.get().getX());
-        SmartDashboard.putNumber("Alignment/Target y", targetPose.get().getY());
-        SmartDashboard.putNumber("Alignment/Target angle", targetPose.get().getRotation().getDegrees());
+        SmartDashboard.putNumber("Alignment/Target x", currentTarget.getX());
+        SmartDashboard.putNumber("Alignment/Target y", currentTarget.getY());
+        SmartDashboard.putNumber("Alignment/Target angle", currentTarget.getRotation().getDegrees());
 
 
         SmartDashboard.putBoolean("Alignment/Is Aligned X", isAlignedX());
