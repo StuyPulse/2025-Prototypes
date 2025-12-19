@@ -28,34 +28,33 @@ public class OdometryImpl extends Odometry {
         swerve = SwerveDrive.getInstance();
         startingPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
-        poseEstimator =
-            new SwerveDrivePoseEstimator(
+        poseEstimator = new SwerveDrivePoseEstimator(
                 swerve.getKinematics(),
                 Rotation2d.kZero,
                 swerve.getModulePositions(),
                 startingPose,
                 VecBuilder.fill(
-                    0.1,
-                    0.1,
-                    0.1),
+                        0.1,
+                        0.1,
+                        0.1),
                 VecBuilder.fill(
-                    0.3,
-                    0.3,
-                    Math.toRadians(30)));
+                        0.3,
+                        0.3,
+                        Math.toRadians(30)));
 
         field = new Field2d();
 
         poseFieldObject = field.getRobotObject();
         poseFieldObject.setPose(FieldUtil.fieldTransform(new Pose2d()));
 
-        //swerve.initFieldObjects(field);
+        // swerve.initFieldObjects(field);
         SmartDashboard.putData("Field", field);
     }
 
     @Override
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition();
-        //  return new Pose2d(14, 2, Rotation2d.k180deg);
+        // return poseEstimator.getEstimatedPosition();
+        return new Pose2d(14, 3, Rotation2d.kCW_90deg);
     }
 
     @Override
@@ -63,9 +62,9 @@ public class OdometryImpl extends Odometry {
         SwerveDrive drive = SwerveDrive.getInstance();
 
         poseEstimator.resetPosition(
-            drive.getGyroAngle(),
-            drive.getModulePositions(),
-            pose);
+                drive.getGyroAngle(),
+                drive.getModulePositions(),
+                pose);
     }
 
     @Override
@@ -73,8 +72,6 @@ public class OdometryImpl extends Odometry {
         return field;
     }
 
-
-    
     public void updateVisionMeasurement(Matrix<N3, N1> visionStdDevs, Pose2d pose, double timestampSeconds) {
         poseEstimator.setVisionMeasurementStdDevs(visionStdDevs);
         poseEstimator.addVisionMeasurement(
@@ -87,8 +84,8 @@ public class OdometryImpl extends Odometry {
         SwerveDrive drive = SwerveDrive.getInstance();
         poseEstimator.update(drive.getGyroAngle(), drive.getModulePositions());
 
-        poseFieldObject.setPose(poseEstimator.getEstimatedPosition());
-        // poseFieldObject.setPose(new Pose2d(14, 2, Rotation2d.kZero));
+        // poseFieldObject.setPose(poseEstimator.getEstimatedPosition());
+        poseFieldObject.setPose(new Pose2d(14, 3, Rotation2d.kCCW_90deg));
 
         SmartDashboard.putNumber("Odometry/Pose Estimator Pose X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Odometry/Pose Estimator Pose Y", poseEstimator.getEstimatedPosition().getY());

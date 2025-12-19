@@ -77,13 +77,13 @@ public class RobotContainer {
             .onTrue(new HDSRSetState(ShooterState.STOW));
         driver.getRightButton()
             .onTrue(new HDSRSetState(ShooterState.SHOOTRPM));
-        driver.getTopButton()
-            .onTrue(new HDSRSetState(ShooterState.GOALINTERP));
+        // driver.getTopButton()
+        //     .onTrue(new HDSRSetState(ShooterState.GOALINTERP));
         driver.getRightMenuButton()
             .onTrue(new SeedGyro());
         //driver.getLeftButton()
           //  .onTrue(new SwervePIDToPose(new Pose2d(), operator));
-        driver.getRightTriggerButton()
+        driver.getTopButton()
             .onTrue(new SequentialCommandGroup(
                         new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver),
                         new HDSRSetShooterState(ShooterState.GOALINTERP)

@@ -1,6 +1,7 @@
 package com.stuypulse.robot.commands.swerve;
 
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
+import com.stuypulse.robot.util.FieldUtil;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.math.Angle;
@@ -33,6 +34,7 @@ public class SwervePIDToPose extends Command {
     private PIDController yController;
     private PIDController thetaController;
     private Gamepad controller;
+    private Pose2d usedPose;
 
     private final FieldObject2d targetPose2d;
 
@@ -66,11 +68,17 @@ public class SwervePIDToPose extends Command {
         return Math.abs(targetPose.get().getRotation().minus(robotPose.getRotation()).getRadians()) < Settings.Swerve.Alignment.THETA_TOLERANCE.getAsDouble();
     }
     
+    
+    // @Override
+    // public void initialize() {
+    //     usedPose = targetPose.get();
+    // }
+    
     @Override
     public void execute() {
         robotPose = odometry.getPose();
 
-        targetPose2d.setPose(Robot.isBlue() ? targetPose.get() : Field.transformToOppositeAlliance(targetPose.get()));
+        targetPose2d.setPose(targetPose.get());
 
         double outX = xController.calculate(robotPose.getX(), targetPose.get().getX());
         double outY = yController.calculate(robotPose.getY(), targetPose.get().getY());
@@ -104,9 +112,9 @@ public class SwervePIDToPose extends Command {
 
     @Override
     public boolean isFinished() {
-        return (isAlignedX() && isAlignedY() && isAlignedTheta()) 
-        || 
-        ((new Translation2d(controller.getLeftX(), controller.getLeftY()).getNorm() > 0.1) || (new Translation2d(controller.getRightX(), controller.getRightY()).getNorm() > 0.1));
+        return (isAlignedX() && isAlignedY() && isAlignedTheta());
+        // || 
+        // ((new Translation2d(controller.getLeftX(), controller.getLeftY()).getNorm() > 0.1) || (new Translation2d(controller.getRightX(), controller.getRightY()).getNorm() > 0.1));
     }
 
     @Override
