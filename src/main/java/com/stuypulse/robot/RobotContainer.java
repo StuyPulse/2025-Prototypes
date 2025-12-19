@@ -73,17 +73,17 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-        driver.getBottomButton()
+        driver.getBottomButton() // Stow Shooter
             .onTrue(new HDSRSetState(ShooterState.STOW));
-        driver.getRightButton()
+        driver.getRightButton() // Shoot RPM via SmartNumber
             .onTrue(new HDSRSetState(ShooterState.SHOOTRPM));
-        // driver.getTopButton()
-        //     .onTrue(new HDSRSetState(ShooterState.GOALINTERP));
-        driver.getRightMenuButton()
+        driver.getTopButton() // interpolate to goal without moving
+            .onTrue(new HDSRSetState(ShooterState.GOALINTERP));
+        driver.getRightMenuButton() // Makes current robot front field front 
             .onTrue(new SeedGyro());
-        //driver.getLeftButton()
-          //  .onTrue(new SwervePIDToPose(new Pose2d(), operator));
-        driver.getTopButton()
+        driver.getLeftButton() // pid to pose to origin
+           .onTrue(new SwervePIDToPose(new Pose2d(), operator));
+        driver.getRightTriggerButton() // pid to optimal shoot pose then shoot
             .onTrue(new SequentialCommandGroup(
                         new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver),
                         new HDSRSetShooterState(ShooterState.GOALINTERP)

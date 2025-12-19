@@ -31,9 +31,11 @@ public class FieldUtil {
 
     public static Pose2d getGoalRelativePose() {
         odometry = Odometry.getInstance();
-        Pose2d realativepose = new Pose2d(odometry.getPose().getX() - goaltag.getpose().getX(),
+        // pose relative to goal
+        Pose2d realativepose = new Pose2d(
+                odometry.getPose().getX() - goaltag.getpose().getX(),
                 odometry.getPose().getY() - goaltag.getpose().getY(),
-                odometry.getPose().relativeTo(Tags.GoalTag.getpose().toPose2d()).getRotation());
+                Rotation2d.kZero);
         odometry.getField().getObject("tag").setPose(goaltag.getpose().toPose2d());
         odometry.getField().getObject("relative pose")
                 .setPose(realativepose);
@@ -93,7 +95,7 @@ public class FieldUtil {
                     Rotation2d.kZero);
             // final pose with correct rotation, adds 180 degrees if robot is right of goal
             return (Math.signum(Math.atan((relativePose.getY() - goaltag.getpose().getY())
-                    / (relativePose.getX() - goaltag.getpose().getX()))) == -1)
+                    / (relativePose.getX() - goaltag.getpose().getX()))) == 1)
                             ? relativePose.rotateAround(relativePose.getTranslation(),
                                     Rotation2d.k180deg
                                             .plus(Rotation2d.fromRadians(
@@ -119,17 +121,21 @@ public class FieldUtil {
                     goaltag.getpose().getY() + (yNegate * displacementAngle.getCos()
                             * com.stuypulse.robot.constants.Settings.HDSR.MIN_DISTANCE_METERS),
                     Rotation2d.kZero);
+
             // final pose with correct rotation, adds 180 degrees if robot is right of goal
             return (Math.signum(Math.atan((relativePose.getY() - goaltag.getpose().getY())
                     / (relativePose.getX() - goaltag.getpose().getX()))) == -1)
-                            ? relativePose.rotateAround(relativePose.getTranslation(),
+                            
+                    ? relativePose.rotateAround(relativePose.getTranslation(),
                                     Rotation2d.k180deg
                                             .plus(Rotation2d.fromRadians(
                                                     Math.atan((relativePose.getY() - goaltag.getpose().getY())
                                                             / (relativePose.getX() - goaltag.getpose().getX())))))
-                            : relativePose.rotateAround(relativePose.getTranslation(),
-                                    Rotation2d.fromRadians(Math.atan(((relativePose.getY() - goaltag.getpose().getY())
-                                            / (relativePose.getY() - goaltag.getpose().getX())))));
+                            
+                                                            : relativePose.rotateAround(relativePose.getTranslation(),
+                                //  Rotation2d.fromRadians(Math.atan(((relativePose.getY() - goaltag.getpose().getY())
+                                //             / (relativePose.getY() - goaltag.getpose().getX()))))
+                                            getGoalAngleError());
         } else {
             // default case (code to run if robot is in range)
             SmartDashboard.putBoolean("Alignment/Pose Gen/In goal range", true);

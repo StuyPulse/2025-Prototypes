@@ -39,59 +39,69 @@ public class SwervePIDToPose extends Command {
     private final FieldObject2d targetPose2d;
 
     public SwervePIDToPose(Pose2d targetPose, Gamepad controller) {
-        this(() -> targetPose, controller); 
+        this(() -> targetPose, controller);
     }
 
-    public SwervePIDToPose(Supplier<Pose2d> targetPose, Gamepad controller){
+    public SwervePIDToPose(Supplier<Pose2d> targetPose, Gamepad controller) {
         swerve = SwerveDrive.getInstance();
         odometry = Odometry.getInstance();
         this.targetPose = targetPose;
 
         targetPose2d = odometry.getField().getObject("Swerve Target Pose");
-        
 
+        // PID Controller setups
         xController = new PIDController(Gains.pidToPose.x.kP, Gains.pidToPose.x.kI, Gains.pidToPose.x.kD);
         yController = new PIDController(Gains.pidToPose.y.kP, Gains.pidToPose.y.kI, Gains.pidToPose.y.kD);
-        thetaController = new PIDController(Gains.pidToPose.theta.kP, Gains.pidToPose.theta.kI, Gains.pidToPose.theta.kD);
+        thetaController = new PIDController(Gains.pidToPose.theta.kP, Gains.pidToPose.theta.kI,
+                Gains.pidToPose.theta.kD);
+
         this.controller = controller;
-        
+
         addRequirements(swerve, odometry);
     }
 
     boolean isAlignedX() {
-        return Math.abs(targetPose.get().getX() - robotPose.getX()) < Settings.Swerve.Alignment.X_TOLERANCE.getAsDouble();
+        return Math.abs(targetPose.get().getX() - robotPose.getX()) < Settings.Swerve.Alignment.X_TOLERANCE
+                .getAsDouble();
     }
+
     boolean isAlignedY() {
-        return Math.abs(targetPose.get().getY() - robotPose.getY()) < Settings.Swerve.Alignment.Y_TOLERANCE.getAsDouble();
+        return Math.abs(targetPose.get().getY() - robotPose.getY()) < Settings.Swerve.Alignment.Y_TOLERANCE
+                .getAsDouble();
     }
+
     boolean isAlignedTheta() {
-        return Math.abs(targetPose.get().getRotation().minus(robotPose.getRotation()).getRadians()) < Settings.Swerve.Alignment.THETA_TOLERANCE.getAsDouble();
+        return Math.abs(targetPose.get().getRotation().minus(robotPose.getRotation())
+                .getRadians()) < Settings.Swerve.Alignment.THETA_TOLERANCE.getAsDouble();
+    }
+
+    @Override 
+    public void initialize() {
+        usedPose = targetPose.get();
     }
     
     @Override
     public void execute() {
         robotPose = odometry.getPose();
-        Pose2d currentTarget = targetPose.get();
-        targetPose2d.setPose(currentTarget);
+        targetPose2d.setPose(usedPose);
 
-        double outX = xController.calculate(robotPose.getX(), currentTarget.getX());
-        double outY = yController.calculate(robotPose.getY(), currentTarget.getY());
-        double outTheta = thetaController.calculate(robotPose.getRotation().getRadians(), currentTarget.getRotation().getRadians());
+        // Pid outputs
+        double outX = xController.calculate(robotPose.getX(), usedPose.getX());
+        double outY = yController.calculate(robotPose.getY(), usedPose.getY());
+        double outTheta = thetaController.calculate(robotPose.getRotation().getRadians(),
+        usedPose.getRotation().getRadians());
 
         ChassisSpeeds swerveChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            outX, 
-            outY, 
-            outTheta, 
-            odometry.getRotation()
-        );
+                outX,
+                outY,
+                outTheta,
+                robotPose.getRotation());
 
         swerve.setChassisSpeeds(swerveChassisSpeeds);
 
-
-        SmartDashboard.putNumber("Alignment/Target x", currentTarget.getX());
-        SmartDashboard.putNumber("Alignment/Target y", currentTarget.getY());
-        SmartDashboard.putNumber("Alignment/Target angle", currentTarget.getRotation().getDegrees());
-
+        SmartDashboard.putNumber("Alignment/Target x", usedPose.getX());
+        SmartDashboard.putNumber("Alignment/Target y", usedPose.getY());
+        SmartDashboard.putNumber("Alignment/Target angle", usedPose.getRotation().getDegrees());
 
         SmartDashboard.putBoolean("Alignment/Is Aligned X", isAlignedX());
         SmartDashboard.putBoolean("Alignment/Is Aligned Y", isAlignedY());
@@ -103,19 +113,23 @@ public class SwervePIDToPose extends Command {
 
     }
 
-
     @Override
     public boolean isFinished() {
-        return (isAlignedX() && isAlignedY() && isAlignedTheta());
-        // || 
-        // ((new Translation2d(controller.getLeftX(), controller.getLeftY()).getNorm() > 0.1) || (new Translation2d(controller.getRightX(), controller.getRightY()).getNorm() > 0.1));
+        // Finished if controller moves or robot aligns
+        return (isAlignedX() && isAlignedY() && isAlignedTheta())
+                ||
+                stickmoved().get();
+    }
+
+    private Supplier<Boolean> stickmoved() {
+        return () -> ((new Translation2d(controller.getLeftX(), controller.getLeftY()).getNorm() > 0.5)
+                || (new Translation2d(controller.getRightX(), controller.getRightY()).getNorm() > 0.5));
     }
 
     @Override
     public void end(boolean interrupted) {
         swerve.setChassisSpeeds(
-            ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, 0.0, Rotation2d.kZero)
-        );
+                ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, 0.0, Rotation2d.kZero));
         SmartDashboard.putBoolean("Alignment/is finished?", true);
         Field.clearFieldObject(targetPose2d);
     }

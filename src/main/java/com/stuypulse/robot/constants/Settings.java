@@ -56,7 +56,7 @@ public interface Settings {
         public static final double projectileResistanceoffset = 0.0; //meant to represent friction and air resistance
             
         public static final double MAX_DISTANCE_METERS = 8.5;
-        public static final double MIN_DISTANCE_METERS = 1.5;
+        public static final double MIN_DISTANCE_METERS = 2;
 
     }
 
