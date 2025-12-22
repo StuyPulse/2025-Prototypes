@@ -242,6 +242,10 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Swerve/X Acceleration (Gs)", gyro.getRawAccelX());
         SmartDashboard.putNumber("Swerve/Y Acceleration (Gs)", gyro.getRawAccelY());
         SmartDashboard.putNumber("Swerve/Z Acceleration (Gs)", gyro.getRawAccelZ());
+
+        SmartDashboard.putNumber("Swerve/Speeds/Y meters per sec", getChassisSpeeds().vyMetersPerSecond);
+        SmartDashboard.putNumber("Swerve/Speeds/x meters per sec", getChassisSpeeds().vxMetersPerSecond);
+        SmartDashboard.putNumber("Swerve/Speeds/Radians per sec", getChassisSpeeds().omegaRadiansPerSecond);
     }
 
     @Override

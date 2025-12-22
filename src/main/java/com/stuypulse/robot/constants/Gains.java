@@ -9,13 +9,13 @@ public class Gains {
 
     public interface pidToPose {
         public interface x {
-            double kP = 1.5;
+            double kP = 3;
             double kI = 0.0;
             double kD = 0.05;
         }
 
         public interface y {
-            double kP = 1.0;
+            double kP = 4.25; 
             double kI = 0.0;
             double kD = 0.0;
         }

@@ -46,7 +46,7 @@ public class RobotContainer {
     // Subsystem
     private final HoodedShooter hdsr = HoodedShooter.getInstance();
     private final SwerveDrive swerve = SwerveDrive.getInstance();
-    private final LimeLightVisionImpl vison = LimelightVision.getInstance();
+    // private final LimeLightVisionImpl vison = LimelightVision.getInstance();
 
 
     // Autons
