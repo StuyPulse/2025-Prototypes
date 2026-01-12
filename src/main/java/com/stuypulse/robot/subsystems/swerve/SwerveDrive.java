@@ -150,8 +150,12 @@ public class SwerveDrive extends SubsystemBase {
         if (states.length != modules.length) {
             throw new IllegalArgumentException("Number of desired module states does not match number of modules (" + modules.length + ")");
         }
-
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.Constraints.MAX_MODULE_SPEED);
+        int j = 0;
+        for (SwerveModuleState state : states) {
+            j++;
+            SmartDashboard.putString("Swerve/States/State" + j, state.toString());
+        }
 
         for(int i = 0; i < modules.length; i++) {
             modules[i].setTargetState(filterModuleState(states[i]));
@@ -191,10 +195,10 @@ public class SwerveDrive extends SubsystemBase {
 
     public void setXMode() {
         SwerveModuleState[] state = {
+            new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(225)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(315)),
-            new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
         };
         setModuleStates(state);
     }

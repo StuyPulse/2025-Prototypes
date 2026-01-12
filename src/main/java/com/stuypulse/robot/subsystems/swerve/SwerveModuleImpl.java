@@ -113,12 +113,16 @@ public class SwerveModuleImpl extends SwerveModule {
         double driveVoltage = driveControllerpid.calculate(getVelocity(), getTargetState().speedMetersPerSecond) + driveControllerFF.calculate(getTargetState().speedMetersPerSecond );
 
 
-        if (Math.abs(getTargetState().speedMetersPerSecond) < Settings.Swerve.MODULE_VELOCITY_DEADBAND || atTargetAngle()) {
-            driveMotor.setVoltage(0);
-            pivotMotor.setVoltage(0);
+        if (!atTargetAngle()) {
+            pivotMotor.setVoltage(turnVoltage);
         } else {
+            pivotMotor.setVoltage(0);
+        }
+
+        if (Math.abs(getTargetState().speedMetersPerSecond) > Settings.Swerve.MODULE_VELOCITY_DEADBAND) {
             driveMotor.setVoltage(driveVoltage);
-            pivotMotor.setVoltage(turnVoltage); 
+        } else {
+            driveMotor.setVoltage(0);
         }
 
 

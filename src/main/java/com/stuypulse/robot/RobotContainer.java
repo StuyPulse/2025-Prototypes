@@ -15,6 +15,7 @@ import com.stuypulse.robot.commands.hdsr.HDSRSetShooterState;
 import com.stuypulse.robot.commands.swerve.SeedGyro;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.commands.swerve.SwervePIDToPose;
+import com.stuypulse.robot.commands.swerve.SwerveXWheels;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
 import com.stuypulse.robot.subsystems.hdsr.HoodedShooter.RollerState;
@@ -81,13 +82,15 @@ public class RobotContainer {
             .onTrue(new HDSRSetState(ShooterState.GOALINTERP));
         driver.getRightMenuButton() // Makes current robot front field front 
             .onTrue(new SeedGyro());
-        driver.getLeftButton() // pid to pose to origin
-           .onTrue(new SwervePIDToPose(new Pose2d(), operator));
-        driver.getRightTriggerButton() // pid to optimal shoot pose then shoot
-            .onTrue(new SequentialCommandGroup(
-                        new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver),
-                        new HDSRSetShooterState(ShooterState.GOALINTERP)
-                     ));
+        // driver.getLeftButton() // pid to pose to origin
+        //    .onTrue(new SwervePIDToPose(new Pose2d(), operator));
+        // driver.getRightTriggerButton() // pid to optimal shoot pose then shoot
+        //     .onTrue(new SequentialCommandGroup(
+        //                 new SwervePIDToPose(() -> FieldUtil.getShootPose(), driver),
+        //                 new HDSRSetShooterState(ShooterState.GOALINTERP)
+        //              ));
+        driver.getDPadDown()
+            .whileTrue(new SwerveXWheels());
     }
     /**************/
     /*** AUTONS ***/

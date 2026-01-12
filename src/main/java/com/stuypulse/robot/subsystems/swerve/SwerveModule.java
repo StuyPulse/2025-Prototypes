@@ -52,6 +52,7 @@ public abstract class SwerveModule extends SubsystemBase {
     public final void setTargetState(SwerveModuleState state) {
         state.optimize(getAngle());
         state.cosineScale(getAngle());
+        // SmartDashboard.putNumber(getName() + "State", getTargetRPM());
         targetState = state;
     }
 
