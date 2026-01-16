@@ -46,4 +46,9 @@ public interface Ports {
             int ENCODER = 0;
         }
     }
+
+    public interface Climber {
+        int MOTOR_ONE = 40;
+        int MOTOR_TWO = 2;
+    }
 }

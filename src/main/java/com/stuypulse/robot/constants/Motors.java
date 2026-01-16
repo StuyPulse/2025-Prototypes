@@ -68,6 +68,14 @@ public interface Motors {
             }
         }
 
+        public interface Climber {
+            SparkBaseConfig Intake_Motor_config = new SparkMaxConfig()
+                .inverted(true)
+                .smartCurrentLimit(200)
+                .openLoopRampRate(0.25)
+                .idleMode(IdleMode.kBrake);
+        }
+
     public static void applyConversionFactor(SparkMaxConfig config, double factor, boolean inverted) {
         config
             .inverted(inverted)

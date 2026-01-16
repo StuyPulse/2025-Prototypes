@@ -5,11 +5,14 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.commands.Climb.setClimberState;
 import com.stuypulse.robot.commands.HDSR.HDSRSetState;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
+// import com.stuypulse.robot.subsystems.hdsr.HoodedShooter;
+import com.stuypulse.robot.subsystems.CLIMBER.Climber;
+import com.stuypulse.robot.subsystems.CLIMBER.Climber.ClimberState;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter;
 import com.stuypulse.robot.subsystems.wiffleWorksShooter.WiffleWorksShooter.ShooterState;
@@ -30,7 +33,9 @@ public class RobotContainer {
     // Subsystem
    // private final WiffleWorksShooter hdsr = WiffleWorksShooter.getInstance();
     //private final SwerveDrive swerve = SwerveDrive.getInstance();
-    private final HoodedShooter hoodedShooter = HoodedShooter.getInstance();
+    // private final HoodedShooter hoodedShooter = HoodedShooter.getInstance();
+
+    private final Climber climber = Climber.getInstance();
 
 
     // Autons
@@ -57,8 +62,9 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-       // driver.getBottomButton().whileTrue(new HDSRSetState(ShooterState.STOW));
-        //driver.getTopButton().whileTrue(new HDSRSetState(ShooterState.SHOOT));
+        driver.getBottomButton().whileTrue(new setClimberState(ClimberState.CLIMB));
+        driver.getTopButton().whileTrue(new setClimberState(ClimberState.DOWN));
+        driver.getRightButton().whileTrue(new setClimberState(ClimberState.STOW));
     }
 
     /**************/
