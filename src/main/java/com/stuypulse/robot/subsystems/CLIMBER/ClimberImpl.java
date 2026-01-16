@@ -5,6 +5,8 @@ import com.stuypulse.robot.constants.*;
 import com.stuypulse.stuylib.network.SmartNumber;
 import com.stuypulse.stuylib.util.*;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -12,6 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class ClimberImpl extends Climber {
     ClimberState state;
+    Climber climber;
 
     SparkMax MOTOR_ONE; 
     SparkMax MOTOR_TWO;
@@ -21,7 +24,8 @@ public class ClimberImpl extends Climber {
     public ClimberImpl() {
         super();
 
-        state = getClimberState().STOW;
+        climber = Climber.getInstance();
+        state = ClimberState.STOW;
         MOTOR_ONE = new SparkMax(Ports.Climber.MOTOR_ONE, MotorType.kBrushless);
         MOTOR_TWO = new SparkMax(Ports.Climber.MOTOR_TWO, MotorType.kBrushless);
 
@@ -55,7 +59,8 @@ public class ClimberImpl extends Climber {
         MOTOR_ONE.setVoltage(state.getClimberCycle());
         MOTOR_TWO.setVoltage(state.getClimberCycle());
 
-        
+        SmartDashboard.putString("STATE", climber.getClimberState().toString());
+        SmartDashboard.putNumber("VOLTAGE", state.getClimberCycle());
 
     }
 
