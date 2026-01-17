@@ -2,6 +2,7 @@ package com.stuypulse.robot.subsystems.shooter;
 
 import com.stuypulse.robot.constants.Settings;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -43,5 +44,10 @@ public class Shooter extends SubsystemBase {
 
     public ShooterState getState() {
         return this.state;
+    }
+
+    @Override 
+    public void periodic() {
+        SmartDashboard.putString("ShooterState", getState().toString());
     }
 }
