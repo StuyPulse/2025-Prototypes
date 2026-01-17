@@ -51,9 +51,11 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         // shooter button bindings
-        driver.getRightBumper()
-            .whileTrue(new ShooterShoot())
-            .whileFalse(new ShooterStop());
+        // driver.getTopButton()
+        //     .whileTrue(new ShooterShoot())
+        //     .whileFalse(new ShooterStop());
+
+        driver.getTopButton().onTrue(new ShooterShoot());
     }
 
     /**************/

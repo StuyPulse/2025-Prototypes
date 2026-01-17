@@ -11,20 +11,17 @@ public class ShooterImpl extends Shooter {
     private final TalonFX leftMotor;
     private final TalonFX rightMotor;
 
-    private double targetRPM;
-
     protected ShooterImpl() {
         super();
         this.leftMotor = new TalonFX(Ports.Shooter.LEFT_MOTOR);
         this.rightMotor = new TalonFX(Ports.Shooter.RIGHT_MOTOR);
 
-        targetRPM = 0;
         Motors.Shooter.SHOOTER_MOTOR_LEFT_CONFIG.configure(leftMotor);
         Motors.Shooter.SHOOTER_MOTOR_RIGHT_CONFIG.configure(rightMotor);
     }
 
     public double getTargetRPM() {
-        return this.getState().getSpeed();
+        return getShooterSpeed().get();
     }
 
     public boolean atTargetSpeeds() {
@@ -43,12 +40,6 @@ public class ShooterImpl extends Shooter {
     @Override
     public void periodic() {
         super.periodic();
-
-        if (getState() == ShooterState.STOP) {
-            targetRPM = 0;
-        } else {
-            targetRPM = getState().getSpeed();
-        }
 
         // set motion magic controls
         leftMotor.setControl(new MotionMagicVelocityVoltage(getTargetRPM()));

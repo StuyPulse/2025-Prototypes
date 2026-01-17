@@ -1,6 +1,9 @@
 package com.stuypulse.robot.subsystems.shooter;
 
+import java.util.function.Supplier;
+
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.stuylib.network.SmartNumber;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter extends SubsystemBase {
 
     public static final Shooter instance;
+    private SmartNumber speed;
 
     static { // singleton
         instance = new ShooterImpl();
@@ -17,19 +21,31 @@ public class Shooter extends SubsystemBase {
         return instance; 
     }
 
+    // public enum ShooterState {
+    //     STOP(0),
+    //     SHOOT(Settings.Shooter.SHOOTER_SHOOT);
+
+    //     public double shooterState;
+
+    //     private ShooterState(double shooterState) {
+    //         this.shooterState = shooterState;
+    //     }
+
+    //     public double getSpeed() {
+    //         return shooterState;
+    //     }
+    // }
+
     public enum ShooterState {
-        STOP(0),
-        SHOOT(Settings.Shooter.SHOOTER_SHOOT);
+        STOP,
+        SHOOT;
+    }
 
-        public double shooterState;
-
-        private ShooterState(double shooterState) {
-            this.shooterState = shooterState;
-        }
-
-        public double getSpeed() {
-            return shooterState;
-        }
+    public Supplier<Double> getShooterSpeed() {
+        return switch (getState()) {
+            case STOP -> () -> 0.0;
+            case SHOOT -> () -> speed.get();
+        };
     }
 
     private ShooterState state;
@@ -40,6 +56,7 @@ public class Shooter extends SubsystemBase {
 
     protected Shooter() {
         this.state = ShooterState.STOP;
+        speed = new SmartNumber("Shooter Speed", Settings.Shooter.SHOOTER_SHOOT);
     }
 
     public ShooterState getState() {
