@@ -3,6 +3,7 @@ package com.stuypulse.robot.subsystems.shooter;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.stuypulse.robot.constants.Settings;
 
@@ -10,11 +11,14 @@ public class ShooterImpl extends Shooter {
     private final TalonFX leftMotor;
     private final TalonFX rightMotor;
 
+    private double targetRPM;
+
     protected ShooterImpl() {
         super();
         this.leftMotor = new TalonFX(Ports.Shooter.LEFT_MOTOR);
         this.rightMotor = new TalonFX(Ports.Shooter.RIGHT_MOTOR);
 
+        targetRPM = 0;
         Motors.Shooter.SHOOTER_MOTOR_LEFT_CONFIG.configure(leftMotor);
         Motors.Shooter.SHOOTER_MOTOR_RIGHT_CONFIG.configure(rightMotor);
     }
@@ -36,27 +40,18 @@ public class ShooterImpl extends Shooter {
         return rightMotor.getVelocity().getValueAsDouble();
     }
 
-    public void setLeftMotorSpeed(double speed) {
-        leftMotor.set(speed);
-    }
-
-    public void setRightMotorSpeed(double speed) {
-        rightMotor.set(speed);
-    }
-
-    public void setSpeeds(double leftMotorTargetSpeed, double rightMotorTargetSpeed) {
-        setLeftMotorSpeed(leftMotorTargetSpeed);
-        setRightMotorSpeed(rightMotorTargetSpeed);
-    }
-
     @Override
     public void periodic() {
         super.periodic();
 
-        setSpeeds(getTargetRPM(), getTargetRPM());
+        if (getState() == ShooterState.STOP) {
+            targetRPM = 0;
+        } else {
+            targetRPM = getState().getSpeed();
+        }
 
         // set motion magic controls
-        leftMotor.setControl(new MotionMagicVoltage(getTargetRPM()));
-        rightMotor.setControl(new MotionMagicVoltage(getTargetRPM()));
+        leftMotor.setControl(new MotionMagicVelocityVoltage(getTargetRPM()));
+        rightMotor.setControl(new MotionMagicVelocityVoltage(getTargetRPM()));
     }
 }
