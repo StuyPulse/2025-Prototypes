@@ -18,5 +18,14 @@ public interface Settings {
     public interface Shooter {
         double SHOOTER_STOP = 0;
         double SHOOTER_SHOOT = 1;
+
+        // magic motion const
+        double SHOOTER_LEFT_MAX_VELOCITY = 1;
+        double SHOOTER_RIGHT_MAX_VELOCITY = 1;
+
+        double SHOOTER_LEFT_MAX_ACCEL = 1;
+        double SHOTOER_RIGHT_MAX_ACCEL = 1;
+
+        double TARGET_RPM_THRESHOLD = 1;
     }
 }

@@ -5,6 +5,8 @@
 
 package com.stuypulse.robot.constants;
 
+import java.security.KeyPair;
+
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -34,12 +36,25 @@ public interface Motors {
 
     /** Classes to store all of the values a motor needs */
     public interface Shooter {
-        TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
-            .withCurrentLimitAmps(40)
-			.withRampRate(0.25)
-			.withNeutralMode(NeutralModeValue.Brake)
-			.withInvertedValue(InvertedValue.CounterClockwise_Positive);
-	}
+        TalonFXConfig SHOOTER_MOTOR_LEFT_CONFIG = new TalonFXConfig()
+                .withCurrentLimitAmps(40)
+                .withRampRate(0.25)
+                .withNeutralMode(NeutralModeValue.Brake)
+                .withInvertedValue(InvertedValue.CounterClockwise_Positive) // setting one motor inverted and the other
+                                                                            // inverted
+                .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
+                .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0)
+                .withMotionProfile(Settings.Shooter.SHOOTER_LEFT_MAX_VELOCITY, Settings.Shooter.SHOOTER_LEFT_MAX_ACCEL);
+
+        TalonFXConfig SHOOTER_MOTOR_RIGHT_CONFIG = new TalonFXConfig()
+                .withCurrentLimitAmps(40)
+                .withRampRate(0.25)
+                .withNeutralMode(NeutralModeValue.Brake)
+                .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
+                .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0)
+                .withMotionProfile(Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY,
+                        Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY);
+    }
 
     public static class TalonFXConfig {
         private final TalonFXConfiguration configuration = new TalonFXConfiguration();
@@ -164,7 +179,7 @@ public interface Motors {
         // CURRENT LIMIT CONFIGS
 
         public TalonFXConfig withCurrentLimitAmps(double currentLimitAmps) {
-			currentLimitsConfigs.StatorCurrentLimit = currentLimitAmps;
+            currentLimitsConfigs.StatorCurrentLimit = currentLimitAmps;
             currentLimitsConfigs.StatorCurrentLimitEnable = true;
 
             configuration.withCurrentLimits(currentLimitsConfigs);
