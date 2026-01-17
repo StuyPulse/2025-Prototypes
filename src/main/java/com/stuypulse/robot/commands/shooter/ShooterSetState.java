@@ -6,6 +6,8 @@ import com.stuypulse.robot.subsystems.shooter.Shooter.ShooterState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class ShooterSetState extends InstantCommand {
+    // TODO: Understand why this command fails to set the state
+
     private final Shooter shooter;
     private ShooterState state;
 
@@ -15,7 +17,9 @@ public class ShooterSetState extends InstantCommand {
         addRequirements(shooter);
     }
 
+    @Override
     public void initialize() {
+        System.out.println("KILL ALWIN");
         shooter.setShooterState(state);
     }
 }

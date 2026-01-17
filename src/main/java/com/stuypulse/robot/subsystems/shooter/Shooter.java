@@ -21,20 +21,16 @@ public class Shooter extends SubsystemBase {
         return instance; 
     }
 
-    // public enum ShooterState {
-    //     STOP(0),
-    //     SHOOT(Settings.Shooter.SHOOTER_SHOOT);
+    private ShooterState state;
 
-    //     public double shooterState;
+    public void setShooterState(ShooterState shooterState) {
+        this.state = shooterState;
+    }
 
-    //     private ShooterState(double shooterState) {
-    //         this.shooterState = shooterState;
-    //     }
-
-    //     public double getSpeed() {
-    //         return shooterState;
-    //     }
-    // }
+    protected Shooter() {
+        this.state = ShooterState.STOP;
+        speed = new SmartNumber("Shooter Speed", Settings.Shooter.SHOOTER_SHOOT);
+    }
 
     public enum ShooterState {
         STOP,
@@ -46,17 +42,6 @@ public class Shooter extends SubsystemBase {
             case STOP -> () -> 0.0;
             case SHOOT -> () -> speed.get();
         };
-    }
-
-    private ShooterState state;
-
-    public void setShooterState(ShooterState shooterState) {
-        this.state = shooterState;
-    }
-
-    protected Shooter() {
-        this.state = ShooterState.STOP;
-        speed = new SmartNumber("Shooter Speed", Settings.Shooter.SHOOTER_SHOOT);
     }
 
     public ShooterState getState() {
