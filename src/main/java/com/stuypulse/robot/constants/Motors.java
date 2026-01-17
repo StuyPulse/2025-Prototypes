@@ -37,9 +37,9 @@ public interface Motors {
     /** Classes to store all of the values a motor needs */
     public interface Shooter {
         TalonFXConfig SHOOTER_MOTOR_LEFT_CONFIG = new TalonFXConfig()
-                .withCurrentLimitAmps(40)
+                .withCurrentLimitAmps(80)
                 .withRampRate(0.25)
-                .withNeutralMode(NeutralModeValue.Brake)
+                .withNeutralMode(NeutralModeValue.Coast)
                 .withInvertedValue(InvertedValue.CounterClockwise_Positive) // setting one motor inverted and the other
                                                                             // inverted
                 .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
@@ -47,9 +47,10 @@ public interface Motors {
                 // .withMotionProfile(Settings.Shooter.SHOOTER_LEFT_MAX_VELOCITY, Settings.Shooter.SHOOTER_LEFT_MAX_ACCEL);
 
         TalonFXConfig SHOOTER_MOTOR_RIGHT_CONFIG = new TalonFXConfig()
-                .withCurrentLimitAmps(40)
+                .withCurrentLimitAmps(80)
                 .withRampRate(0.25)
-                .withNeutralMode(NeutralModeValue.Brake)
+                .withInvertedValue(InvertedValue.Clockwise_Positive)
+                .withNeutralMode(NeutralModeValue.Coast)
                 .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
                 .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0);
                 // .withMotionProfile(Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY,

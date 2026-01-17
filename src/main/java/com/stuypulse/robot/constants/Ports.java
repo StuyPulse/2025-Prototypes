@@ -14,7 +14,7 @@ public interface Ports {
     }
 
     public interface Shooter{
-        int LEFT_MOTOR = 3;
-        int RIGHT_MOTOR = 4;
+        int LEFT_MOTOR = 15;
+        int RIGHT_MOTOR = 14;
     }
 }

@@ -25,7 +25,7 @@ public class ShooterImpl extends Shooter {
     }
 
     public double getTargetRPM() {
-        return MathUtil.clamp(getShooterSpeed().get(), 0.0, 1000.0);
+        return MathUtil.clamp(getShooterSpeed().get(), 0.0, 5000.0);
     }
 
     public boolean atTargetSpeeds() {
@@ -53,6 +53,8 @@ public class ShooterImpl extends Shooter {
         SmartDashboard.putNumber("Shooter/Right Motor Voltage", rightMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/Left Motor Velocity (RPM)", 60.0 * leftMotor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/Right Motor Velocity (RPM)", 60.0 * rightMotor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/Left Motor Current", leftMotor.getStatorCurrent().getValueAsDouble());
+
 
         
     }
