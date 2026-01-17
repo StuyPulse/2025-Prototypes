@@ -15,7 +15,7 @@ public class setClimberState extends InstantCommand {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         climber.setClimberState(state);
     }
 }

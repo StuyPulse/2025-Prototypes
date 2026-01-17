@@ -62,9 +62,9 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-        driver.getBottomButton().whileTrue(new setClimberState(ClimberState.CLIMB));
-        driver.getTopButton().whileTrue(new setClimberState(ClimberState.DOWN));
-        driver.getRightButton().whileTrue(new setClimberState(ClimberState.STOW));
+        driver.getBottomButton().whileTrue(new setClimberState(ClimberState.CLIMB)).onFalse(new setClimberState(ClimberState.STOW));
+        driver.getTopButton().whileTrue(new setClimberState(ClimberState.DOWN)).onFalse(new setClimberState(ClimberState.STOW));
+        driver.getRightButton().whileTrue(new setClimberState(ClimberState.STOW)).onFalse(new setClimberState(ClimberState.STOW));
     }
 
     /**************/

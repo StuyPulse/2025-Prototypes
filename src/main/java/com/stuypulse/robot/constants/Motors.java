@@ -69,7 +69,13 @@ public interface Motors {
         }
 
         public interface Climber {
-            SparkBaseConfig Intake_Motor_config = new SparkMaxConfig()
+            SparkBaseConfig climbMotor_one = new SparkMaxConfig()
+                .inverted(false)
+                .smartCurrentLimit(200)
+                .openLoopRampRate(0.25)
+                .idleMode(IdleMode.kBrake);
+
+            SparkBaseConfig climbMotor_two = new SparkMaxConfig()
                 .inverted(true)
                 .smartCurrentLimit(200)
                 .openLoopRampRate(0.25)

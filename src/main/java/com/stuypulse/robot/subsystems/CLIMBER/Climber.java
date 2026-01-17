@@ -11,7 +11,7 @@ public abstract class Climber extends SubsystemBase{
         instance = new ClimberImpl();
     }
 
-    private static ClimberState state;
+    private ClimberState state;
 
     public Climber() {
         //instance  = new ClimberImpl();
@@ -24,21 +24,21 @@ public abstract class Climber extends SubsystemBase{
 
     public enum ClimberState {
         STOW(0.0),
-        CLIMB(1.0),
-        DOWN(-1.0);
+        CLIMB(3.0),
+        DOWN(-3.0);
 
-        private double ClimberCycle;
+        private double targetVolts;
 
-        ClimberState(double ClimberCycle) {
-            this.ClimberCycle = ClimberCycle;
+        ClimberState(double targetVolts) {
+            this.targetVolts = targetVolts;
         }
 
-        public double getClimberCycle() {
-            return ClimberCycle;
+        public double getClimberVolts() {
+            return targetVolts;
         }
 
         public void setClimberCycle(double ClimberCycle) {
-            ClimberCycle = this.ClimberCycle;
+            ClimberCycle = this.targetVolts;
         }
     }
 
