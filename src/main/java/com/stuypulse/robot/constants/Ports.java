@@ -12,4 +12,9 @@ public interface Ports {
         int OPERATOR = 1;
         int DEBUGGER = 2;
     }
+
+    public interface Shooter{
+        int LEFT_MOTOR = 3;
+        int RIGHT_MOTOR = 4;
+    }
 }

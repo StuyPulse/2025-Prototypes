@@ -34,12 +34,12 @@ public interface Motors {
 
     /** Classes to store all of the values a motor needs */
     public interface Shooter {
-        TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()
-            .withCurrentLimitAmps(40)
+        TalonFXConfig SHOOTER_MOTOR_CONFIG = new TalonFXConfig()..withCurrentLimitAmps(80) //40
 			.withRampRate(0.25)
 			.withNeutralMode(NeutralModeValue.Brake)
 			.withInvertedValue(InvertedValue.CounterClockwise_Positive);
 	}
+    }
 
     public static class TalonFXConfig {
         private final TalonFXConfiguration configuration = new TalonFXConfiguration();
