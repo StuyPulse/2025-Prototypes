@@ -17,7 +17,7 @@ import com.stuypulse.stuylib.network.SmartNumber;
 public interface Settings {
     public interface Shooter {
         double SHOOTER_STOP = 0;
-        double SHOOTER_SHOOT = 200;
+        double SHOOTER_SHOOT = 1000;
 
         // magic motion const
         double SHOOTER_LEFT_MAX_VELOCITY = 1;

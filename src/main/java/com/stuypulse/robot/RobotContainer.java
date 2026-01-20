@@ -8,6 +8,7 @@ package com.stuypulse.robot;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.shooter.Shooter;
+import com.stuypulse.robot.subsystems.shooter.Shooter.ShooterState;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 import com.stuypulse.robot.commands.shooter.ShooterSetShoot;
@@ -16,6 +17,7 @@ import com.stuypulse.robot.commands.shooter.ShooterSetStop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 
 public class RobotContainer {
 
@@ -58,6 +60,7 @@ public class RobotContainer {
         driver.getTopButton()
             .onTrue(new ShooterSetShoot())
             .onFalse(new ShooterSetStop());
+            
     }
 
     /**************/
