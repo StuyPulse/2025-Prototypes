@@ -3,6 +3,7 @@ package com.stuypulse.robot.subsystems.shooter;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -46,16 +47,18 @@ public class ShooterImpl extends Shooter {
         super.periodic();
 
         // set motion magic controls
-        leftMotor.setControl(new VelocityVoltage(getTargetRPM() / 60.0));
-        rightMotor.setControl(new VelocityVoltage(getTargetRPM() / 60.0));
+        if (getShooterSpeed().get() == 0.0) {
+            leftMotor.setVoltage(0.0);
+            rightMotor.setVoltage(0.0);
+        } else {
+            leftMotor.setControl(new VelocityVoltage(getTargetRPM() / 60.0));
+            rightMotor.setControl(new Follower(Ports.Shooter.LEFT_MOTOR, true));
+        }
 
         SmartDashboard.putNumber("Shooter/Left Motor Voltage", leftMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/Right Motor Voltage", rightMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/Left Motor Velocity (RPM)", 60.0 * leftMotor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/Right Motor Velocity (RPM)", 60.0 * rightMotor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/Left Motor Current", leftMotor.getStatorCurrent().getValueAsDouble());
-
-
-        
     }
 }

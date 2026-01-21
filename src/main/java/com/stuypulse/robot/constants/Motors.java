@@ -40,10 +40,10 @@ public interface Motors {
                 .withCurrentLimitAmps(80)
                 .withRampRate(0.25)
                 .withNeutralMode(NeutralModeValue.Coast)
-                .withInvertedValue(InvertedValue.CounterClockwise_Positive) // setting one motor inverted and the other
-                                                                            // inverted
+                .withInvertedValue(InvertedValue.CounterClockwise_Positive) // setting one motor inverted and the other                                                // inverted
                 .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
                 .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0);
+                
                 // .withMotionProfile(Settings.Shooter.SHOOTER_LEFT_MAX_VELOCITY, Settings.Shooter.SHOOTER_LEFT_MAX_ACCEL);
 
         TalonFXConfig SHOOTER_MOTOR_RIGHT_CONFIG = new TalonFXConfig()
@@ -53,6 +53,7 @@ public interface Motors {
                 .withNeutralMode(NeutralModeValue.Coast)
                 .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
                 .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0);
+
                 // .withMotionProfile(Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY,
                 //         Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY);
     }

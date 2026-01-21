@@ -51,5 +51,6 @@ public class Shooter extends SubsystemBase {
     @Override 
     public void periodic() {
         SmartDashboard.putString("ShooterState", getState().toString());
+        // SmartDashboard.putNumber("Current Speed", getShooterSpeed().get());
     }
 }
