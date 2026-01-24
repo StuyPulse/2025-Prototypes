@@ -17,7 +17,6 @@ public class ShooterSetStop extends Command {
 
     @Override
     public void initialize() {
-        System.out.println("STOP KILLING ALWIN");
         shooter.setShooterState(ShooterState.STOP);
     }
 

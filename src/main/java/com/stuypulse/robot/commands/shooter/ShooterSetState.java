@@ -19,7 +19,6 @@ public class ShooterSetState extends InstantCommand {
 
     @Override
     public void initialize() {
-        System.out.println("KILL ALWIN");
         shooter.setShooterState(state);
     }
 }

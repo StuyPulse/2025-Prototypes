@@ -17,7 +17,6 @@ public class ShooterSetShoot extends Command {
 
     @Override
     public void initialize() {
-        System.out.println("START KILLING ALWIN");
         shooter.setShooterState(ShooterState.SHOOT);
     }
 }
