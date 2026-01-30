@@ -7,6 +7,8 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.stuypulse.robot.constants.Settings;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class ShooterImpl extends Shooter {
     private final TalonFX leftMotor;
     private final TalonFX rightMotor;
@@ -40,7 +42,7 @@ public class ShooterImpl extends Shooter {
     @Override
     public void periodic() {
         super.periodic();
-
+        SmartDashboard.putString("Shooter/ShooterState", getState().toString());
         // set motion magic controls
         leftMotor.setControl(new MotionMagicVelocityVoltage(getTargetRPM()));
         rightMotor.setControl(new MotionMagicVelocityVoltage(getTargetRPM()));

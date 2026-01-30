@@ -17,4 +17,8 @@ public interface Ports {
         int LEFT_MOTOR = 3;
         int RIGHT_MOTOR = 4;
     }
+
+    public interface Spindexer {
+        int SPINDEXER_MOTOR = 0; //TODO: fill in
+    }
 }

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-    public static final Shooter instance;
+    private static final Shooter instance;
     private SmartNumber speed;
 
     static { // singleton
@@ -56,7 +56,7 @@ public class Shooter extends SubsystemBase {
 
     protected Shooter() {
         this.state = ShooterState.STOP;
-        speed = new SmartNumber("Shooter Speed", Settings.Shooter.SHOOTER_SHOOT);
+        speed = new SmartNumber("Shooter/Shooter Speed", Settings.Shooter.SHOOTER_STOP);
     }
 
     public ShooterState getState() {
@@ -65,6 +65,6 @@ public class Shooter extends SubsystemBase {
 
     @Override 
     public void periodic() {
-        SmartDashboard.putString("ShooterState", getState().toString());
+        
     }
 }

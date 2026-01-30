@@ -5,8 +5,6 @@
 
 package com.stuypulse.robot.constants;
 
-import java.security.KeyPair;
-
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -54,6 +52,13 @@ public interface Motors {
                 .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0)
                 .withMotionProfile(Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY,
                         Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY);
+    }
+
+    public interface Spindexer {
+        TalonFXConfig SPINDEXER_MOTOR_CONFIG = new TalonFXConfig()
+        .withCurrentLimitAmps(40)
+        .withRampRate(0.25)
+        .withNeutralMode(NeutralModeValue.Brake);
     }
 
     public static class TalonFXConfig {
