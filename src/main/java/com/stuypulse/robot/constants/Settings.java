@@ -28,4 +28,14 @@ public interface Settings {
 
         double TARGET_RPM_THRESHOLD = 1;
     }
+
+    public interface Spindexer {
+        public double SpindexerKrakenSpinSpeed = 1;
+        public double SpindexerKrakenStopSpeed = 0.0;
+
+        public double SpindexerNeoSpinSpeed = 1;
+        public double SpindexerNeoStopSpeed = 0.0;
+
+
+    }
 }

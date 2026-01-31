@@ -1,6 +1,6 @@
 package com.stuypulse.robot.subsystems.spindexerKraken;
 
-import com.stuypulse.robot.constants.Constants;
+
 import com.stuypulse.robot.constants.Settings;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
