@@ -5,13 +5,12 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.commands.shooter.ShooterStop;
+
 import com.stuypulse.robot.commands.spindexer.SpindexerKrakenSetStateSpin;
 import com.stuypulse.robot.commands.spindexer.SpindexerKrakenSetStateStop;
 import com.stuypulse.robot.commands.spindexer.SpindexerNeoSetStateSpin;
 import com.stuypulse.robot.commands.spindexer.SpindexerNeoSetStateStop;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.subsystems.shooter.Shooter;
 import com.stuypulse.robot.subsystems.spindexerKraken.SpindexerKraken;
 import com.stuypulse.robot.subsystems.spindexerNeo.SpindexerNeo;
 import com.stuypulse.stuylib.input.Gamepad;
@@ -27,7 +26,6 @@ public class RobotContainer {
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
-    private final Shooter shooter = Shooter.getInstance();
 
     private final SpindexerKraken spindexerKraken = SpindexerKraken.getInstance();
     private final SpindexerNeo spindexerNeo = SpindexerNeo.getInstance();
@@ -48,7 +46,7 @@ public class RobotContainer {
     /****************/
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new ShooterStop());
+       
     }
 
     /***************/

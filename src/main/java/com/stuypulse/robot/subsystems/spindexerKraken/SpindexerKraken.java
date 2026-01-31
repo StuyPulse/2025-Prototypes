@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems.spindexerKraken;
 
 import com.stuypulse.robot.constants.Constants;
+import com.stuypulse.robot.constants.Settings;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,8 +23,8 @@ public class SpindexerKraken extends SubsystemBase{
     }
 
     public enum SpindexerKrakenState {
-        SPIN(Constants.Spindexer.SpindexerSpinSpeed),
-        STOP(Constants.Spindexer.SpindexerStopSpeed);
+        SPIN(Settings.Spindexer.SpindexerKrakenSpinSpeed),
+        STOP(Settings.Spindexer.SpindexerKrakenStopSpeed);
 
         private double speed;
 
@@ -46,6 +47,6 @@ public class SpindexerKraken extends SubsystemBase{
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("SPINDEXER/ STATE", getKrakenState().toString());
+        SmartDashboard.putString("Spindexer/Kraken State", getKrakenState().toString());
     }
 }

@@ -1,5 +1,8 @@
 package com.stuypulse.robot.subsystems.spindexerNeo;
 
+import com.stuypulse.robot.constants.Constants;
+import com.stuypulse.robot.constants.Settings;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,8 +18,8 @@ public class SpindexerNeo extends SubsystemBase{
     }
 
     public enum SpindexerNeoState {
-        SPIN(0.5),
-        STOP(0);
+        SPIN(Settings.Spindexer.SpindexerNeoSpinSpeed),
+        STOP(Settings.Spindexer.SpindexerNeoStopSpeed);
 
         private double speed;
 
