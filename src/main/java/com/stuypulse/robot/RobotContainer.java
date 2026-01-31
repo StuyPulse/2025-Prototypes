@@ -6,11 +6,9 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
-import com.stuypulse.robot.commands.shooter.ShooterStop;
 import com.stuypulse.robot.commands.spindexer.SpindexerSetStateSpin;
 import com.stuypulse.robot.commands.spindexer.SpindexerSetStateStop;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.subsystems.shooter.Shooter;
 import com.stuypulse.robot.subsystems.spindexer.Spindexer;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
@@ -26,7 +24,6 @@ public class RobotContainer {
     public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
     
     // Subsystem
-    private final Shooter shooter = Shooter.getInstance();
     private final Spindexer spindexer = Spindexer.getInstance();
 
     // Autons
@@ -45,7 +42,6 @@ public class RobotContainer {
     /****************/
 
     private void configureDefaultCommands() {
-        shooter.setDefaultCommand(new ShooterStop());
     }
 
     /***************/
@@ -53,12 +49,6 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-        // shooter button bindings
-        // driver.getTopButton()
-        //     .whileTrue(new ShooterShoot())
-        //     .whileFalse(new ShooterStop());
-
-       // driver.getTopButton().onTrue(new ShooterShoot());
        driver.getTopButton().onTrue(new SpindexerSetStateSpin());
        driver.getBottomButton().onTrue(new SpindexerSetStateStop());
     }
