@@ -5,18 +5,19 @@
 
 package com.stuypulse.robot;
 
-import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.shooter.ShooterStop;
-import com.stuypulse.robot.commands.spindexer.SpindexerSetStateSpin;
-import com.stuypulse.robot.commands.spindexer.SpindexerSetStateStop;
+import com.stuypulse.robot.commands.spindexer.SpindexerKrakenSetStateSpin;
+import com.stuypulse.robot.commands.spindexer.SpindexerKrakenSetStateStop;
+import com.stuypulse.robot.commands.spindexer.SpindexerNeoSetStateSpin;
+import com.stuypulse.robot.commands.spindexer.SpindexerNeoSetStateStop;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.shooter.Shooter;
-import com.stuypulse.robot.subsystems.spindexer.Spindexer;
+import com.stuypulse.robot.subsystems.spindexerKraken.SpindexerKraken;
+import com.stuypulse.robot.subsystems.spindexerNeo.SpindexerNeo;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
@@ -27,7 +28,9 @@ public class RobotContainer {
     
     // Subsystem
     private final Shooter shooter = Shooter.getInstance();
-    private final Spindexer spindexer = Spindexer.getInstance();
+
+    private final SpindexerKraken spindexerKraken = SpindexerKraken.getInstance();
+    private final SpindexerNeo spindexerNeo = SpindexerNeo.getInstance();
 
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();
@@ -59,8 +62,13 @@ public class RobotContainer {
         //     .whileFalse(new ShooterStop());
 
        // driver.getTopButton().onTrue(new ShooterShoot());
-       driver.getTopButton().onTrue(new SpindexerSetStateSpin());
-       driver.getBottomButton().onTrue(new SpindexerSetStateStop());
+        driver.getTopButton()
+            .whileTrue(new SpindexerKrakenSetStateSpin())
+            .whileFalse(new SpindexerKrakenSetStateStop());
+
+       driver.getDPadUp()
+            .whileTrue(new SpindexerNeoSetStateSpin())
+            .whileFalse(new SpindexerNeoSetStateStop());
     }
 
     /**************/
@@ -68,9 +76,9 @@ public class RobotContainer {
     /**************/
 
     public void configureAutons() {
-        autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
+        // autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
 
-        SmartDashboard.putData("Autonomous", autonChooser);
+        // SmartDashboard.putData("Autonomous", autonChooser);
     }
 
     public Command getAutonomousCommand() {

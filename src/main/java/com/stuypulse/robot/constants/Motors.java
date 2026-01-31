@@ -20,6 +20,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 /*-
  * File containing all of the configurations that different motors require.
@@ -55,10 +57,14 @@ public interface Motors {
     }
 
     public interface Spindexer {
-        TalonFXConfig SPINDEXER_MOTOR_CONFIG = new TalonFXConfig()
+        TalonFXConfig SPINDEXER_KRAKEN_MOTOR_CONFIG = new TalonFXConfig()
         .withCurrentLimitAmps(40)
         .withRampRate(0.25)
         .withNeutralMode(NeutralModeValue.Brake);
+
+        SparkBaseConfig SPINDEXER_NEO_MOTOR_CONFIG = new SparkMaxConfig() 
+        .closedLoopRampRate(0.25);
+        //TODO: add more?
     }
 
     public static class TalonFXConfig {
