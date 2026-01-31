@@ -10,6 +10,7 @@ import com.stuypulse.robot.commands.spindexer.SpindexerKrakenSetStateSpin;
 import com.stuypulse.robot.commands.spindexer.SpindexerKrakenSetStateStop;
 import com.stuypulse.robot.commands.spindexer.SpindexerNeoSetStateSpin;
 import com.stuypulse.robot.commands.spindexer.SpindexerNeoSetStateStop;
+import com.stuypulse.robot.commands.spindexer.SuperStructureSpin;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.spindexerKraken.SpindexerKraken;
 import com.stuypulse.robot.subsystems.spindexerNeo.SpindexerNeo;
@@ -18,6 +19,7 @@ import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 
 public class RobotContainer {
 
@@ -60,13 +62,22 @@ public class RobotContainer {
         //     .whileFalse(new ShooterStop());
 
        // driver.getTopButton().onTrue(new ShooterShoot());
-        driver.getTopButton()
+        
+       
+       driver.getLeftButton() //speed up the shooter!
             .whileTrue(new SpindexerKrakenSetStateSpin())
             .whileFalse(new SpindexerKrakenSetStateStop());
 
-       driver.getBottomButton()
+       driver.getRightButton() //Run both post speeding up the shooter
             .whileTrue(new SpindexerNeoSetStateSpin())
             .whileFalse(new SpindexerNeoSetStateStop());
+
+        driver.getTopButton()
+            .whileTrue(new RepeatCommand(new SuperStructureSpin()))
+            
+            .whileFalse(new SpindexerNeoSetStateStop())
+            .whileFalse(new SpindexerKrakenSetStateStop());
+        
     }
 
     /**************/

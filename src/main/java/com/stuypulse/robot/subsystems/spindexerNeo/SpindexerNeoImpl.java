@@ -23,5 +23,7 @@ public class SpindexerNeoImpl extends SpindexerNeo{
         SpindexerNeo.set(getNeoState().getNeoSpindexerSpeed());
 
         SmartDashboard.putNumber("Spindexer/ Neo Speed", getNeoState().getNeoSpindexerSpeed());
-    }
+
+       SmartDashboard.putNumber("Spindexer/ Neo get Current", SpindexerNeo.getOutputCurrent()); 
+    }  
 }

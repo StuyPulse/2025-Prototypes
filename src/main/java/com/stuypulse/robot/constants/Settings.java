@@ -30,12 +30,11 @@ public interface Settings {
     }
 
     public interface Spindexer {
-        public double SpindexerKrakenSpinSpeed = 1;
+        public double SpindexerKrakenSpinSpeed = 1; //0.2 Duty cycle value was 0.08003, 1.0 was also the same
         public double SpindexerKrakenStopSpeed = 0.0;
 
-        public double SpindexerNeoSpinSpeed = 1;
+        public double SpindexerNeoSpinSpeed = 0.35;
         public double SpindexerNeoStopSpeed = 0.0;
-
 
     }
 }
