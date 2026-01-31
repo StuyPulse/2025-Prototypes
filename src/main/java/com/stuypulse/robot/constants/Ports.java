@@ -20,6 +20,6 @@ public interface Ports {
 
     public interface Spindexer {
         int SPINDEXER_KRAKEN_MOTOR = 1; //TODO: fill in
-        int SPINDEXER_NEO_MOTOR = 2; //TODO: fill in
+        int SPINDEXER_NEO_MOTOR = 4; //TODO: fill in
     }
 }
