@@ -7,6 +7,8 @@ import com.revrobotics.spark.SparkMax;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class SpindexerNeoImpl extends SpindexerNeo{
     SparkMax SpindexerNeo;
 
@@ -19,5 +21,7 @@ public class SpindexerNeoImpl extends SpindexerNeo{
     @Override
     public void periodic() {
         SpindexerNeo.set(getNeoState().getNeoSpindexerSpeed());
+
+        SmartDashboard.putNumber("Spindexer/ Neo Speed", getNeoState().getNeoSpindexerSpeed());
     }
 }

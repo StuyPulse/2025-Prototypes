@@ -1,4 +1,33 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[1]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[1]/Fwd Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[1]/Rev Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[1]/Rotor Sensor": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -8,11 +37,20 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "DB": {
+          "open": true
+        },
+        "Spindexer": {
+          "open": true
+        },
         "open": true
       }
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
     "visible": true
   }
 }

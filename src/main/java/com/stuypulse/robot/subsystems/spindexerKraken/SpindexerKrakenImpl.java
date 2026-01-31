@@ -5,6 +5,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.stuypulse.robot.constants.Motors;
 import com.stuypulse.robot.constants.Ports;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class SpindexerKrakenImpl extends SpindexerKraken{
     private TalonFX spindexerKrakenMotor;
 
@@ -17,6 +19,8 @@ public class SpindexerKrakenImpl extends SpindexerKraken{
     @Override
     public void periodic() {
         spindexerKrakenMotor.setControl(new DutyCycleOut(getKrakenState().getSpindexerSpeed()));
+        
+        SmartDashboard.putNumber("Spindexer/ Kraken Speed", getKrakenState().getSpindexerSpeed());
 
     }
 }   

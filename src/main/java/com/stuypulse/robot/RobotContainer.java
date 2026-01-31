@@ -64,7 +64,7 @@ public class RobotContainer {
             .whileTrue(new SpindexerKrakenSetStateSpin())
             .whileFalse(new SpindexerKrakenSetStateStop());
 
-       driver.getDPadUp()
+       driver.getBottomButton()
             .whileTrue(new SpindexerNeoSetStateSpin())
             .whileFalse(new SpindexerNeoSetStateStop());
     }
