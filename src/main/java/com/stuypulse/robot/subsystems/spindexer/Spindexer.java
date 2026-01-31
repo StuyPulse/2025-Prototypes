@@ -1,51 +1,65 @@
 package com.stuypulse.robot.subsystems.spindexer;
 
-import com.stuypulse.robot.constants.Constants;
+import com.stuypulse.robot.subsystems.spindexer.roller.Roller;
+import com.stuypulse.robot.subsystems.spindexer.roller.Roller.RollerState;
+import com.stuypulse.robot.subsystems.spindexer.spinner.Spinner;
+import com.stuypulse.robot.subsystems.spindexer.spinner.Spinner.SpinnerState;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Spindexer extends SubsystemBase{
-    private static SpindexerImpl instance;
-    private SpindexerState state;
+public class Spindexer extends SubsystemBase {
+    private static final Spindexer instance;
 
     static {
-        instance = new SpindexerImpl();
+        instance = new Spindexer();
     }
 
-    public static SpindexerImpl getInstance() {
+    public static Spindexer getInstance() {
         return instance;
     }
 
-    public Spindexer() {
-        state = SpindexerState.STOP;
+    public enum SpindexerState {
+        STOP(RollerState.STOP, SpinnerState.STOP),
+        RUN_ROLLER(RollerState.SPIN, SpinnerState.STOP),
+        RUN_SPINNER(RollerState.STOP, SpinnerState.SPIN),
+        RUN_ALL(RollerState.SPIN, SpinnerState.SPIN);
+
+        private RollerState rollerState;
+        private SpinnerState spinnerState;
+
+        private SpindexerState(RollerState rollerState, SpinnerState spinnerState) {
+            this.rollerState = rollerState;
+            this.spinnerState = spinnerState;
+        }
+
+        public RollerState getRollerState() {
+            return this.rollerState;
+        }
+
+        public SpinnerState getSpinnerState() {
+            return this.spinnerState;
+        }
     }
 
-    public enum SpindexerState {
-        SPIN(Constants.Spindexer.SpindexerSpinSpeed),
-        STOP(Constants.Spindexer.SpindexerStopSpeed);
+    private SpindexerState state;
 
-        private double speed;
+    private final Roller roller;
+    private final Spinner spinner;
 
-        private SpindexerState(double speed) {
-            this.speed = speed;
-        }
+    public Spindexer() {
+        this.state = SpindexerState.STOP;
+        this.roller = Roller.getInstance();
+        this.spinner = Spinner.getInstance();
+    }
 
-        public double getSpindexerSpeed() {
-            return speed;
-        }
+    public void setState(SpindexerState state) {
+        this.state = state;
+        roller.setState(state.getRollerState());
+        spinner.setState(state.getSpinnerState());
     }
 
     public SpindexerState getState() {
         return this.state;
     }
 
-    public void setState(SpindexerState state) {
-        this.state = state;
-    }
-
-    @Override
-    public void periodic() {
-        SmartDashboard.putString("SUBSYSTEMTS/SPINDEXER", "SPINDEXER");
-    }
 }

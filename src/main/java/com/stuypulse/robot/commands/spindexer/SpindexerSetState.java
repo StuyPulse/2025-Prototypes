@@ -5,17 +5,20 @@ import com.stuypulse.robot.subsystems.spindexer.Spindexer.SpindexerState;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class SpindexerSetState extends InstantCommand{
-    private SpindexerState state;
-    private final Spindexer spindexer = new Spindexer();
+public class SpindexerSetState extends InstantCommand {
+    
+    private final Spindexer spindexer;
+    private final SpindexerState state;
 
     public SpindexerSetState(SpindexerState state) {
+        this.spindexer = Spindexer.getInstance();
         this.state = state;
+        addRequirements(spindexer);
     }
 
     @Override
     public void initialize() {
-        spindexer.setState(this.state);
+        spindexer.setState(state);
     }
 
 }

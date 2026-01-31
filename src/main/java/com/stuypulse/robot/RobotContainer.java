@@ -6,8 +6,10 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
-import com.stuypulse.robot.commands.spindexer.SpindexerSetStateSpin;
-import com.stuypulse.robot.commands.spindexer.SpindexerSetStateStop;
+import com.stuypulse.robot.commands.spindexer.SpindexerRunAll;
+import com.stuypulse.robot.commands.spindexer.SpindexerRunRoller;
+import com.stuypulse.robot.commands.spindexer.SpindexerRunSpinner;
+import com.stuypulse.robot.commands.spindexer.SpindexerStop;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.spindexer.Spindexer;
 import com.stuypulse.stuylib.input.Gamepad;
@@ -49,8 +51,19 @@ public class RobotContainer {
     /***************/
 
     private void configureButtonBindings() {
-       driver.getTopButton().onTrue(new SpindexerSetStateSpin());
-       driver.getBottomButton().onTrue(new SpindexerSetStateStop());
+
+        driver.getTopButton()
+            .whileTrue(new SpindexerRunAll())
+            .onFalse(new SpindexerStop());
+
+        driver.getLeftButton()
+            .whileTrue(new SpindexerRunRoller())
+            .onFalse(new SpindexerStop());
+            
+        driver.getRightButton()
+            .whileTrue(new SpindexerRunSpinner())
+            .onFalse(new SpindexerStop());
+
     }
 
     /**************/

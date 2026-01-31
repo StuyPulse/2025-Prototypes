@@ -19,6 +19,7 @@ public interface Ports {
     }
 
     public interface Spindexer {
-        int SPINDEXER_MOTOR = 0; //TODO: fill in
+        int ROLLER_MOTOR = 1; 
+        int SPINNER_MOTOR = 50; //TODO: fill in 
     }
 }

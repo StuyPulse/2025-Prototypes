@@ -5,7 +5,6 @@
 
 package com.stuypulse.robot.constants;
 
-import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 /*-
@@ -15,17 +14,12 @@ import com.stuypulse.stuylib.network.SmartNumber;
  * values that we can edit on Shuffleboard.
  */
 public interface Settings {
-    public interface Shooter {
-        double SHOOTER_STOP = 0;
-        double SHOOTER_SHOOT = 200;
-
-        // magic motion const
-        double SHOOTER_LEFT_MAX_VELOCITY = 1;
-        double SHOOTER_RIGHT_MAX_VELOCITY = 1;
-
-        double SHOOTER_LEFT_MAX_ACCEL = 1;
-        double SHOTOER_RIGHT_MAX_ACCEL = 1;
-
-        double TARGET_RPM_THRESHOLD = 1;
+    public interface Spindexer {
+        public interface Roller {
+            SmartNumber ROLLER_SPEED = new SmartNumber("Subsystems/Spindexer/Roller/Roller Speed", 1.0);
+        }
+        public interface Spinner {
+            SmartNumber SPINNER_SPEED = new SmartNumber("Subsystems/Spindexer/Spinner/Spinner Speed", 1.0);
+        }
     }
 }

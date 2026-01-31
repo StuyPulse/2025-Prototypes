@@ -20,6 +20,9 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 /*-
  * File containing all of the configurations that different motors require.
@@ -33,32 +36,17 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public interface Motors {
 
     /** Classes to store all of the values a motor needs */
-    public interface Shooter {
-        TalonFXConfig SHOOTER_MOTOR_LEFT_CONFIG = new TalonFXConfig()
-                .withCurrentLimitAmps(40)
-                .withRampRate(0.25)
-                .withNeutralMode(NeutralModeValue.Brake)
-                .withInvertedValue(InvertedValue.CounterClockwise_Positive) // setting one motor inverted and the other
-                                                                            // inverted
-                .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
-                .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0)
-                .withMotionProfile(Settings.Shooter.SHOOTER_LEFT_MAX_VELOCITY, Settings.Shooter.SHOOTER_LEFT_MAX_ACCEL);
-
-        TalonFXConfig SHOOTER_MOTOR_RIGHT_CONFIG = new TalonFXConfig()
-                .withCurrentLimitAmps(40)
-                .withRampRate(0.25)
-                .withNeutralMode(NeutralModeValue.Brake)
-                .withPIDConstants(Gains.Shooter.PID.kP, Gains.Shooter.PID.kI, Gains.Shooter.PID.kD, 0)
-                .withFFConstants(Gains.Shooter.FF.kS, Gains.Shooter.FF.kV, Gains.Shooter.FF.kA, 0)
-                .withMotionProfile(Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY,
-                        Settings.Shooter.SHOOTER_RIGHT_MAX_VELOCITY);
-    }
 
     public interface Spindexer {
-        TalonFXConfig SPINDEXER_MOTOR_CONFIG = new TalonFXConfig()
-        .withCurrentLimitAmps(40)
-        .withRampRate(0.25)
-        .withNeutralMode(NeutralModeValue.Brake);
+        TalonFXConfig SPINDEXER_ROLLER = new TalonFXConfig()
+            .withCurrentLimitAmps(80)
+            .withRampRate(0.25)
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInvertedValue(InvertedValue.Clockwise_Positive);
+
+        SparkBaseConfig SPINDEXER_SPINNER = new SparkMaxConfig()
+            .inverted(false)
+            .idleMode(IdleMode.kBrake);
     }
 
     public static class TalonFXConfig {
