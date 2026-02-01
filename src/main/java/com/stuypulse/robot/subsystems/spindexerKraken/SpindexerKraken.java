@@ -1,6 +1,8 @@
 package com.stuypulse.robot.subsystems.spindexerKraken;
 
 
+import java.util.function.Supplier;
+
 import com.stuypulse.robot.constants.Settings;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -8,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SpindexerKraken extends SubsystemBase{
     private static SpindexerKraken instance;
-    private SpindexerKrakenState state;
+    private static SpindexerKrakenState state;
+
+    //private static Supplier<Double> spin = () -> Settings.Spindexer.SpindexerKrakenSpinSpeed.get();
 
     static {
         instance = new SpindexerKrakenImpl();
@@ -23,22 +27,21 @@ public class SpindexerKraken extends SubsystemBase{
     }
 
     public enum SpindexerKrakenState {
-        SPIN(Settings.Spindexer.SpindexerKrakenSpinSpeed),
-        STOP(Settings.Spindexer.SpindexerKrakenStopSpeed);
+        SPIN(() -> Settings.Spindexer.SpindexerKrakenSpinSpeed.get()),
+        STOP(() -> 0.0);
+        private Supplier<Double> speed; //might convert to supplier too
 
-        private double speed;
-
-        private SpindexerKrakenState(double speed) {
+        private SpindexerKrakenState(Supplier<Double> speed) {
             this.speed = speed;
         }
 
-        public double getSpindexerSpeed() {
+        public Supplier<Double> getSpindexerSpeed() {
             return speed;
         }
     }
 
-    public SpindexerKrakenState getKrakenState() {
-        return this.state;
+    public static SpindexerKrakenState getKrakenState() {
+        return state;
     }
 
     public void setKrakenState(SpindexerKrakenState state) {
@@ -47,6 +50,6 @@ public class SpindexerKraken extends SubsystemBase{
 
     @Override
     public void periodic() {
-        SmartDashboard.putString("Spindexer/Kraken State", getKrakenState().toString());
+        SmartDashboard.putString("Spindexer/Kraken/ State", getKrakenState().toString());
     }
 }

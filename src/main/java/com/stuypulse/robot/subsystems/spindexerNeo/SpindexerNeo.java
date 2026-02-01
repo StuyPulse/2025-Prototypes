@@ -1,6 +1,8 @@
 package com.stuypulse.robot.subsystems.spindexerNeo;
 
 
+import java.util.function.Supplier;
+
 import com.stuypulse.robot.constants.Settings;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,16 +20,16 @@ public class SpindexerNeo extends SubsystemBase{
     }
 
     public enum SpindexerNeoState {
-        SPIN(Settings.Spindexer.SpindexerNeoSpinSpeed),
-        STOP(Settings.Spindexer.SpindexerNeoStopSpeed);
+        SPIN(() -> Settings.Spindexer.SpindexerNeoSpinSpeed.get()),
+        STOP(() -> 0.0);
 
-        private double speed;
+        private Supplier<Double> speed;
 
-        private SpindexerNeoState(double speed) {
+        private SpindexerNeoState(Supplier<Double> speed) {
             this.speed = speed;
         }
 
-        public double getNeoSpindexerSpeed() {
+        public Supplier<Double> getNeoSpindexerSpeed() {
             return this.speed;
         }
     }
@@ -47,6 +49,6 @@ public class SpindexerNeo extends SubsystemBase{
     }
     @Override
     public void periodic() {
-        SmartDashboard.putString("Spindexer/Neo State", getNeoState().toString());
+        SmartDashboard.putString("Spindexer/Neo/ State", getNeoState().toString());
     }
 }
