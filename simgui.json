@@ -31,7 +31,15 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Autonomous": "String Chooser"
+      "/SmartDashboard/Autonomous": "String Chooser",
+      "/SmartDashboard/Spindexer Sim": "Mechanism2d"
+    },
+    "windows": {
+      "/SmartDashboard/Spindexer Sim": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -40,14 +48,16 @@
         "DB": {
           "open": true
         },
+        "SPINDEXER SIM": {
+          "open": true
+        },
         "Spindexer": {
           " Kraken": {
             "open": true
           },
           " Neo": {
             "open": true
-          },
-          "open": true
+          }
         },
         "open": true
       }

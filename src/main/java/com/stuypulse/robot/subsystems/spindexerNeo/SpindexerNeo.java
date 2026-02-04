@@ -3,7 +3,9 @@ package com.stuypulse.robot.subsystems.spindexerNeo;
 
 import java.util.function.Supplier;
 
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.robot.subsystems.SpindexerSim;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,7 +14,12 @@ public class SpindexerNeo extends SubsystemBase{
     private static SpindexerNeo instance;
 
     static {
-        instance = new SpindexerNeoImpl();
+        if (Robot.isReal()) {
+            instance = new SpindexerNeoImpl();
+        }
+        else  {
+            instance = new SpindexerSim();
+        }
     }
 
     public static SpindexerNeo getInstance() {
@@ -34,14 +41,14 @@ public class SpindexerNeo extends SubsystemBase{
         }
     }
 
-    private SpindexerNeoState state;
+    private static SpindexerNeoState state;
 
     public SpindexerNeo() {
         this.state = SpindexerNeoState.STOP;
     }
 
-    public SpindexerNeoState getNeoState() {
-        return this.state;
+    public static SpindexerNeoState getNeoState() {
+        return state;
     }
 
     public void setNeoState(SpindexerNeoState state) {
